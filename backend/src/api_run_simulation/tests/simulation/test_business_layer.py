@@ -46,7 +46,6 @@ def test_run_user_layer_output():
     user_layer = BusinessLayer()
 
     user_output = user_layer.run(user_input)
-    assert user_layer.done() == True
 
     assert user_output.project is not None
     assert user_output.project.location is not None
@@ -70,6 +69,5 @@ def test_run_user_layer_dumps():
     user_layer = BusinessLayer()
 
     user_output = user_layer.run(user_input)
-    assert user_layer.done() == True
 
     assert json.loads(user_output.dumps()) == JSON_OUTPUT

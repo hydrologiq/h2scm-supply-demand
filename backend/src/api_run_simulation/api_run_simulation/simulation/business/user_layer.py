@@ -10,8 +10,6 @@ class BusinessLayer(SimulationLayer):
             self.__fuel_requirements(data.fuel), {"location": data.location.__dict__}
         )
 
-        self._done = True
-
         return user_output
 
     def __fuel_requirements(self, requirement: FuelInput) -> list[object]:
