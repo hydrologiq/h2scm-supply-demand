@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "location": {
+      "$ref": "#/$defs/location"
+    },
+    "fuel": {
+      "$ref": "#/$defs/fuel"
+    }
+  },
+  "$defs": {
+    "location": {
+      "type": "object",
+      "lat": {
+        "type": "number"
+      },
+      "long": {
+        "type": "number"
+      },
+      "required": ["lat", "long"]
+    },
+    "fuel": {
+      "type": "object",
+      "amount": {
+        "type": "number",
+        "description": "The amount of fuel needed per specified period in kg "
+      },
+      "required": ["amount", "period", "storage"]
+    }
+  },
+  "required": ["location", "fuel"]
+}

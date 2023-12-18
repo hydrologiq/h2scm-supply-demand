@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "api-run-simulation"
+version = "0.1.0"
+description = ""
+authors = ["Adam Ayre-Storie <adam.ayre-storie@hydrologiq.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+mock = "^5.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+pythonpath = "api_run_simulation"

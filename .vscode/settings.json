@@ -1,0 +1,14 @@
+{
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "python.autoComplete.extraPaths": [
+    "${workspaceFolder}/backend/.venv/lib/python3.12/site-packages",
+    "${workspaceFolder}/backend/src/api_run_simulation/api_run_simulation"
+  ],
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/backend/.venv/lib/python3.12/site-packages",
+    "${workspaceFolder}/backend/src/api_run_simulation/api_run_simulation"
+  ],
+  "editor.indentSize": "tabSize"
+}
