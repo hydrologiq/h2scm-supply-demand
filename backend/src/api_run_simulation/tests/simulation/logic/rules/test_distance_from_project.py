@@ -1,6 +1,6 @@
 import json
 from simulation.logic.logic_input import LogicInput
-from simulation.logic.rules.filter import VehicleAvailabilityRule
+from simulation.logic.rules.filter import DistanceFromProjectRule
 from simulation.query import QueryInput
 
 SAMPLE_LOGIC_INPUT = {
@@ -35,14 +35,14 @@ SAMPLE_LOGIC_INPUT = {
                 "availableQuantity": 2,
                 "transportDistance": 123,
             },
-            "projectDistance": 54.321,
+            "projectDistance": 555,
         },
     ],
     "fuel": [],
 }
 
 
-def test_filters_out_vehicle():
+def test_filters_transport_project_distance():
     query_input = QueryInput(
         **{
             "fuel": [
@@ -54,10 +54,10 @@ def test_filters_out_vehicle():
     )
     logic_input = LogicInput(**SAMPLE_LOGIC_INPUT)
 
-    rule = VehicleAvailabilityRule(query_input)
+    rule = DistanceFromProjectRule(query_input)
 
     rule_output = rule.apply(logic_input)
 
     assert len(logic_input.logistic) == 2
     assert len(rule_output.logistic) == 1
-    assert rule_output.logistic[0] == logic_input.logistic[1]
+    assert rule_output.logistic[0] == logic_input.logistic[0]
