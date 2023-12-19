@@ -15,7 +15,6 @@ class BaseQuery:
         self.config = config
 
     def query(self, config: BaseQueryInput | None = None) -> list[BaseQueryResponse]:
-        print(config)
         response = requests.post(
             f"https://{self.config.scm_api_id}.execute-api.{self.config.scm_api_region}.amazonaws.com/{self.config.scm_api_stage}/repositories/{self.config.scm_repo}/query/select",
             self._get_query(config),
