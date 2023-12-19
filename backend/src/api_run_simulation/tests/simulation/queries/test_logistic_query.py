@@ -46,13 +46,6 @@ JSON_OUTPUT = json.loads(
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
           "projectDistance": 54.321
         }
-      ],
-      "fuel": [
-        {
-          "service": { "id": "hydrogen_nrmm:3", "name": "Service 2" },
-          "dispensingSite": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 123, "long": 123 },
-          "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
-        }
       ]
     }
     """
