@@ -1,10 +1,11 @@
 import json
-from simulation.query.queries import QueryConfiguration, LogisticQuery
-
-from simulation.query import QueryInput, QueryLayer
-
+from simulation.query.queries import (
+    QueryConfiguration,
+    LogisticQuery,
+    LogisticQueryInput,
+)
 from requests_mock import Mocker
-from tests.simulation.data import SPARQL_QUERY_LOGISTIC_RESPONSE, SPARQL_QUERY_LOGISTIC
+from tests.simulation.data import SPARQL_QUERY_LOGISTIC_RESPONSE, sparql_query_logistic
 
 JSON_INPUT = json.loads(
     """
@@ -96,11 +97,17 @@ def test_run_logistic_query(requests_mock: Mocker):
         )
     )
 
+    minStorage = 125
+    lat = 12.55
+    long = 12.66
+
     register_sparql_query_mock(
-        requests_mock, SPARQL_QUERY_LOGISTIC, SPARQL_QUERY_LOGISTIC_RESPONSE
+        requests_mock,
+        sparql_query_logistic(minStorage, lat, long),
+        SPARQL_QUERY_LOGISTIC_RESPONSE,
     )
 
-    logistic_output = logistic_query.query()
+    logistic_output = logistic_query.query(LogisticQueryInput(minStorage, lat, long))
 
     assert requests_mock.last_request is not None
     assert len(logistic_output) == 2

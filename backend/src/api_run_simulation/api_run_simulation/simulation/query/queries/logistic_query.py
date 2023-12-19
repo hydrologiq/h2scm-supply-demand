@@ -1,17 +1,19 @@
 from decimal import Decimal
-from simulation.query.queries import BaseQuery, LogisticQueryResponse
-from simulation.query.queries.base_response import BaseQueryResponse
+from simulation.query.queries import (
+    BaseQuery,
+    LogisticQueryResponse,
+    LogisticQueryInput,
+)
 from simulation.query.queries.hydrogen_nrmm_optional import (
     Storage,
     LogisticService,
     Vehicle,
-    YAMLRoot,
 )
 
 
 class LogisticQuery(BaseQuery):
-    def query(self) -> list[LogisticQueryResponse]:
-        return super().query()
+    def query(self, config: LogisticQueryInput) -> list[LogisticQueryResponse]:
+        return super().query(config)
 
     def _parse_query(self, resp_obj) -> list[LogisticQueryResponse]:
         bindings = resp_obj["results"]["bindings"]
@@ -28,8 +30,9 @@ class LogisticQuery(BaseQuery):
         self._convert_matched_instances(matching_instances, class_types)
         return [LogisticQueryResponse(**instance) for instance in matching_instances]
 
-    def _get_query(self):
-        return """
+    def _get_query(self, config: LogisticQueryInput):
+        return (
+            """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX omgeo: <http://www.ontotext.com/owlim/geo#>
 select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?projectDistance
@@ -47,10 +50,15 @@ where {
              rdfs:label ?serviceName ;
              hydrogen_nrmm:includes ?storage;
              hydrogen_nrmm:includes ?vehicle
-    FILTER(?storageCapacity >= 185)
+    FILTER(?storageCapacity >= """
+            + f"{config.minStorage}"
+            + """)
     
     ?vehicleBasedAt hydrogen_nrmm:lat ?lat ;
                     hydrogen_nrmm:long ?long ;.
-    BIND(omgeo:distance(?lat, ?long, 12.234, 43.221) * 0.621371 as ?projectDistance)
+    BIND(omgeo:distance(?lat, ?long, """
+            + f"{config.lat}, {config.long}"
+            + """) * 0.621371 as ?projectDistance)
 }
 """
+        )

@@ -1,7 +1,10 @@
 from decimal import Decimal
 import requests
-from simulation.query.queries import QueryConfiguration
-from simulation.query.queries.base_response import BaseQueryResponse
+from simulation.query.queries import (
+    QueryConfiguration,
+    BaseQueryInput,
+    BaseQueryResponse,
+)
 from simulation.query.queries.hydrogen_nrmm_optional import YAMLRoot
 
 
@@ -11,17 +14,18 @@ class BaseQuery:
     def __init__(self, config: QueryConfiguration):
         self.config = config
 
-    def query(self) -> BaseQueryResponse:
+    def query(self, config: BaseQueryInput | None = None) -> list[BaseQueryResponse]:
+        print(config)
         response = requests.post(
             f"https://{self.config.scm_api_id}.execute-api.{self.config.scm_api_region}.amazonaws.com/{self.config.scm_api_stage}/repositories/{self.config.scm_repo}/query/select",
-            self._get_query(),
+            self._get_query(config),
             headers={
                 "Authorization": f"Bearer {self.config.scm_access_token}",
             },
         )
         return self._parse_query(response.json())
 
-    def _parse_query(self, resp_obj) -> BaseQueryResponse:
+    def _parse_query(self, resp_obj) -> list[BaseQueryResponse]:
         pass
 
     def _convert_matched_instances(self, matching_instances, class_types: dict):
@@ -68,5 +72,5 @@ class BaseQuery:
 
         return raw_instances
 
-    def _get_query(self) -> str:
+    def _get_query(self, config: BaseQueryInput | None) -> str:
         pass
