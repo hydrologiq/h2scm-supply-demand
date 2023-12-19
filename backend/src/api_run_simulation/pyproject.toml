@@ -10,6 +10,7 @@ include = ["api_run_simulation/simulation/query/queries/hydrogen_nrmm*.*"]
 python = "^3.12"
 requests = "^2.31.0"
 linkml-runtime = "^1.6.3"
+geopy = "^2.4.1"
 
 
 [tool.poetry.group.dev.dependencies]

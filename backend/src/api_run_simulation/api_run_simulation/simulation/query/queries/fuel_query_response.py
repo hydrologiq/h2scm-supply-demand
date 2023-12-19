@@ -13,13 +13,3 @@ class FuelQueryResponse(BaseQueryResponse):
     producer: Hydrogen
     service: FuelService
     dispenser: DispensingSite
-
-    # def __init__(
-    #     self,
-    #     producer: Hydrogen,
-    #     service: FuelService,
-    #     dispenser: DispensingSite,
-    # ):
-    #     self.producer = producer
-    #     self.service = service
-    #     self.dispenser = dispenser

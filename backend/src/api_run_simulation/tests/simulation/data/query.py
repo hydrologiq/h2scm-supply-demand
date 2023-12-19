@@ -6,7 +6,7 @@ def sparql_query_logistic(minStorage: int, lat: float, long: float):
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX omgeo: <http://www.ontotext.com/owlim/geo#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?projectDistance
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?projectDistance ?distro ?distroName ?distroLat ?distroLong
 where {
     ?storage rdf:type hydrogen_nrmm:TubeTrailer ;
              rdfs:label ?storageName ;
@@ -15,7 +15,7 @@ where {
     ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:TubeTrailer ;
              rdfs:label ?vehicleName ;
              hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
-             hydrogen_nrmm:basedAt ?vehicleBasedAt ;
+             hydrogen_nrmm:basedAt ?distro ;
              hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.
     ?service rdf:type hydrogen_nrmm:LogisticService;
              rdfs:label ?serviceName ;
@@ -25,9 +25,10 @@ where {
         + f"{minStorage}"
         + """)
     
-    ?vehicleBasedAt hydrogen_nrmm:lat ?lat ;
-                    hydrogen_nrmm:long ?long ;.
-    BIND(omgeo:distance(?lat, ?long, """
+    ?distro rdfs:label ?distroName ;
+            hydrogen_nrmm:lat ?distroLat ;
+            hydrogen_nrmm:long ?distroLong ;.
+    BIND(omgeo:distance(?distroLat, ?distroLong, """
         + f"{lat}, {long}"
         + """) * 0.621371 as ?projectDistance)
 }
@@ -42,15 +43,19 @@ SPARQL_QUERY_LOGISTIC_RESPONSE = json.loads(
           "vars": [
             "storage",
             "storageName",
-            "storageAvailable",
+            "storageAvailableQuantity",
             "storageCapacity",
             "vehicle",
             "vehicleName",
-            "vehicleAvailable",
+            "vehicleAvailableQuantity",
+            "vehicleTransportDistance",
             "service",
             "serviceName",
-            "vehicleDist",
-            "vehicleRange"
+            "projectDistance",
+            "distro",
+            "distroName",
+            "distroLat",
+            "distroLong"
           ]
         },
         "results": {
@@ -104,6 +109,24 @@ SPARQL_QUERY_LOGISTIC_RESPONSE = json.loads(
                 "datatype": "http://www.w3.org/2001/XMLSchema#float",
                 "type": "literal",
                 "value": "12.345"
+              },
+              "distro": {
+                "type": "uri",
+                "value": "https://w3id.org/hydrologiq/hydrogen/nrmm1234"
+              },
+              "distroName": {
+                "type": "literal",
+                "value": "Vehicle Yard 1"
+              },
+              "distroLat": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": "1"
+              },
+              "distroLong": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": "2"
               }
             },
             {
@@ -155,6 +178,24 @@ SPARQL_QUERY_LOGISTIC_RESPONSE = json.loads(
                 "datatype": "http://www.w3.org/2001/XMLSchema#float",
                 "type": "literal",
                 "value": "54.321"
+              },
+              "distro": {
+                "type": "uri",
+                "value": "https://w3id.org/hydrologiq/hydrogen/nrmm213"
+              },
+              "distroName": {
+                "type": "literal",
+                "value": "Vehicle Yard 2"
+              },
+              "distroLat": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": "2"
+              },
+              "distroLong": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": "3"
               }
             }
           ]
