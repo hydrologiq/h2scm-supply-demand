@@ -1,3 +1,4 @@
+from decimal import Decimal
 import requests
 from simulation.query.queries import QueryConfiguration
 from simulation.query.queries.base_response import BaseQueryResponse
@@ -22,6 +23,21 @@ class BaseQuery:
 
     def _parse_query(self, resp_obj) -> BaseQueryResponse:
         pass
+
+    def _convert_matched_instances(self, matching_instances, class_types: dict):
+        for i in range(len(matching_instances)):
+            for instance in matching_instances[i]:
+                if instance in class_types:
+                    class_type = class_types[instance]
+
+                    if issubclass(class_type, Decimal):
+                        matching_instances[i][instance] = Decimal(
+                            matching_instances[i][instance]
+                        )
+                    else:
+                        matching_instances[i][instance] = class_type(
+                            **matching_instances[i][instance]
+                        )
 
     def _get_matching_instances(self, bindings, class_types: dict) -> list[dict]:
         return [

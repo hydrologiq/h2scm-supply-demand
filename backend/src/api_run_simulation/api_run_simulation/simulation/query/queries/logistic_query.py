@@ -25,28 +25,8 @@ class LogisticQuery(BaseQuery):
             bindings,
             class_types.keys(),
         )
-        for i in range(len(matching_instances)):
-            for instance in matching_instances[i]:
-                if instance in class_types:
-                    class_type = class_types[instance]
-
-                    if issubclass(class_type, Decimal):
-                        matching_instances[i][instance] = Decimal(
-                            matching_instances[i][instance]
-                        )
-                    else:
-                        matching_instances[i][instance] = class_type(
-                            **matching_instances[i][instance]
-                        )
-        return [
-            LogisticQueryResponse(
-                instance["storage"],
-                instance["service"],
-                instance["vehicle"],
-                instance["projectDistance"],
-            )
-            for instance in matching_instances
-        ]
+        self._convert_matched_instances(matching_instances, class_types)
+        return [LogisticQueryResponse(**instance) for instance in matching_instances]
 
     def _get_query(self):
         return """
