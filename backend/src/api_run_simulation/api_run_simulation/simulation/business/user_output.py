@@ -11,3 +11,9 @@ class BusinessOutput(SimulationData):
     def __post_init__(self):
         self.project = Project(**self.project)
         self.fuel = list(map(lambda r: Fuel(**r), self.fuel))
+
+    def total_fuel(self) -> float:
+        return sum([_fuel.amount for _fuel in self.fuel])
+
+    def required_no_vehicles(self) -> int:
+        return len(self.fuel)

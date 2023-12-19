@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from simulation import SimulationLayer
 from simulation.business.outputs.fuel import Fuel
 from simulation.business.outputs.project import Project
@@ -29,7 +28,7 @@ class QueryLayer(SimulationLayer):
 
         fuels = FuelQuery(self.configuration).query(
             FuelQueryInput(
-                self.__total_fuel(data.fuel),
+                data.total_fuel(),
             )
         )
 
@@ -38,11 +37,6 @@ class QueryLayer(SimulationLayer):
     def __minimum_fuel(self, fuel: list[Fuel]):
         if len(fuel) > 0:
             return min([_fuel.amount for _fuel in fuel])
-        raise Exception("Failed to find minimum fuel")
-
-    def __total_fuel(self, fuel: list[Fuel]):
-        if len(fuel) > 0:
-            return sum([_fuel.amount for _fuel in fuel])
         raise Exception("Failed to find minimum fuel")
 
     def __project_lat(self, project: Project):
