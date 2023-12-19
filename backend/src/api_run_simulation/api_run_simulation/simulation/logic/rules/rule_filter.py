@@ -1,6 +1,6 @@
 import copy
 from simulation.logic import LogicInput
-from simulation.query.queries import LogisticQueryResponse
+from simulation.query.queries import LogisticQueryResponse, FuelQueryResponse
 from simulation.logic.rules import Rule
 
 
@@ -16,7 +16,5 @@ class FilterRule(Rule):
     ) -> list[LogisticQueryResponse]:
         return logistic
 
-    def _filter_fuel(
-        self, fuel: list[LogisticQueryResponse]
-    ) -> list[LogisticQueryResponse]:
+    def _filter_fuel(self, fuel: list[FuelQueryResponse]) -> list[FuelQueryResponse]:
         return fuel
