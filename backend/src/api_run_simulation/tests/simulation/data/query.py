@@ -208,13 +208,10 @@ SPARQL_QUERY_LOGISTIC_RESPONSE = json.loads(
 def sparql_query_fuel(sum_of_fuel: float):
     return (
         """
-        PREFIX hydrogen_nrmm: <https://w3id.org/hydrologiq/hydrogen/nrmm>
-        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         select ?producer ?producerName ?producerDailyOfftakeCapacity ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName
         where { 
-            ?producer rdf:type hydrogen_nrmm:Hydrogen ;
-                      rdfs:label ?producerName ;
+            ?producer rdfs:label ?producerName ;
                       hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
                       hydrogen_nrmm:basedAt ?dispenser ;.
             FILTER(?producerDailyOfftakeCapacity >= """

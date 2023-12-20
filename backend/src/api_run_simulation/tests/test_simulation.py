@@ -31,7 +31,7 @@ def register_sparql_query_mock(
 ):
     return requests_mock.register_uri(
         "POST",
-        f"https://{SCM_API_ID}.execute-api.{SCM_API_REGION}.amazonaws.com/{SCM_API_STAGE}/repositories/{repo}/query/select",
+        f"https://{SCM_API_ID}.execute-api.{SCM_API_REGION}.amazonaws.com/{SCM_API_STAGE}/repositories/{repo}/query/select?graphs=default",
         request_headers={
             "Authorization": f"Bearer {MOCKED_ACCESS_TOKEN}",
         },

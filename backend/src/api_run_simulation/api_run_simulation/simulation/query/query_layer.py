@@ -25,7 +25,6 @@ class QueryLayer(SimulationLayer):
                 self.__project_long(data.project),
             )
         )
-
         fuels = FuelQuery(self.configuration).query(
             FuelQueryInput(
                 data.total_fuel(),

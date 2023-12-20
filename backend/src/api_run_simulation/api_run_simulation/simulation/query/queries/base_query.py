@@ -16,7 +16,7 @@ class BaseQuery:
 
     def query(self, config: BaseQueryInput | None = None) -> list[BaseQueryResponse]:
         response = requests.post(
-            f"https://{self.config.scm_api_id}.execute-api.{self.config.scm_api_region}.amazonaws.com/{self.config.scm_api_stage}/repositories/{self.config.scm_repo}/query/select",
+            f"https://{self.config.scm_api_id}.execute-api.{self.config.scm_api_region}.amazonaws.com/{self.config.scm_api_stage}/repositories/{self.config.scm_repo}/query/select?graphs=default",
             self._get_query(config),
             headers={
                 "Authorization": f"Bearer {self.config.scm_access_token}",
