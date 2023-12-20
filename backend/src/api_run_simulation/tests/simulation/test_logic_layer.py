@@ -1,7 +1,7 @@
 import json
 from simulation.business import BusinessOutput
-from simulation.query.queries import QueryConfiguration
-from simulation.logic import LogicInput, LogicLayer
+from simulation.logic import LogicLayer
+from simulation.query import QueryOutput
 
 JSON_INPUT = json.loads(
     """
@@ -33,27 +33,10 @@ JSON_INPUT = json.loads(
     """
 )
 
-SCM_API_ID = "abcdef"
-SCM_API_REGION = "eu-west-2"
-SCM_API_STAGE = "dev"
-
-DEFAULT_REPO = "live"
-MOCKED_ACCESS_TOKEN = "abcdefgtoken"
-
 
 def test_run_logic_layer_output():
-    logic_input = LogicInput(**JSON_INPUT)
-    logic_layer = LogicLayer(
-        QueryConfiguration(
-            **{
-                "scm_api_id": SCM_API_ID,
-                "scm_api_region": SCM_API_REGION,
-                "scm_api_stage": SCM_API_STAGE,
-                "scm_repo": DEFAULT_REPO,
-                "scm_access_token": MOCKED_ACCESS_TOKEN,
-            }
-        )
-    )
+    logic_input = QueryOutput(**JSON_INPUT)
+    logic_layer = LogicLayer()
     business_output = BusinessOutput(
         **{
             "fuel": [

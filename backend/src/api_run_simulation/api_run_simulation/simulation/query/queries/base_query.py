@@ -1,9 +1,9 @@
 from decimal import Decimal
 import requests
+from simulation import BaseQueryResponse
 from simulation.query.queries import (
     QueryConfiguration,
     BaseQueryInput,
-    BaseQueryResponse,
 )
 from simulation.query.queries.hydrogen_nrmm_optional import YAMLRoot
 
