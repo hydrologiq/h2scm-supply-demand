@@ -21,7 +21,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - "h2scm-supply-demand/backend/lambdas"
+            - "h2scm-supply-demand/backend"
   sd-deploy:
     docker:
       - image: cimg/deploy:2023.06.1
