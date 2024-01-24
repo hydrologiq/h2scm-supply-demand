@@ -17,6 +17,8 @@ class LogisticQuery(BaseQuery):
         return super().query(config)
 
     def _parse_query(self, resp_obj) -> list[LogisticQueryResponse]:
+        if "results" not in resp_obj:
+            raise Exception(f"Could not query with error -- {resp_obj}")
         bindings = resp_obj["results"]["bindings"]
         class_types = {
             "storage": Storage,
