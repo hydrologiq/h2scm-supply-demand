@@ -13,6 +13,9 @@ resource "aws_lambda_function" "api_run_simulation" {
 
   environment {
     variables = {
+      SCM_API_ID = var.scm_api_id
+      SCM_API_REGION = var.scm_api_region
+      SCM_API_STAGE = var.scm_api_stage
     }
   }
 }

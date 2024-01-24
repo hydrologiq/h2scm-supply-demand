@@ -30,6 +30,10 @@ def build_error(name: str, message: str = "", status: int = 400):
 
 @event_source(data_class=APIGatewayProxyEventV2)
 def lambda_handler(event: APIGatewayProxyEventV2, context: LambdaContext):
+    repo = event.path_parameters.get("repo")
+    if repo is None:
+        return build_error("Path parameter not provided", "repo is missing")
+
     try:
         access_token = None
         if (
@@ -45,7 +49,7 @@ def lambda_handler(event: APIGatewayProxyEventV2, context: LambdaContext):
             scm_api_id=os.environ["SCM_API_ID"],
             scm_api_region=os.environ["SCM_API_REGION"],
             scm_api_stage=os.environ["SCM_API_STAGE"],
-            scm_repo=os.environ["SCM_REPO"],
+            scm_repo=repo,
             scm_access_token=access_token,
         )
 
@@ -56,4 +60,4 @@ def lambda_handler(event: APIGatewayProxyEventV2, context: LambdaContext):
             ),
         )
     except Exception as ex:
-        return build_error("Failed to run simulation", str(ex))
+        return build_error("Failed to run simulation -- ", str(ex))

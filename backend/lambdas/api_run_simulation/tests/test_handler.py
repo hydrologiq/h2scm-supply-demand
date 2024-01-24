@@ -1,6 +1,9 @@
 import json
 import os
 from unittest.mock import patch
+from api_run_simulation.simulation.business.inputs.fuel import Fuel
+from api_run_simulation.simulation.business.inputs.location import Location
+from api_run_simulation.simulation.business.user_input import BusinessInput
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from aws_lambda_powertools.utilities.data_classes import (
     APIGatewayProxyEventV2,
@@ -58,7 +61,6 @@ def scm_envs():
     os.environ["SCM_API_ID"] = SCM_API_ID
     os.environ["SCM_API_REGION"] = SCM_API_REGION
     os.environ["SCM_API_STAGE"] = SCM_API_STAGE
-    os.environ["SCM_REPO"] = SCM_REPO
 
 
 def test_handler_valid_input(lambda_context, scm_envs):
@@ -72,10 +74,35 @@ def test_handler_valid_input(lambda_context, scm_envs):
         response = lambda_handler(
             MockAPIGatewayProxyEventV2(
                 http_method="POST",
-                pathParams={},
+                pathParams={"repo": SCM_REPO},
                 body=json.dumps(user_input),
             ),
             lambda_context,
         )
         assert response.get("statusCode") == 200
         assert response.get("body") == json.dumps(expected_response)
+        patched.assert_called_once_with(
+            BusinessInput(location=Location(lat=123, long=321), fuel=Fuel(amount=300)),
+            QueryConfiguration(
+                scm_api_id=SCM_API_ID,
+                scm_api_region=SCM_API_REGION,
+                scm_api_stage=SCM_API_STAGE,
+                scm_repo=SCM_REPO,
+                scm_access_token=AUTH_TOKEN,
+            ),
+        )
+
+
+def test_handler_no_path_param(lambda_context, scm_envs):
+    from api_run_simulation.handler import lambda_handler
+
+    response = lambda_handler(
+        MockAPIGatewayProxyEventV2(
+            http_method="POST",
+            pathParams={},
+            body=json.dumps({}),
+        ),
+        lambda_context,
+    )
+    assert response.get("statusCode") == 400
+    assert response.get("body") == "Path parameter not provided -- repo is missing"

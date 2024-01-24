@@ -1,3 +1,6 @@
 env="dev"
 region="eu-west-2"
 cognito_user_pool_arn="arn:aws:cognito-idp:eu-west-2:914716637891:userpool/eu-west-2_crgMZOLDx"
+scm_api_id="ri8gp7j3mc"
+scm_api_region="eu-west-2"
+scm_api_stage="dev"
