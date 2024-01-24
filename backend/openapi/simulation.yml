@@ -23,13 +23,20 @@ components:
         providerARNs:
           - ${cognito_user_pool_arn}
 paths:
-  /simulation:
+  /repositories/{repo}/simulation:
     post:
       operationId: simulation
       description: Run a simulation using the SCM store
       security:
         - CognitoUserPool: ["aws.cognito.signin.user.admin"]
 
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          description: the name of the repository
+          schema:
+            type: string
       x-amazon-apigateway-integration:
         uri: "arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_api_run_simulation_arn}/invocations"
         passthroughBehavior: "when_no_match"
