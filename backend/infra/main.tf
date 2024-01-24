@@ -13,9 +13,9 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket         = "supply-demand-terraform-state-backend"
+    bucket         = "scm-sd-terraform-state-backend"
     key            = "terraform.tfstate"
     region         = "eu-west-2"
-    dynamodb_table = "supply_demand_terraform_state"
+    dynamodb_table = "scm-sd_terraform_state"
   }
 }
