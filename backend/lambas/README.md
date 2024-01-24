@@ -1,11 +1,14 @@
 # Lambdas
 
-## Python env setup
+Poetry to manage lambda bundles and dependencies. Python version is `3.12`.
 
-To setup the local python environment locally you need to install python using pyenv and the following pip requirements. You can do this by following the commands below.
+## Python setup
 
-1. `eval "$(pyenv init -)"`
-1. `pyenv install` (optional - only if you already have the python version installed)
-1. `pyenv exec python -m venv .venv` (optional - if the venv already exists)
+To be able to run the lambdas locally we need to install python and the `poetry` package locally and to do this we use [pyenv](https://github.com/pyenv/pyenv).
+
+1. `brew install pyenv` (optional if already installed)
+1. `eval "$(pyenv init -)"` (optional if already installed)
+1. `pyenv install` (optional if already installed)
+1. `pyenv exec python -m venv .venv` (optional if already installed)
 1. `source .venv/bin/activate`
-1. `pip3 install -r requirements.txt` (optional - if you have already installed the requirements)
+1. `pip3 install -r requirements.txt` (optional if already installed)
