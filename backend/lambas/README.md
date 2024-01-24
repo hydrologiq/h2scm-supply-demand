@@ -1,3 +1,5 @@
+# Lambdas
+
 ## Python env setup
 
 To setup the local python environment locally you need to install python using pyenv and the following pip requirements. You can do this by following the commands below.
