@@ -44,10 +44,10 @@ workflows:
   deploy-sd:
     jobs:
       - sd-build:
-          context: scm-sd-infra
+          context: scm-sd-infra-prod
           filters:
             branches:
               only: main
       - sd-deploy:
-          context: scm-sd-infra
+          context: scm-sd-infra-prod
           requires: [sd-build]
