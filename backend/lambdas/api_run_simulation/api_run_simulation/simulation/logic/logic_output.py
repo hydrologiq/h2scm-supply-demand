@@ -1,7 +1,7 @@
-from simulation.query import QueryOutput
+from api_run_simulation.simulation.query import QueryOutput
 from dataclasses import dataclass
 
-from simulation.logic.outputs import Matched
+from api_run_simulation.simulation.logic.outputs import Matched
 
 
 @dataclass

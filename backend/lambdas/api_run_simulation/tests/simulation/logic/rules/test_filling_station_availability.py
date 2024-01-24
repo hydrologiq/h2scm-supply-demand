@@ -1,7 +1,9 @@
 import json
-from simulation.logic.logic_input import LogicInput
-from simulation.logic.rules.filter import FillingStationAvailabilityRule
-from simulation.query import QueryInput
+from api_run_simulation.simulation.logic.logic_input import LogicInput
+from api_run_simulation.simulation.logic.rules.filter import (
+    FillingStationAvailabilityRule,
+)
+from api_run_simulation.simulation.query import QueryInput
 
 SAMPLE_LOGIC_INPUT = {
     "logistic": [],

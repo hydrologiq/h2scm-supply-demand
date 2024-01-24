@@ -1,9 +1,9 @@
 import os
-from simulation.business import BusinessLayer, BusinessInput
-from simulation.logic import LogicOutput
-from simulation.logic import LogicLayer
-from simulation.query.queries import QueryConfiguration
-from simulation.query import QueryLayer
+from api_run_simulation.simulation.business import BusinessLayer, BusinessInput
+from api_run_simulation.simulation.logic import LogicOutput
+from api_run_simulation.simulation.logic import LogicLayer
+from api_run_simulation.simulation.query.queries import QueryConfiguration
+from api_run_simulation.simulation.query import QueryLayer
 
 
 def run_simulation(

@@ -1,5 +1,5 @@
-from simulation.query import QueryInput
-from simulation.logic import LogicInput
+from api_run_simulation.simulation.query import QueryInput
+from api_run_simulation.simulation.logic import LogicInput
 
 
 class Rule:

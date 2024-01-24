@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from simulation.query.queries import LogisticQueryResponse
+from api_run_simulation.simulation.query.queries import LogisticQueryResponse
 from tests.helpers import to_id
 
 

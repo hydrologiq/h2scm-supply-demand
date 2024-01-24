@@ -1,5 +1,5 @@
-from simulation.query.queries import LogisticQueryResponse
-from simulation.logic.rules import FilterRule
+from api_run_simulation.simulation.query.queries import LogisticQueryResponse
+from api_run_simulation.simulation.logic.rules import FilterRule
 
 
 class DistanceFromProjectRule(FilterRule):

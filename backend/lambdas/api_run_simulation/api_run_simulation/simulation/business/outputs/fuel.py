@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from simulation.business.outputs.storage import Storage
+from api_run_simulation.simulation.business.outputs.storage import Storage
 
 
 @dataclass

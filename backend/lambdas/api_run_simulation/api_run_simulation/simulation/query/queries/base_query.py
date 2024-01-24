@@ -1,11 +1,11 @@
 from decimal import Decimal
 import requests
 from simulation import BaseQueryResponse
-from simulation.query.queries import (
+from api_run_simulation.simulation.query.queries import (
     QueryConfiguration,
     BaseQueryInput,
 )
-from simulation.query.queries.hydrogen_nrmm_optional import YAMLRoot
+from api_run_simulation.simulation.query.queries.hydrogen_nrmm_optional import YAMLRoot
 
 
 class BaseQuery:

@@ -1,7 +1,10 @@
 from simulation import SimulationData
 from dataclasses import dataclass
 
-from simulation.query.queries import LogisticQueryResponse, FuelQueryResponse
+from api_run_simulation.simulation.query.queries import (
+    LogisticQueryResponse,
+    FuelQueryResponse,
+)
 
 
 @dataclass

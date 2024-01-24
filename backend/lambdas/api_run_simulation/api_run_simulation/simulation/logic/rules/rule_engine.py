@@ -1,6 +1,6 @@
 import copy
-from simulation.logic import LogicInput
-from simulation.logic.rules import Rule
+from api_run_simulation.simulation.logic import LogicInput
+from api_run_simulation.simulation.logic.rules import Rule
 
 
 class RuleEngine:

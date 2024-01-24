@@ -1,8 +1,8 @@
 from requests_mock import Mocker
-from simulation.business import BusinessInput
-from simulation.business.inputs import Fuel, Location
-from simulation.logic.outputs import Matched
-from simulation.query.queries import QueryConfiguration
+from api_run_simulation.simulation.business import BusinessInput
+from api_run_simulation.simulation.business.inputs import Fuel, Location
+from api_run_simulation.simulation.logic.outputs import Matched
+from api_run_simulation.simulation.query.queries import QueryConfiguration
 from tests.helpers import (
     FuelResponse,
     LogisticResponse,
@@ -12,7 +12,7 @@ from tests.helpers import (
     fuel_query_response_json,
 )
 
-from run_simulation import run_simulation
+from api_run_simulation.run_simulation import run_simulation
 from tests.helpers import to_id
 
 SCM_API_ID = "abcdef"

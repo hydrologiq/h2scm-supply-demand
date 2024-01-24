@@ -1,14 +1,14 @@
 from simulation import SimulationLayer
-from simulation.business.outputs.fuel import Fuel
-from simulation.business.outputs.project import Project
-from simulation.query.queries import (
+from api_run_simulation.simulation.business.outputs.fuel import Fuel
+from api_run_simulation.simulation.business.outputs.project import Project
+from api_run_simulation.simulation.query.queries import (
     QueryConfiguration,
     LogisticQuery,
     LogisticQueryInput,
     FuelQuery,
     FuelQueryInput,
 )
-from simulation.query import QueryInput, QueryOutput
+from api_run_simulation.simulation.query import QueryInput, QueryOutput
 
 
 class QueryLayer(SimulationLayer):

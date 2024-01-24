@@ -1,5 +1,8 @@
-from simulation.query.queries import FuelQueryResponse, LogisticQueryResponse
-from simulation.logic.rules import FilterRule
+from api_run_simulation.simulation.query.queries import (
+    FuelQueryResponse,
+    LogisticQueryResponse,
+)
+from api_run_simulation.simulation.logic.rules import FilterRule
 
 
 class FillingStationAvailabilityRule(FilterRule):

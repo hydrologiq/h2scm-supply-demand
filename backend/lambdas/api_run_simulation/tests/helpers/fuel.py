@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from simulation.query.queries import FuelQueryResponse
+from api_run_simulation.simulation.query.queries import FuelQueryResponse
 from tests.helpers import to_id
 
 

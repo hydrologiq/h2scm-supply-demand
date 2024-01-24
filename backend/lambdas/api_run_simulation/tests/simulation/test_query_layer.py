@@ -1,7 +1,7 @@
 import json
 
 from mock import patch
-from simulation.query.queries import (
+from api_run_simulation.simulation.query.queries import (
     QueryConfiguration,
     LogisticQueryResponse,
     LogisticQueryInput,
@@ -9,9 +9,12 @@ from simulation.query.queries import (
     FuelQueryResponse,
 )
 
-from simulation.query import QueryInput, QueryLayer
+from api_run_simulation.simulation.query import QueryInput, QueryLayer
 from requests_mock import Mocker
-from tests.simulation.data import SPARQL_QUERY_LOGISTIC_RESPONSE, sparql_query_logistic
+from tests.simulation.data import (
+    SPARQL_QUERY_LOGISTIC_RESPONSE,
+    sparql_query_logistic,
+)
 
 JSON_INPUT = json.loads(
     """
@@ -76,14 +79,14 @@ MOCKED_ACCESS_TOKEN = "abcdefgtoken"
 
 def test_run_query_layer_output():
     with patch(
-        "simulation.query.queries.logistic_query.LogisticQuery.query"
+        "api_run_simulation.simulation.query.queries.logistic_query.LogisticQuery.query"
     ) as logistics_patched:
         logistics_patched.return_value = [
             LogisticQueryResponse(**logistic_entry)
             for logistic_entry in JSON_OUTPUT["logistic"]
         ]
         with patch(
-            "simulation.query.queries.fuel_query.FuelQuery.query"
+            "api_run_simulation.simulation.query.queries.fuel_query.FuelQuery.query"
         ) as fuel_patched:
             fuel_patched.return_value = [
                 FuelQueryResponse(**fuel_entry) for fuel_entry in JSON_OUTPUT["fuel"]

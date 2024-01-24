@@ -1,4 +1,4 @@
-from simulation.business import BusinessOutput
+from api_run_simulation.simulation.business import BusinessOutput
 from dataclasses import dataclass
 
 

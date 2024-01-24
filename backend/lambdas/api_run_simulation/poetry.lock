@@ -31,6 +31,30 @@ tests-mypy = ["mypy (>=1.6)", "pytest-mypy-plugins"]
 tests-no-zope = ["attrs[tests-mypy]", "cloudpickle", "hypothesis", "pympler", "pytest (>=4.3.0)", "pytest-xdist[psutil]"]
 
 [[package]]
+name = "aws-lambda-powertools"
+version = "2.32.0"
+description = "Powertools for AWS Lambda (Python) is a developer toolkit to implement Serverless best practices and increase developer velocity."
+optional = false
+python-versions = ">=3.7.4,<4.0.0"
+files = [
+    {file = "aws_lambda_powertools-2.32.0-py3-none-any.whl", hash = "sha256:26e04dee027854e47fe8f9764863731d2511193054eac4629d2e66e46eac76f5"},
+    {file = "aws_lambda_powertools-2.32.0.tar.gz", hash = "sha256:56422df30f633ad679abcc69b1b8a35212da18eecdc3fbaf5e6ca7fb8cc0e498"},
+]
+
+[package.dependencies]
+typing-extensions = ">=4.6.2,<5.0.0"
+
+[package.extras]
+all = ["aws-xray-sdk (>=2.8.0,<3.0.0)", "fastjsonschema (>=2.14.5,<3.0.0)", "pydantic (>=1.8.2,<2.0.0)"]
+aws-sdk = ["boto3 (>=1.26.164,<2.0.0)"]
+datadog = ["datadog-lambda (>=4.77,<6.0)"]
+datamasking-aws-sdk = ["aws-encryption-sdk (>=3.1.1,<4.0.0)"]
+parser = ["pydantic (>=1.8.2,<2.0.0)"]
+redis = ["redis (>=4.4,<6.0)"]
+tracer = ["aws-xray-sdk (>=2.8.0,<3.0.0)"]
+validation = ["fastjsonschema (>=2.14.5,<3.0.0)"]
+
+[[package]]
 name = "cachetools"
 version = "5.3.2"
 description = "Extensible memoizing collections and decorators"
@@ -335,6 +359,17 @@ files = [
 
 [package.dependencies]
 six = "*"
+
+[[package]]
+name = "jmespath"
+version = "1.0.1"
+description = "JSON Matching Expressions"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980"},
+    {file = "jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe"},
+]
 
 [[package]]
 name = "json-flattener"
@@ -1170,4 +1205,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "0d36a7efa67f358384caceb4662ca8a45ccce9d6a91b45d4042495ae36233a7c"
+content-hash = "faab047193b7b979aae78d8da52ef46ee6aea4b63b06ad80dc8e15a85fc285e1"

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from simulation.business.outputs import Location
+from api_run_simulation.simulation.business.outputs import Location
 
 
 @dataclass

@@ -1,4 +1,4 @@
-from simulation.simulation_data import SimulationData
+from api_run_simulation.simulation.simulation_data import SimulationData
 
 
 class SimulationLayer:

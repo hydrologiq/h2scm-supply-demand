@@ -1,10 +1,10 @@
 from decimal import Decimal
-from simulation.query.queries import (
+from api_run_simulation.simulation.query.queries import (
     BaseQuery,
     FuelQueryResponse,
     FuelQueryInput,
 )
-from simulation.query.queries.hydrogen_nrmm_optional import (
+from api_run_simulation.simulation.query.queries.hydrogen_nrmm_optional import (
     Hydrogen,
     FuelService,
     DispensingSite,

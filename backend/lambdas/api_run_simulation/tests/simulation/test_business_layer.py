@@ -1,7 +1,11 @@
 import json
 from mock import patch
-from simulation.business import BusinessInput, BusinessLayer, BusinessOutput
-from simulation.business.outputs import Storage
+from api_run_simulation.simulation.business import (
+    BusinessInput,
+    BusinessLayer,
+    BusinessOutput,
+)
+from api_run_simulation.simulation.business.outputs import Storage
 
 JSON_INPUT = json.loads(
     """

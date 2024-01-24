@@ -1,4 +1,5 @@
-from simulation.business.inputs import Location, Fuel
+import inspect
+from api_run_simulation.simulation.business.inputs import Location, Fuel
 from simulation import SimulationData
 from dataclasses import dataclass
 
@@ -13,3 +14,9 @@ class BusinessInput(SimulationData):
             Location(**location) if not isinstance(location, Location) else location
         )
         self.fuel = Fuel(**fuel) if not isinstance(fuel, Fuel) else fuel
+
+    @classmethod
+    def from_dict(cls, env):
+        return cls(
+            **{k: v for k, v in env.items() if k in inspect.signature(cls).parameters}
+        )
