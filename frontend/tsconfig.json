@@ -20,6 +20,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
+    "paths": {
+      "@views/*": ["./src/views/*"],
+      "@components/*": ["./src/components/*"],
+      "@api/*": ["./src/api/*"]
+    },
+
     "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": ["src"],

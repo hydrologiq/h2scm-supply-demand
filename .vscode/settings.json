@@ -12,5 +12,6 @@
     "${workspaceFolder}/backend/lambdas/api_run_simulation/.venv/lib/python3.12/site-packages",
     "${workspaceFolder}/backend/lambdas/api_run_simulation"
   ],
-  "editor.indentSize": "tabSize"
+  "editor.indentSize": "tabSize",
+  "editor.tabSize": 2
 }

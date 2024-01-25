@@ -8,7 +8,7 @@ import "@aws-amplify/ui-react/styles.css"
 import { AwsConfigAuth } from "./config/auth"
 import { Amplify } from "aws-amplify"
 import { Authenticator } from "@aws-amplify/ui-react"
-import SimulationInput from "./components/input/SimulationInput"
+import SimulationView from "@views/SimulationView"
 Amplify.configure({ Auth: { Cognito: AwsConfigAuth } })
 function App() {
   return (
@@ -22,7 +22,7 @@ function App() {
             </p>
           </div>
           <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-          <SimulationInput />
+          <SimulationView />
         </ChakraProvider>
       )}
     </Authenticator>

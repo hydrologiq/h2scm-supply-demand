@@ -6,7 +6,7 @@ import validator from "@rjsf/validator-ajv8"
 import { IChangeEvent } from "@rjsf/core"
 
 interface SimulationInputSchemaProps {
-  queryCallback: (data: Record<string, any>) => void
+  queryCallback?: (data: Record<string, any>) => void
 }
 
 function SimulationInput({ queryCallback }: SimulationInputSchemaProps) {
@@ -19,7 +19,7 @@ function SimulationInput({ queryCallback }: SimulationInputSchemaProps) {
   } as UiSchema
 
   const onSubmit = (data: IChangeEvent<any, RJSFSchema, any>) => {
-    queryCallback(data.formData)
+    queryCallback && queryCallback(data.formData)
   }
   return <Form formData={{}} schema={formSchema} uiSchema={uiSchema} validator={validator} onSubmit={onSubmit} />
 }
