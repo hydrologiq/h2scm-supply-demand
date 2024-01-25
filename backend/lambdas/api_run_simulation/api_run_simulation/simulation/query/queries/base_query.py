@@ -1,6 +1,6 @@
 from decimal import Decimal
 import requests
-from simulation import BaseQueryResponse
+from api_run_simulation.simulation import BaseQueryResponse
 from api_run_simulation.simulation.query.queries import (
     QueryConfiguration,
     BaseQueryInput,

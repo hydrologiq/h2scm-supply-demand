@@ -1,4 +1,4 @@
-from simulation import SimulationLayer
+from api_run_simulation.simulation import SimulationLayer
 from api_run_simulation.simulation.business import BusinessOutput
 from api_run_simulation.simulation.logic.outputs import Matched
 from api_run_simulation.simulation.logic.rules import RuleEngine, Rule

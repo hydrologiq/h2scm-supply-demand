@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from simulation import BaseQueryResponse
+from api_run_simulation.simulation import BaseQueryResponse
 from api_run_simulation.simulation.query.queries.hydrogen_nrmm_optional import (
     FuelService,
     Hydrogen,

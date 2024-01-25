@@ -1,5 +1,5 @@
 from api_run_simulation.simulation.business.outputs import Project, Fuel
-from simulation import SimulationData
+from api_run_simulation.simulation import SimulationData
 from dataclasses import dataclass
 
 

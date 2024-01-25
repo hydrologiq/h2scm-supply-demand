@@ -1,6 +1,6 @@
 import inspect
 from api_run_simulation.simulation.business.inputs import Location, Fuel
-from simulation import SimulationData
+from api_run_simulation.simulation import SimulationData
 from dataclasses import dataclass
 
 

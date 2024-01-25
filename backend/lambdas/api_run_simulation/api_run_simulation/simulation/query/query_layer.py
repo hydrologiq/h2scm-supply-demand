@@ -1,4 +1,4 @@
-from simulation import SimulationLayer
+from api_run_simulation.simulation import SimulationLayer
 from api_run_simulation.simulation.business.outputs.fuel import Fuel
 from api_run_simulation.simulation.business.outputs.project import Project
 from api_run_simulation.simulation.query.queries import (

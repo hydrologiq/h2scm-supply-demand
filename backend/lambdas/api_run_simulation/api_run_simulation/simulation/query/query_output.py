@@ -1,4 +1,4 @@
-from simulation import SimulationData
+from api_run_simulation.simulation import SimulationData
 from dataclasses import dataclass
 
 from api_run_simulation.simulation.query.queries import (
