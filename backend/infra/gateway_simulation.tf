@@ -46,3 +46,16 @@ resource "aws_api_gateway_method_settings" "all" {
     data_trace_enabled = true
   }
 }
+
+# API Gateway
+
+resource "aws_lambda_permission" "api_run_simulation_lambda" {
+  statement_id  = "AllowAPIGatewayInvokeApiRunSimulation"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.api_run_simulation.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  # The /*/* portion grants access from any method on any resource
+  # within the specified API Gateway.
+  source_arn = "${aws_api_gateway_rest_api.simulation.execution_arn}/*/*"
+}
