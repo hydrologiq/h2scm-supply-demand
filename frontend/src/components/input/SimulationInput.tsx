@@ -3,8 +3,13 @@ import { RJSFSchema } from "@rjsf/utils"
 import { useState } from "react"
 import SimulationInputSchema from "./SimulationInput.json"
 import validator from "@rjsf/validator-ajv8"
+import { IChangeEvent } from "@rjsf/core"
 
-function SimulationInput() {
+interface SimulationInputSchemaProps {
+  queryCallback: (data: Record<string, any>) => void
+}
+
+function SimulationInput({ queryCallback }: SimulationInputSchemaProps) {
   const [formSchema, _] = useState<RJSFSchema>({ ...SimulationInputSchema } as RJSFSchema)
 
   const uiSchema = {
@@ -13,15 +18,10 @@ function SimulationInput() {
     },
   } as UiSchema
 
-  return (
-    <Form
-      formData={{}}
-      schema={formSchema}
-      uiSchema={uiSchema}
-      validator={validator}
-      //   onSubmit={onSubmit}
-    />
-  )
+  const onSubmit = (data: IChangeEvent<any, RJSFSchema, any>) => {
+    queryCallback(data.formData)
+  }
+  return <Form formData={{}} schema={formSchema} uiSchema={uiSchema} validator={validator} onSubmit={onSubmit} />
 }
 
 export default SimulationInput

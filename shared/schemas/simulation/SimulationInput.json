@@ -35,7 +35,7 @@
           "description": "The total amount of fuel required per week in kg "
         }
       },
-      "required": ["amount", "period", "storage"]
+      "required": ["amount"]
     }
   },
   "required": ["location", "fuel"]
