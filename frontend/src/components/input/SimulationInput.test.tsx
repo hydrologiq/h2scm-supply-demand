@@ -61,6 +61,6 @@ describe("simulation input", () => {
     await userEvent.click(Query())
 
     expect(queryCallback).toHaveBeenCalledTimes(1)
-    expect(queryCallback).toHaveBeenCalledWith({ location: { lat: 123, long: "321" }, fuel: { amount: 300 } })
+    expect(queryCallback).toHaveBeenCalledWith({ location: { lat: 123, long: 321 }, fuel: { amount: 300 } })
   })
 })
