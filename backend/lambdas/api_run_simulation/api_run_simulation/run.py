@@ -1,7 +1,7 @@
 import json
 from dotenv import load_dotenv
 import sys
-from run_simulation import run_simulation_with_env
+from api_run_simulation.run_simulation import run_simulation_with_env
 from api_run_simulation.simulation.business import BusinessInput
 
 load_dotenv()
