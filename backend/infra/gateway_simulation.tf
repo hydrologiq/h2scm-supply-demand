@@ -33,3 +33,16 @@ resource "aws_api_gateway_stage" "stage_v1" {
   rest_api_id   = aws_api_gateway_rest_api.simulation.id
   stage_name    = "v1"
 }
+
+resource "aws_api_gateway_method_settings" "all" {
+  rest_api_id = aws_api_gateway_rest_api.simulation.id
+  stage_name  = aws_api_gateway_stage.stage_v1.stage_name
+  
+  method_path = "*/*"
+
+  settings {
+    logging_level   = "INFO"
+    metrics_enabled    = true
+    data_trace_enabled = true
+  }
+}
