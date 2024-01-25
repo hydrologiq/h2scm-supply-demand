@@ -45,6 +45,8 @@ resource "aws_api_gateway_method_settings" "all" {
     metrics_enabled    = true
     data_trace_enabled = true
   }
+
+  depends_on = [ aws_api_gateway_account.supply_demand, aws_iam_role_policy.cloudwatch ]
 }
 
 # API Gateway
