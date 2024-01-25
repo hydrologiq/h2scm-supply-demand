@@ -26,6 +26,21 @@ describe("simulation input", () => {
   it("shows query button", async () => {
     renderComponent()
 
-    expect(screen.queryByRole("button", { name: "Query" })).toBeInTheDocument()
+    expect(screen.getByRole("button", { name: "Query" })).toBeInTheDocument()
+  })
+
+  it("shows expected location fields", async () => {
+    renderComponent()
+
+    expect(screen.getByRole("heading", { name: "Location", level: 5 })).toBeInTheDocument()
+    expect(screen.getByRole("spinbutton", { name: "Latitude" })).toBeInTheDocument()
+    expect(screen.getByRole("spinbutton", { name: "Longitude" })).toBeInTheDocument()
+  })
+
+  it("shows expected fuel fields", async () => {
+    renderComponent()
+
+    expect(screen.getByRole("heading", { name: "Fuel", level: 5 })).toBeInTheDocument()
+    expect(screen.getByRole("spinbutton", { name: "Amount" })).toBeInTheDocument()
   })
 })

@@ -5,7 +5,7 @@ import SimulationInputSchema from "./SimulationInput.json"
 import validator from "@rjsf/validator-ajv8"
 
 function SimulationInput() {
-  const [formSchema, setFormSchema] = useState<RJSFSchema>({ ...SimulationInputSchema } as RJSFSchema)
+  const [formSchema, _] = useState<RJSFSchema>({ ...SimulationInputSchema } as RJSFSchema)
 
   const uiSchema = {
     "ui:submitButtonOptions": {
