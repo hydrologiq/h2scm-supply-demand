@@ -6,3 +6,4 @@ __pycache__
 hydrogen_nrmm*
 dist
 *.zip
+node_modules
