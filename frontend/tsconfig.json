@@ -23,7 +23,9 @@
     "paths": {
       "@views/*": ["./src/views/*"],
       "@components/*": ["./src/components/*"],
-      "@api/*": ["./src/api/*"]
+      "@api/*": ["./src/api/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@custom/types/*": ["./src/types/*"]
     },
 
     "types": ["vitest/globals", "@testing-library/jest-dom"]

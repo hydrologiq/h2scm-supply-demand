@@ -9,3 +9,5 @@ dist_layers
 *.zip
 node_modules
 .DS_Store
+
+frontend/src/types/generated

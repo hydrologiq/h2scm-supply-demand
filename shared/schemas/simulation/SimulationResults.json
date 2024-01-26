@@ -1,0 +1,184 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "fuel": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/fuel"
+      }
+    },
+    "logistic": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/logistic"
+      }
+    },
+    "matches": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/match"
+      }
+    },
+    "additionalProperties": false
+  },
+  "$defs": {
+    "fuel": {
+      "type": "object",
+      "properties": {
+        "dispenser": {
+          "$ref": "#/$defs/dispenser"
+        },
+        "producer": {
+          "$ref": "#/$defs/producer"
+        },
+        "service": {
+          "$ref": "#/$defs/service"
+        }
+      },
+      "additionalProperties": false
+    },
+    "logistic": {
+      "type": "object",
+      "properties": {
+        "distro": {
+          "$ref": "#/$defs/distro"
+        },
+        "service": {
+          "$ref": "#/$defs/service"
+        },
+        "storage": {
+          "$ref": "#/$defs/storage"
+        },
+        "vehicle": {
+          "$ref": "#/$defs/vehicle"
+        },
+        "transportDistance": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "match": {
+      "type": "object",
+      "properties": {
+        "fuel": {
+          "type": "string"
+        },
+        "logistic": {
+          "type": "string"
+        },
+        "redundancy": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "distro": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number"
+        },
+        "long": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "storage": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "availableQuantity": {
+          "type": "number"
+        },
+        "capacity": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "vehicle": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "availableQuantity": {
+          "type": "number"
+        },
+        "transportDistance": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "dispenser": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "fillRate": {
+          "type": "number"
+        },
+        "fillingStationCapacity": {
+          "type": "number"
+        },
+        "lat": {
+          "type": "number"
+        },
+        "long": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "producer": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "dailyOfftakeCapacity": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "required": ["fuel", "logistic", "matches"]
+}

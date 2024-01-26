@@ -1,0 +1,1 @@
+cd .. && json2ts --additionalProperties false --cwd shared/schemas -i 'shared/schemas/simulation/*.json' -o frontend/src/types/generated

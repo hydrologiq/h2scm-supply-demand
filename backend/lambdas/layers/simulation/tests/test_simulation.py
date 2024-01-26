@@ -1,4 +1,8 @@
 import json
+
+import pytest
+
+from jsonschema import validate
 from requests_mock import Mocker
 from simulation.business import BusinessInput
 from simulation.business.inputs import Fuel, Location
@@ -196,3 +200,45 @@ def test_simulation_no_results(requests_mock: Mocker):
     assert len(sim_output_json["fuel"]) == 0
     assert "matches" in sim_output_json
     assert len(sim_output_json["matches"]) == 0
+
+
+def test_simulation_out_schema(requests_mock: Mocker):
+    user_input = BusinessInput(
+        location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300)
+    )
+
+    register_sparql_query_mock(
+        requests_mock,
+        logistic_query_sparql(300.0, user_input.location.lat, user_input.location.long),
+        logistic_query_response_json([LOGISTIC_RESPONSE_1]),
+    )
+
+    register_sparql_query_mock(
+        requests_mock,
+        fuel_query_sparql(300.0),
+        fuel_query_response_json([FUEL_RESPONSE_1]),
+    )
+
+    sim_output = run_simulation(
+        user_input,
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        ),
+    )
+
+    with open("tests/schema/SimulationResults.json") as schema:
+        exception = False
+        try:
+            validate(
+                instance=json.loads(sim_output.dumps()),
+                schema=json.load(schema),
+            )
+        except:
+            exception = True
+        assert exception == False

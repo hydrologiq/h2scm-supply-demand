@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react"
-import { render, screen } from "@testing-library/react"
+import { render, screen, within } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 import * as apiEnvs from "@api/envs"
 import * as apiSimulation from "@api/simulation"
@@ -11,6 +11,12 @@ const Longitude = () => screen.getByRole("spinbutton", { name: "Longitude" })
 const Amount = () => screen.getByRole("spinbutton", { name: "Amount" })
 const Query = () => screen.getByRole("button", { name: "Query" })
 
+const simulationTable = () => screen.getByRole("table", { name: "Simulation results" })
+
+const rowInTable = (text: string) =>
+  within(simulationTable()).getByRole("row", {
+    name: new RegExp(`${text}`),
+  })
 describe("simulation view", () => {
   const simulationAPIMock = vi.spyOn(apiSimulation, "simulation")
   let simulationAPIMockFn = vi.fn()
@@ -41,8 +47,14 @@ describe("simulation view", () => {
   })
 
   beforeEach(() => {
-    simulationAPIMockFn = vi.fn()
-    simulationAPIMock.mockImplementation(simulationAPIMockFn)
+    simulationAPIMock.mockImplementation(async (data) => {
+      simulationAPIMockFn(data)
+      return {
+        fuel: [{ service: { id: "123", name: "Fuel Service" } }],
+        logistic: [{ service: { id: "321", name: "Fuel Logistic" } }],
+        matches: [{ fuel: "123", logistic: "321", redundancy: 66 }],
+      }
+    })
   })
 
   const renderComponent = () => {
@@ -68,5 +80,21 @@ describe("simulation view", () => {
 
     expect(simulationAPIMockFn).toHaveBeenCalledTimes(1)
     expect(simulationAPIMockFn).toHaveBeenCalledWith({ location: { lat: 123, long: 321 }, fuel: { amount: 300 } })
+  })
+
+  it("shows simulation results after query", async () => {
+    renderComponent()
+
+    await userEvent.type(Latitude(), "123")
+    await userEvent.type(Longitude(), "321")
+    await userEvent.type(Amount(), "300")
+
+    await userEvent.click(Query())
+
+    const row = rowInTable("Fuel Service")
+    expect(row).toBeInTheDocument()
+    const rowWithin = within(row)
+    rowWithin.getByText("Fuel Logistic")
+    rowWithin.getByText("66%")
   })
 })
