@@ -2,6 +2,11 @@ from simulation import SimulationLayer
 from simulation.business import BusinessOutput
 from simulation.logic.outputs import Matched
 from simulation.logic.rules import RuleEngine, Rule
+from simulation.logic.rules.filter import (
+    DistanceFromProjectRule,
+    FillingStationAvailabilityRule,
+    VehicleAvailabilityRule,
+)
 from simulation.query.queries import (
     FuelQueryResponse,
     LogisticQueryResponse,
@@ -11,18 +16,25 @@ from simulation.logic import (
     LogicOutput,
 )
 from geopy.distance import distance
+from simulation.query import QueryInput
 
 
 class LogicLayer(SimulationLayer):
-    rules: list[Rule] = []
+    rules: list[Rule] = [
+        DistanceFromProjectRule(),
+        FillingStationAvailabilityRule(),
+        VehicleAvailabilityRule(),
+    ]
 
     def run(self, data: LogicInput, business_data: BusinessOutput) -> LogicOutput:
-        data = self.__apply_rules(data)
+        data = self.__apply_rules(data, business_data)
         matches = self.__match(data, business_data)
         return LogicOutput(**{**data.__dict__, "matches": matches})
 
-    def __apply_rules(self, data: LogicInput) -> LogicInput:
-        engine = RuleEngine(self.rules)
+    def __apply_rules(
+        self, data: LogicInput, business_data: BusinessOutput
+    ) -> LogicInput:
+        engine = RuleEngine(self.rules, business_data)
         return engine.apply(data)
 
     def __match(self, data: LogicInput, business_data: BusinessOutput) -> list[Matched]:

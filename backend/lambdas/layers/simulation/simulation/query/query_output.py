@@ -12,20 +12,18 @@ class QueryOutput(SimulationData):
     logistic: list[LogisticQueryResponse]
     fuel: list[FuelQueryResponse]
 
-    def __init__(
+    def __post_init__(
         self,
-        logistic: list[LogisticQueryResponse],
-        fuel: list[FuelQueryResponse],
     ):
         self.logistic = [
             LogisticQueryResponse(**logistic_item)
             if not isinstance(logistic_item, LogisticQueryResponse)
             else logistic_item
-            for logistic_item in logistic
+            for logistic_item in self.logistic
         ]
         self.fuel = [
             FuelQueryResponse(**fuel_item)
             if not isinstance(fuel_item, FuelQueryResponse)
             else fuel_item
-            for fuel_item in fuel
+            for fuel_item in self.fuel
         ]

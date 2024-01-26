@@ -19,6 +19,12 @@ SAMPLE_LOGIC_INPUT = {
                 "availableQuantity": 1,
                 "transportDistance": 123,
             },
+            "distro": {
+                "id": "hydrogen_nrmm:213",
+                "name": "Vehicle Yard 2",
+                "lat": 2,
+                "long": 3,
+            },
             "projectDistance": 12.345,
         },
         {
@@ -34,6 +40,12 @@ SAMPLE_LOGIC_INPUT = {
                 "name": "Vehicle 2",
                 "availableQuantity": 2,
                 "transportDistance": 123,
+            },
+            "distro": {
+                "id": "hydrogen_nrmm:213",
+                "name": "Vehicle Yard 2",
+                "lat": 2,
+                "long": 3,
             },
             "projectDistance": 54.321,
         },
@@ -54,9 +66,9 @@ def test_filters_out_vehicle():
     )
     logic_input = LogicInput(**SAMPLE_LOGIC_INPUT)
 
-    rule = VehicleAvailabilityRule(query_input)
+    rule = VehicleAvailabilityRule()
 
-    rule_output = rule.apply(logic_input)
+    rule_output = rule.apply(logic_input, query_input)
 
     assert len(logic_input.logistic) == 2
     assert len(rule_output.logistic) == 1

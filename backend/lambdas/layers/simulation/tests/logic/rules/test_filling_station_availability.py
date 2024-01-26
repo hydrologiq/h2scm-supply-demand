@@ -56,9 +56,9 @@ def test_filters_available_filling_stations():
     )
     logic_input = LogicInput(**SAMPLE_LOGIC_INPUT)
 
-    rule = FillingStationAvailabilityRule(query_input)
+    rule = FillingStationAvailabilityRule()
 
-    rule_output = rule.apply(logic_input)
+    rule_output = rule.apply(logic_input, query_input)
 
     assert len(logic_input.fuel) == 2
     assert len(rule_output.fuel) == 1

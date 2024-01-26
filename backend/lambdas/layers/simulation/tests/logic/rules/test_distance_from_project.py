@@ -1,4 +1,7 @@
 import json
+from simulation.business.inputs.fuel import Fuel
+from simulation.business.inputs.location import Location
+from simulation.business.outputs.project import Project
 from simulation.logic.logic_input import LogicInput
 from simulation.logic.rules.filter import DistanceFromProjectRule
 from simulation.query import QueryInput
@@ -19,6 +22,12 @@ SAMPLE_LOGIC_INPUT = {
                 "availableQuantity": 1,
                 "transportDistance": 123,
             },
+            "distro": {
+                "id": "hydrogen_nrmm:213",
+                "name": "Vehicle Yard 2",
+                "lat": 2,
+                "long": 3,
+            },
             "projectDistance": 12.345,
         },
         {
@@ -34,6 +43,12 @@ SAMPLE_LOGIC_INPUT = {
                 "name": "Vehicle 2",
                 "availableQuantity": 2,
                 "transportDistance": 123,
+            },
+            "distro": {
+                "id": "hydrogen_nrmm:213",
+                "name": "Vehicle Yard 2",
+                "lat": 2,
+                "long": 3,
             },
             "projectDistance": 555,
         },
@@ -54,9 +69,9 @@ def test_filters_transport_project_distance():
     )
     logic_input = LogicInput(**SAMPLE_LOGIC_INPUT)
 
-    rule = DistanceFromProjectRule(query_input)
+    rule = DistanceFromProjectRule()
 
-    rule_output = rule.apply(logic_input)
+    rule_output = rule.apply(logic_input, query_input)
 
     assert len(logic_input.logistic) == 2
     assert len(rule_output.logistic) == 1
