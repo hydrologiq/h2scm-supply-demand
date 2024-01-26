@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Adam Ayre-Storie <adam.ayre-storie@hydrologiq.com>"]
 readme = "README.md"
-include = ["api_run_simulation/simulation/query/queries/hydrogen_nrmm*.*"]
+include = ["simulation/query/queries/hydrogen_nrmm*.*"]
 
 [tool.poetry.dependencies]
 python = "^3.12"

@@ -57,6 +57,6 @@ curl -sL --header "Authorization: token $TOKEN" --header 'Accept: application/oc
 
 mkdir ontology
 unzip ontology -d ontology
-cp ontology/hydrogen_nrmm_optional.py api_run_simulation/simulation/query/queries/.
+cp ontology/hydrogen_nrmm_optional.py simulation/query/queries/.
 rm -rf ontology
 rm ontology.zip
