@@ -9,7 +9,7 @@ resource "aws_lambda_function" "api_run_simulation" {
 
   role = aws_iam_role.lambda_api_run_simulation.arn
 
-  layers = ["arn:aws:lambda:eu-west-2:133256977650:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11"]
+  layers = [aws_lambda_layer_version.simulation.arn]
 
   environment {
     variables = {

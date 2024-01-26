@@ -1,9 +1,9 @@
 #!/bin/bash
 
-rm -rf dist
-mkdir dist
+rm -rf dist_layers
+mkdir dist_layers
 
-DIST_DIR=$(pwd)/dist
+DIST_DIR=$(pwd)/dist_layers
 CWD=$(pwd)
 
 for d in ../*/ ; do
@@ -15,7 +15,7 @@ for d in ../*/ ; do
     rm -rf dist
     [[ -f "./pre-build.sh" ]] && . ./pre-build.sh
     poetry build
-    poetry run pip install --platform=manylinux2014_x86_64 --only-binary=:all: --upgrade -t $DIST_FILE_PATH dist/*.whl
+    poetry run pip install --upgrade -t $DIST_FILE_PATH dist/*.whl
     cd $DIST_FILE_PATH
     find . -exec touch -d "2023-06-01T09:00:00" {} +
     zip -rq -D -X -9 -A --compression-method deflate ../$FILE_NAME.zip . -x '*.pyc'

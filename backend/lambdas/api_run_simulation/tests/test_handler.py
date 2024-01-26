@@ -1,9 +1,9 @@
 import json
 import os
 from unittest.mock import patch
-from api_run_simulation.simulation.business.inputs.fuel import Fuel
-from api_run_simulation.simulation.business.inputs.location import Location
-from api_run_simulation.simulation.business.user_input import BusinessInput
+from simulation.business.inputs.fuel import Fuel
+from simulation.business.inputs.location import Location
+from simulation.business.user_input import BusinessInput
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from aws_lambda_powertools.utilities.data_classes import (
     APIGatewayProxyEventV2,
@@ -11,7 +11,7 @@ from aws_lambda_powertools.utilities.data_classes import (
 import pytest
 from typing import Dict
 
-from api_run_simulation.simulation.query.queries.query_configuration import (
+from simulation.query.queries.query_configuration import (
     QueryConfiguration,
 )
 
@@ -64,7 +64,7 @@ def scm_envs():
 
 
 def test_handler_valid_input(lambda_context, scm_envs):
-    with patch("api_run_simulation.run_simulation.run_simulation") as patched:
+    with patch("simulation.run_simulation.run_simulation") as patched:
         user_input = {"location": {"lat": 123, "long": 321}, "fuel": {"amount": 300}}
         expected_response = {"hello": "world"}
         patched.return_value = expected_response

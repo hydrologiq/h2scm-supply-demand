@@ -5,12 +5,14 @@
   "python.autoComplete.extraPaths": [
     "${workspaceFolder}/backend/lambdas/.venv/lib/python3.12/site-packages",
     "${workspaceFolder}/backend/lambdas/api_run_simulation/.venv/lib/python3.12/site-packages",
-    "${workspaceFolder}/backend/lambdas/api_run_simulation"
+    "${workspaceFolder}/backend/lambdas/api_run_simulation",
+    "${workspaceFolder}/backend/lambdas/layers/simulation"
   ],
   "python.analysis.extraPaths": [
     "${workspaceFolder}/backend/lambdas/.venv/lib/python3.12/site-packages",
     "${workspaceFolder}/backend/lambdas/api_run_simulation/.venv/lib/python3.12/site-packages",
-    "${workspaceFolder}/backend/lambdas/api_run_simulation"
+    "${workspaceFolder}/backend/lambdas/api_run_simulation",
+    "${workspaceFolder}/backend/lambdas/layers/simulation"
   ],
   "editor.indentSize": "tabSize",
   "editor.tabSize": 2

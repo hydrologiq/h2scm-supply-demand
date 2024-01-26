@@ -1,15 +1,15 @@
 import json
 import os
-from api_run_simulation.simulation.business.user_input import BusinessInput
+from simulation.business.user_input import BusinessInput
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from aws_lambda_powertools.utilities.data_classes import (
     event_source,
     APIGatewayProxyEventV2,
 )
-from api_run_simulation.simulation.query.queries.query_configuration import (
+from simulation.query.queries.query_configuration import (
     QueryConfiguration,
 )
-from api_run_simulation.run_simulation import run_simulation
+from simulation.run_simulation import run_simulation
 
 
 def build_response(code: int, body: str | object):
