@@ -6,10 +6,9 @@ mkdir dist_layers
 DIST_DIR=$(pwd)/dist_layers
 CWD=$(pwd)
 
-for d in ../*/ ; do
+for d in ../layers/*/ ; do
     cd $CWD
-    [[ "$d" == *"bundle"* || "$d" == *"layers"* ]] && continue
-    FILE_NAME=$(echo "$d" | sed -r 's/[./]+//g')
+    FILE_NAME=$(echo "$d" | sed -r 's/[./]|layers+//g')
     DIST_FILE_PATH=$DIST_DIR/$FILE_NAME
     cd $d
     rm -rf dist
