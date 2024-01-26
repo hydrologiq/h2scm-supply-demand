@@ -17,7 +17,7 @@ jobs:
           command: sudo add-apt-repository main -y && sudo apt-get install rsync
       - run:
           name: bundle layers
-          command: cd src/lambdas/bundle && . ./layers.sh
+          command: cd lambdas/bundle && . ./layers.sh
       - run:
           name: bundle lambdas
           command: cd lambdas/bundle && ./bundle.sh
