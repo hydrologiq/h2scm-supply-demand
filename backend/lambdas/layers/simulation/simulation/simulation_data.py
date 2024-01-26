@@ -45,8 +45,13 @@ class SimulationData:
     def load(self) -> None:
         pass
 
+    def post_clean(self, cleaned) -> dict:
+        return cleaned
+
     def dumps(self) -> str:
-        return json.dumps(clean_nones(self.__dict__), cls=SimulationDataJSONEncoder)
+        return json.dumps(
+            self.post_clean(clean_nones(self.__dict__)), cls=SimulationDataJSONEncoder
+        )
 
 
 class BaseQueryResponse:
