@@ -1,5 +1,6 @@
 # import json
 import json
+import pytest
 from simulation.query.queries import (
     QueryConfiguration,
     FuelQuery,
@@ -34,6 +35,7 @@ def register_sparql_query_mock(
     requests_mock: Mocker,
     query: str,
     response: str | object,
+    status_code: int = 200,
     repo: str = DEFAULT_REPO,
 ):
     return requests_mock.register_uri(
@@ -42,9 +44,65 @@ def register_sparql_query_mock(
         request_headers={
             "Authorization": f"Bearer {MOCKED_ACCESS_TOKEN}",
         },
-        status_code=200,
+        status_code=status_code,
         additional_matcher=lambda request: request.text == query,
         json=response,
+    )
+
+
+def test_error_empty_response(requests_mock: Mocker):
+    fuel_query = FuelQuery(
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        )
+    )
+
+    fuel_total = 125
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_fuel(fuel_total),
+        "",
+    )
+
+    with pytest.raises(Exception) as e_info:
+        fuel_query.query(FuelQueryInput(fuel_total))
+    assert str(e_info.value) == "failed to transform JSON from query"
+
+
+def test_error_response(requests_mock: Mocker):
+    fuel_query = FuelQuery(
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        )
+    )
+
+    fuel_total = 125
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_fuel(fuel_total),
+        "",
+        400,
+    )
+
+    with pytest.raises(Exception) as e_info:
+        fuel_query.query(FuelQueryInput(fuel_total))
+    assert (
+        str(e_info.value)
+        == "400 Client Error: None for url: https://abcdef.execute-api.eu-west-2.amazonaws.com/dev/repositories/live/query/select?graphs=default"
     )
 
 

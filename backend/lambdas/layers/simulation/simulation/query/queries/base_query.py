@@ -22,7 +22,11 @@ class BaseQuery:
                 "Authorization": f"Bearer {self.config.scm_access_token}",
             },
         )
-        return self._parse_query(response.json())
+        response.raise_for_status()
+        try:
+            return self._parse_query(response.json())
+        except Exception:
+            raise Exception("failed to transform JSON from query")
 
     def _parse_query(self, resp_obj) -> list[BaseQueryResponse]:
         pass
