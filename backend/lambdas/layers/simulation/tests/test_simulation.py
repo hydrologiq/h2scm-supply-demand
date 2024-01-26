@@ -74,6 +74,42 @@ FUEL_RESPONSE_1 = FuelResponse(
 )
 
 
+def test_simulation_no_results(requests_mock: Mocker):
+    user_input = BusinessInput(
+        location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300)
+    )
+
+    register_sparql_query_mock(
+        requests_mock,
+        logistic_query_sparql(300.0, user_input.location.lat, user_input.location.long),
+        logistic_query_response_json([]),
+    )
+
+    register_sparql_query_mock(
+        requests_mock,
+        fuel_query_sparql(300.0),
+        fuel_query_response_json([]),
+    )
+
+    sim_output = run_simulation(
+        user_input,
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        ),
+    )
+
+    assert sim_output is not None
+    assert len(sim_output.fuel) == 0
+    assert len(sim_output.logistic) == 0
+    assert len(sim_output.matches) == 0
+
+
 def test_base_simulation(requests_mock: Mocker):
     user_input = BusinessInput(
         location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300)

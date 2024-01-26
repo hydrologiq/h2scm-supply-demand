@@ -57,7 +57,7 @@ def lambda_handler(event: APIGatewayProxyEventV2, context: LambdaContext):
             200,
             run_simulation(
                 BusinessInput.from_dict(json.loads(event.body)), query_config
-            ),
+            ).dumps(),
         )
     except Exception as ex:
         return build_error("Failed to run simulation -- ", str(ex))

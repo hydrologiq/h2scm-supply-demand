@@ -10,6 +10,7 @@ from aws_lambda_powertools.utilities.data_classes import (
 )
 import pytest
 from typing import Dict
+from simulation.logic.logic_output import LogicOutput
 
 from simulation.query.queries.query_configuration import (
     QueryConfiguration,
@@ -63,10 +64,10 @@ def scm_envs():
     os.environ["SCM_API_STAGE"] = SCM_API_STAGE
 
 
-def test_handler_valid_input(lambda_context, scm_envs):
+def test_handler_logic_output_transform(lambda_context, scm_envs):
     with patch("simulation.run_simulation.run_simulation") as patched:
         user_input = {"location": {"lat": 123, "long": 321}, "fuel": {"amount": 300}}
-        expected_response = {"hello": "world"}
+        expected_response = LogicOutput([], [], [])
         patched.return_value = expected_response
 
         from api_run_simulation.handler import lambda_handler
@@ -80,7 +81,7 @@ def test_handler_valid_input(lambda_context, scm_envs):
             lambda_context,
         )
         assert response.get("statusCode") == 200
-        assert response.get("body") == json.dumps(expected_response)
+        assert response.get("body") == expected_response.dumps()
         patched.assert_called_once_with(
             BusinessInput(location=Location(lat=123, long=321), fuel=Fuel(amount=300)),
             QueryConfiguration(
