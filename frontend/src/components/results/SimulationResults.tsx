@@ -18,9 +18,15 @@ function SimulationResults({ results }: SimulationResultsProps) {
         <TableCaption>Simulation results</TableCaption>
         <Thead>
           <Tr>
-            <Th textTransform={"capitalize"}>FUEL PRODUCER</Th>
-            <Th textTransform={"capitalize"}>FUEL TRANSPORTATION</Th>
-            <Th textTransform={"capitalize"}>REDUNDANCY</Th>
+            <Th textTransform={"capitalize"} width={"40%"}>
+              FUEL PRODUCER
+            </Th>
+            <Th textTransform={"capitalize"} width={"40%"}>
+              FUEL TRANSPORTATION
+            </Th>
+            <Th textTransform={"capitalize"} width={"20%"} isNumeric>
+              REDUNDANCY
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
