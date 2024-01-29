@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react"
-import { render, screen, within } from "@testing-library/react"
+import { render, screen, waitFor, within } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 import * as apiEnvs from "@api/envs"
 import * as apiSimulation from "@api/simulation"
@@ -47,6 +47,7 @@ describe("simulation view", () => {
   })
 
   beforeEach(() => {
+    simulationAPIMockFn = vi.fn()
     simulationAPIMock.mockImplementation(async (data) => {
       simulationAPIMockFn(data)
       return {
@@ -67,6 +68,24 @@ describe("simulation view", () => {
     expect(Query()).toBeInTheDocument()
     expect(screen.getByRole("heading", { name: "Project site location", level: 5 })).toBeInTheDocument()
     expect(screen.getByRole("heading", { name: "Project fuel requirement", level: 5 })).toBeInTheDocument()
+  })
+
+  it("shows loading when querying", async () => {
+    simulationAPIMock.mockImplementation(() => new Promise((r) => setTimeout(r, 200)))
+    renderComponent()
+
+    await userEvent.type(Latitude(), "123")
+    await userEvent.type(Longitude(), "321")
+    await userEvent.type(Amount(), "300")
+
+    await userEvent.click(Query())
+    expect(screen.getByText("Querying...")).toBeInTheDocument()
+
+    await waitFor(() => {
+      expect(screen.queryByText("Querying...")).not.toBeInTheDocument()
+    })
+
+    expect(screen.getByText("Loaded results")).toBeInTheDocument()
   })
 
   it("calls API when querying", async () => {
@@ -95,6 +114,6 @@ describe("simulation view", () => {
     expect(row).toBeInTheDocument()
     const rowWithin = within(row)
     rowWithin.getByText("Fuel Logistic")
-    rowWithin.getByText("66%")
+    rowWithin.getByText("66")
   })
 })

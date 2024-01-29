@@ -25,7 +25,7 @@ describe("simulation output", () => {
 
     expect(textInTable("FUEL PRODUCER")).toBeInTheDocument()
     expect(textInTable("FUEL TRANSPORTATION")).toBeInTheDocument()
-    expect(textInTable("REDUNDANCY")).toBeInTheDocument()
+    expect(textInTable("REDUNDANCY (%)")).toBeInTheDocument()
   })
 
   it("shows a single match", () => {
@@ -40,7 +40,7 @@ describe("simulation output", () => {
     expect(row).toBeInTheDocument()
     const rowWithin = within(row)
     rowWithin.getByText("Fuel Logistic")
-    rowWithin.getByText("66%")
+    rowWithin.getByText("66")
   })
 
   it("shows multiple matches", () => {
@@ -61,12 +61,12 @@ describe("simulation output", () => {
     expect(row).toBeInTheDocument()
     const rowWithin = within(row)
     rowWithin.getByText("Fuel Logistic")
-    rowWithin.getByText("66%")
+    rowWithin.getByText("66")
 
     const row2 = rowInTable("Second Fuel")
     expect(row2).toBeInTheDocument()
     const row2Within = within(row2)
     row2Within.getByText("Second Fuel Logistic")
-    row2Within.getByText("33%")
+    row2Within.getByText("33")
   })
 })

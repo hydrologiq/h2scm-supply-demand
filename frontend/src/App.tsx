@@ -8,6 +8,8 @@ import { Amplify } from "aws-amplify"
 import { Authenticator } from "@aws-amplify/ui-react"
 import SimulationView from "@views/SimulationView"
 import BodyWrapper from "@components/BodyWrapper"
+import { mode } from "@chakra-ui/theme-tools"
+import { alertAnatomy as parts } from "@chakra-ui/anatomy"
 
 const breakpoints = {
   base: "0px",
@@ -26,6 +28,20 @@ const theme = extendTheme({
     mono: "montserrat",
   },
   breakpoints,
+  components: {
+    Alert: {
+      variants: {
+        solid: (props: typeof parts) => {
+          return {
+            container: {
+              bg: "#39aed2",
+              color: mode(`white`, `gray.900`)(props),
+            },
+          }
+        },
+      },
+    },
+  },
 })
 
 Amplify.configure({ Auth: { Cognito: AwsConfigAuth } })
