@@ -25,6 +25,7 @@ SAMPLE_LOGIC_INPUT = {
                 "lat": 2,
                 "long": 3,
             },
+            "price": {"id": "hydrogen_nrmm:1234", "monetaryValue": 80},
             "projectDistance": 12.345,
         },
         {
@@ -47,6 +48,7 @@ SAMPLE_LOGIC_INPUT = {
                 "lat": 2,
                 "long": 3,
             },
+            "price": {"id": "hydrogen_nrmm:2134", "monetaryValue": 40},
             "projectDistance": 54.321,
         },
     ],

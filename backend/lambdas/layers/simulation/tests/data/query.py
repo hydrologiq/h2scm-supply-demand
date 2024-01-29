@@ -6,12 +6,15 @@ def sparql_query_logistic(minStorage: int, lat: float, long: float):
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX omgeo: <http://www.ontotext.com/owlim/geo#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?projectDistance ?distro ?distroName ?distroLat ?distroLong
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?projectDistance ?distro ?distroName ?distroLat ?distroLong ?price ?priceMonetaryValue
 where {
     ?storage rdf:type hydrogen_nrmm:TubeTrailer ;
              rdfs:label ?storageName ;
              hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
              hydrogen_nrmm:capacity ?storageCapacity ;.
+    FILTER(?storageCapacity >= """
+        + f"{minStorage}"
+        + """)
     ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:TubeTrailer ;
              rdfs:label ?vehicleName ;
              hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
@@ -20,10 +23,11 @@ where {
     ?service rdf:type hydrogen_nrmm:LogisticService;
              rdfs:label ?serviceName ;
              hydrogen_nrmm:includes ?storage;
-             hydrogen_nrmm:includes ?vehicle
-    FILTER(?storageCapacity >= """
-        + f"{minStorage}"
-        + """)
+             hydrogen_nrmm:includes ?vehicle;
+             hydrogen_nrmm:typicalPricing ?quote;.
+    ?quote hydrogen_nrmm:price ?price;.
+    ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
+             hydrogen_nrmm:unit ?priceUnit;.
     
     ?distro rdfs:label ?distroName ;
             hydrogen_nrmm:lat ?distroLat ;
@@ -55,7 +59,9 @@ SPARQL_QUERY_LOGISTIC_RESPONSE = json.loads(
             "distro",
             "distroName",
             "distroLat",
-            "distroLong"
+            "distroLong",
+            "price",
+            "priceMonetaryValue"
           ]
         },
         "results": {
@@ -127,6 +133,15 @@ SPARQL_QUERY_LOGISTIC_RESPONSE = json.loads(
                 "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                 "type": "literal",
                 "value": "2"
+              },
+              "price": {
+                "type": "uri",
+                "value": "https://w3id.org/hydrologiq/hydrogen/nrmm12345"
+              },
+              "priceMonetaryValue": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": "80.0"
               }
             },
             {
@@ -196,6 +211,15 @@ SPARQL_QUERY_LOGISTIC_RESPONSE = json.loads(
                 "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                 "type": "literal",
                 "value": "3"
+              },
+              "price": {
+                "type": "uri",
+                "value": "https://w3id.org/hydrologiq/hydrogen/nrmm214"
+              },
+              "priceMonetaryValue": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": "40.0"
               }
             }
           ]

@@ -56,6 +56,9 @@
         "vehicle": {
           "$ref": "#/$defs/vehicle"
         },
+        "price": {
+          "$ref": "#/$defs/price"
+        },
         "projectDistance": {
           "type": "number"
         }

@@ -21,6 +21,8 @@ class LogisticResponse:
     distroName: str
     distroLat: float
     distroLong: float
+    price: str
+    priceMonetaryValue: float
 
     def query_response(self) -> LogisticQueryResponse:
         return LogisticQueryResponse(
@@ -43,6 +45,7 @@ class LogisticResponse:
                 "lat": self.distroLat,
                 "long": self.distroLong,
             },
+            price={"id": to_id(self.price), "monetaryValue": self.priceMonetaryValue},
             projectDistance=self.projectDistance,
         )
 
@@ -103,6 +106,15 @@ class LogisticResponse:
                 "type": "literal",
                 "value": f"{self.distroLong}",
             },
+            "price": {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.price}",
+            },
+            "priceMonetaryValue": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": f"{self.priceMonetaryValue}",
+            },
         }
 
 
@@ -125,44 +137,11 @@ def logistic_query_response_json(responses: list[LogisticResponse]):
                 "distroName",
                 "distroLat",
                 "distroLong",
+                "price",
+                "priceMonetaryValue",
             ]
         },
         "results": {
             "bindings": [response.response_binding() for response in responses]
         },
     }
-
-
-def logistic_query_sparql(minStorage: int, lat: float, long: float):
-    return (
-        """
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX omgeo: <http://www.ontotext.com/owlim/geo#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?projectDistance ?distro ?distroName ?distroLat ?distroLong
-where {
-    ?storage rdf:type hydrogen_nrmm:TubeTrailer ;
-             rdfs:label ?storageName ;
-             hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
-             hydrogen_nrmm:capacity ?storageCapacity ;.
-    ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:TubeTrailer ;
-             rdfs:label ?vehicleName ;
-             hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
-             hydrogen_nrmm:basedAt ?distro ;
-             hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.
-    ?service rdf:type hydrogen_nrmm:LogisticService;
-             rdfs:label ?serviceName ;
-             hydrogen_nrmm:includes ?storage;
-             hydrogen_nrmm:includes ?vehicle
-    FILTER(?storageCapacity >= """
-        + f"{minStorage}"
-        + """)
-    
-    ?distro rdfs:label ?distroName ;
-            hydrogen_nrmm:lat ?distroLat ;
-            hydrogen_nrmm:long ?distroLong ;.
-    BIND(omgeo:distance(?distroLat, ?distroLong, """
-        + f"{lat}, {long}"
-        + """) * 0.621371 as ?projectDistance)
-}
-"""
-    )

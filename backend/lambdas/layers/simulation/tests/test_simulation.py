@@ -11,11 +11,10 @@ from simulation.query.queries import QueryConfiguration
 from tests.helpers import (
     FuelResponse,
     LogisticResponse,
-    logistic_query_sparql,
     logistic_query_response_json,
     fuel_query_response_json,
 )
-from tests.data import sparql_query_fuel
+from tests.data import sparql_query_fuel, sparql_query_logistic
 
 from simulation.run_simulation import run_simulation
 from tests.helpers import to_id
@@ -62,6 +61,8 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     distroName="Vehicle Yard 1",
     distroLat=55.0144661,
     distroLong=-1.669601,
+    price="5",
+    priceMonetaryValue=400,
 )
 
 FUEL_RESPONSE_1 = FuelResponse(
@@ -88,7 +89,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        logistic_query_sparql(300.0, user_input.location.lat, user_input.location.long),
+        sparql_query_logistic(300.0, user_input.location.lat, user_input.location.long),
         logistic_query_response_json([]),
     )
 
@@ -124,7 +125,7 @@ def test_base_simulation(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        logistic_query_sparql(300.0, user_input.location.lat, user_input.location.long),
+        sparql_query_logistic(300.0, user_input.location.lat, user_input.location.long),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
     )
 
@@ -170,7 +171,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        logistic_query_sparql(300.0, user_input.location.lat, user_input.location.long),
+        sparql_query_logistic(300.0, user_input.location.lat, user_input.location.long),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
     )
 
@@ -211,7 +212,7 @@ def test_simulation_out_schema(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        logistic_query_sparql(300.0, user_input.location.lat, user_input.location.long),
+        sparql_query_logistic(300.0, user_input.location.lat, user_input.location.long),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
     )
 
