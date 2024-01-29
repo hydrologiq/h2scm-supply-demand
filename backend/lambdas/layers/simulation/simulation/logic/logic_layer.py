@@ -54,9 +54,8 @@ class LogicLayer(SimulationLayer):
                 fuel_match = fuel_matches[0]
                 redundancy = round(
                     (
-                        float(fuel_match.producer.dailyOfftakeCapacity)
-                        / business_data.total_fuel()
-                        - 1
+                        business_data.total_fuel()
+                        / float(fuel_match.producer.dailyOfftakeCapacity)
                     )
                     * 100,
                     2,

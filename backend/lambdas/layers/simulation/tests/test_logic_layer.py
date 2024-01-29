@@ -50,7 +50,7 @@ def test_run_logic_layer_output():
     logic_output = logic_layer.run(logic_input, business_output)
 
     # Second only matches as within transport range (97 miles vs 194 miles)
-    # redundancy -> (600 / 485 - 1) * 100
+    # redundancy -> (485 / 600) * 100 = 80.8333333333333
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
             {
@@ -98,7 +98,7 @@ def test_run_logic_layer_output():
             {
                 "logistic": "hydrogen_nrmm:2",
                 "fuel": "hydrogen_nrmm:3",
-                "redundancy": 23.71,
+                "redundancy": 80.83,
             }
         ],
     }
