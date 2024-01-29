@@ -9,7 +9,7 @@ import SimulationView from "./SimulationView"
 const Latitude = () => screen.getByRole("spinbutton", { name: "Latitude" })
 const Longitude = () => screen.getByRole("spinbutton", { name: "Longitude" })
 const Amount = () => screen.getByRole("spinbutton", { name: "Amount" })
-const Query = () => screen.getByRole("button", { name: "Query" })
+const Query = () => screen.getByRole("button", { name: "Query testbed" })
 
 const simulationTable = () => screen.getByRole("table", { name: "Simulation results" })
 
@@ -65,8 +65,8 @@ describe("simulation view", () => {
     renderComponent()
 
     expect(Query()).toBeInTheDocument()
-    expect(screen.getByRole("heading", { name: "Location", level: 5 })).toBeInTheDocument()
-    expect(screen.getByRole("heading", { name: "Fuel", level: 5 })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Project site location", level: 5 })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Project fuel requirement", level: 5 })).toBeInTheDocument()
   })
 
   it("calls API when querying", async () => {

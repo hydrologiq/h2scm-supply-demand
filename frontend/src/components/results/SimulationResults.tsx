@@ -13,7 +13,7 @@ const getFuelInstance = (id: string, fuel: Fuel[]): Logistic | undefined =>
 
 function SimulationResults({ results }: SimulationResultsProps) {
   return (
-    <TableContainer>
+    <TableContainer marginTop={10}>
       <Table variant="simple">
         <TableCaption>Simulation results</TableCaption>
         <Thead>

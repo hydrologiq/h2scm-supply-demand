@@ -6,7 +6,7 @@ import SimulationInput from "./SimulationInput"
 const Latitude = () => screen.getByRole("spinbutton", { name: "Latitude" })
 const Longitude = () => screen.getByRole("spinbutton", { name: "Longitude" })
 const Amount = () => screen.getByRole("spinbutton", { name: "Amount" })
-const Query = () => screen.getByRole("button", { name: "Query" })
+const Query = () => screen.getByRole("button", { name: "Query testbed" })
 
 describe("simulation input", () => {
   beforeAll(() => {
@@ -38,7 +38,7 @@ describe("simulation input", () => {
   it("shows expected location fields", () => {
     renderComponent()
 
-    expect(screen.getByRole("heading", { name: "Location", level: 5 })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Project site location", level: 5 })).toBeInTheDocument()
     expect(Latitude()).toBeInTheDocument()
     expect(Longitude()).toBeInTheDocument()
   })
@@ -46,7 +46,7 @@ describe("simulation input", () => {
   it("shows expected fuel fields", () => {
     renderComponent()
 
-    expect(screen.getByRole("heading", { name: "Fuel", level: 5 })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Project fuel requirement", level: 5 })).toBeInTheDocument()
     expect(Amount()).toBeInTheDocument()
   })
 

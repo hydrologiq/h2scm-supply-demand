@@ -11,7 +11,7 @@
   },
   "$defs": {
     "location": {
-      "title": "Location",
+      "title": "Project site location",
       "type": "object",
       "properties": {
         "lat": {
@@ -26,7 +26,7 @@
       "required": ["lat", "long"]
     },
     "fuel": {
-      "title": "Fuel",
+      "title": "Project fuel requirement",
       "type": "object",
       "properties": {
         "amount": {
