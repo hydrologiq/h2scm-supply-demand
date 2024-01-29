@@ -16,6 +16,8 @@ class FuelResponse:
     dispenserFillRate: float
     service: str
     serviceName: str
+    price: str
+    priceMonetaryValue: float
 
     def query_response(self) -> FuelQueryResponse:
         return FuelQueryResponse(
@@ -33,6 +35,7 @@ class FuelResponse:
                 "fillRate": self.dispenserFillRate,
                 "fillingStationCapacity": self.dispenserFillingStationCapacity,
             },
+            price={"id": to_id(self.price), "monetaryValue": self.priceMonetaryValue},
         )
 
     def response_binding(self) -> object:
@@ -77,6 +80,15 @@ class FuelResponse:
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.service}",
             },
             "serviceName": {"type": "literal", "value": f"{self.serviceName}"},
+            "price": {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.price}",
+            },
+            "priceMonetaryValue": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": f"{self.priceMonetaryValue}",
+            },
         }
 
 
@@ -95,33 +107,11 @@ def fuel_query_response_json(responses: list[FuelResponse]):
                 "dispenserFillRate",
                 "service",
                 "serviceName",
+                "price",
+                "priceMonetaryValue",
             ]
         },
         "results": {
             "bindings": [response.response_binding() for response in responses]
         },
     }
-
-
-def fuel_query_sparql(sum_of_fuel: float):
-    return (
-        """
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        select ?producer ?producerName ?producerDailyOfftakeCapacity ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName
-        where { 
-            ?producer rdfs:label ?producerName ;
-                      hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
-                      hydrogen_nrmm:basedAt ?dispenser ;.
-            FILTER(?producerDailyOfftakeCapacity >= """
-        + f"{sum_of_fuel}"
-        + """)
-            ?dispenser rdfs:label ?dispenserName;
-                      hydrogen_nrmm:lat ?dispenserLat;
-                      hydrogen_nrmm:long ?dispenserLong;
-                      hydrogen_nrmm:fillingStationCapacity ?dispenserFillingStationCapacity;
-                      hydrogen_nrmm:fillRate ?dispenserFillRate;.
-            ?service hydrogen_nrmm:includes ?producer ;
-                      rdfs:label ?serviceName;
-        }
-    """
-    )

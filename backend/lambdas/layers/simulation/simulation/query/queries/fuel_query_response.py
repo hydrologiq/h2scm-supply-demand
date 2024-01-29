@@ -5,6 +5,7 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
     FuelService,
     Hydrogen,
     DispensingSite,
+    Price,
 )
 
 
@@ -13,12 +14,14 @@ class FuelQueryResponse(BaseQueryResponse):
     producer: Hydrogen
     service: FuelService
     dispenser: DispensingSite
+    price: Price
 
     def __init__(
         self,
         producer: Hydrogen,
         service: FuelService,
         dispenser: DispensingSite,
+        price: Price,
     ):
         self.producer = (
             Hydrogen(**producer) if not isinstance(producer, Hydrogen) else producer
@@ -31,3 +34,4 @@ class FuelQueryResponse(BaseQueryResponse):
             if not isinstance(dispenser, DispensingSite)
             else dispenser
         )
+        self.price = Price(**price) if not isinstance(price, Price) else price

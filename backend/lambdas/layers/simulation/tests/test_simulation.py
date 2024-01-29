@@ -13,9 +13,9 @@ from tests.helpers import (
     LogisticResponse,
     logistic_query_sparql,
     logistic_query_response_json,
-    fuel_query_sparql,
     fuel_query_response_json,
 )
+from tests.data import sparql_query_fuel
 
 from simulation.run_simulation import run_simulation
 from tests.helpers import to_id
@@ -76,6 +76,8 @@ FUEL_RESPONSE_1 = FuelResponse(
     dispenserFillRate=10,
     service="7",
     serviceName="Fuel Service 1",
+    price="8",
+    priceMonetaryValue=400,
 )
 
 
@@ -92,7 +94,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        fuel_query_sparql(300.0),
+        sparql_query_fuel(300.0),
         fuel_query_response_json([]),
     )
 
@@ -128,7 +130,7 @@ def test_base_simulation(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        fuel_query_sparql(300.0),
+        sparql_query_fuel(300.0),
         fuel_query_response_json([FUEL_RESPONSE_1]),
     )
 
@@ -174,7 +176,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        fuel_query_sparql(300.0),
+        sparql_query_fuel(300.0),
         fuel_query_response_json([]),
     )
 
@@ -215,7 +217,7 @@ def test_simulation_out_schema(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        fuel_query_sparql(300.0),
+        sparql_query_fuel(300.0),
         fuel_query_response_json([FUEL_RESPONSE_1]),
     )
 
@@ -239,6 +241,7 @@ def test_simulation_out_schema(requests_mock: Mocker):
                 instance=json.loads(sim_output.dumps()),
                 schema=json.load(schema),
             )
-        except:
+        except Exception as e:
+            print(e)
             exception = True
         assert exception == False

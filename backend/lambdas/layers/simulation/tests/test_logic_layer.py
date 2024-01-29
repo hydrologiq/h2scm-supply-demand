@@ -23,7 +23,8 @@ JSON_INPUT = json.loads(
         }
       ],
       "fuel": [
-        {
+        {          
+          "price": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
@@ -78,6 +79,7 @@ def test_run_logic_layer_output():
         ],
         "fuel": [
             {
+                "price": {"id": "hydrogen_nrmm:314", "monetaryValue": 40},
                 "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
                 "dispenser": {
                     "id": "hydrogen_nrmm:31",

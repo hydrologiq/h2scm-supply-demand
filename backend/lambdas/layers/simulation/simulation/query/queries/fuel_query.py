@@ -1,4 +1,3 @@
-from decimal import Decimal
 from simulation.query.queries import (
     BaseQuery,
     FuelQueryResponse,
@@ -8,6 +7,7 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
     Hydrogen,
     FuelService,
     DispensingSite,
+    Price,
 )
 
 
@@ -21,6 +21,7 @@ class FuelQuery(BaseQuery):
             "producer": Hydrogen,
             "service": FuelService,
             "dispenser": DispensingSite,
+            "price": Price,
         }
         matching_instances = self._get_matching_instances(
             bindings,
@@ -33,7 +34,7 @@ class FuelQuery(BaseQuery):
         return (
             """
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        select ?producer ?producerName ?producerDailyOfftakeCapacity ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName
+        select ?producer ?producerName ?producerDailyOfftakeCapacity ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?price ?priceMonetaryValue
         where { 
             ?producer rdfs:label ?producerName ;
                       hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
@@ -48,6 +49,9 @@ class FuelQuery(BaseQuery):
                       hydrogen_nrmm:fillRate ?dispenserFillRate;.
             ?service hydrogen_nrmm:includes ?producer ;
                       rdfs:label ?serviceName;
+                      hydrogen_nrmm:typicalPricing ?quote;.
+            ?quote hydrogen_nrmm:price ?price;.
+            ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
         }
     """
         )

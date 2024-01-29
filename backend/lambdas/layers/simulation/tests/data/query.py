@@ -209,7 +209,7 @@ def sparql_query_fuel(sum_of_fuel: float):
     return (
         """
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        select ?producer ?producerName ?producerDailyOfftakeCapacity ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName
+        select ?producer ?producerName ?producerDailyOfftakeCapacity ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?price ?priceMonetaryValue
         where { 
             ?producer rdfs:label ?producerName ;
                       hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
@@ -224,6 +224,9 @@ def sparql_query_fuel(sum_of_fuel: float):
                       hydrogen_nrmm:fillRate ?dispenserFillRate;.
             ?service hydrogen_nrmm:includes ?producer ;
                       rdfs:label ?serviceName;
+                      hydrogen_nrmm:typicalPricing ?quote;.
+            ?quote hydrogen_nrmm:price ?price;.
+            ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
         }
     """
     )
@@ -244,7 +247,9 @@ SPARQL_QUERY_FUEL_RESPONSE = json.loads(
       "dispenserFillingStationCapacity",
       "dispenserFillRate",
       "service",
-      "serviceName"
+      "serviceName",
+      "price",
+      "priceMonetaryValue"
     ]
   },
   "results": {
@@ -298,6 +303,15 @@ SPARQL_QUERY_FUEL_RESPONSE = json.loads(
         "serviceName": {
           "type": "literal",
           "value": "Fuel Service 1"
+        },
+        "price": {
+          "type": "uri",
+          "value": "https://w3id.org/hydrologiq/hydrogen/nrmm4"
+        },
+        "priceMonetaryValue": {
+          "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+          "type": "literal",
+          "value": "40.0"
         }
       }
     ]
