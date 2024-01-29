@@ -153,11 +153,11 @@ def test_base_simulation(requests_mock: Mocker):
         sim_output.logistic[0].dumps() == LOGISTIC_RESPONSE_1.query_response().dumps()
     )
     assert len(sim_output.matches) == 1
-    ## redundancy = (300 / 300) * 100 = 100
+    ## fuelUtilisation = (300 / 300) * 100 = 100
     assert sim_output.matches[0] == Matched(
         logistic=to_id(LOGISTIC_RESPONSE_1.service),
         fuel=to_id(FUEL_RESPONSE_1.service),
-        redundancy=100.0,
+        fuelUtilisation=100.0,
     )
 
 

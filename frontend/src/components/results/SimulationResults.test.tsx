@@ -25,14 +25,14 @@ describe("simulation output", () => {
 
     expect(textInTable("FUEL PRODUCER")).toBeInTheDocument()
     expect(textInTable("FUEL TRANSPORTATION")).toBeInTheDocument()
-    expect(textInTable("REDUNDANCY (%)")).toBeInTheDocument()
+    expect(textInTable("FUEL UTILISATION (%)")).toBeInTheDocument()
   })
 
   it("shows a single match", () => {
     const results: SimulationResultsSchemaType = {
       fuel: [{ service: { id: "123", name: "Fuel Service" } }],
       logistic: [{ service: { id: "321", name: "Fuel Logistic" } }],
-      matches: [{ fuel: "123", logistic: "321", redundancy: 66 }],
+      matches: [{ fuel: "123", logistic: "321", fuelUtilisation: 66 }],
     }
 
     renderComponent(results)
@@ -51,8 +51,8 @@ describe("simulation output", () => {
         { service: { id: "456", name: "Second Fuel Logistic" } },
       ],
       matches: [
-        { fuel: "123", logistic: "321", redundancy: 66 },
-        { fuel: "654", logistic: "456", redundancy: 33 },
+        { fuel: "123", logistic: "321", fuelUtilisation: 66 },
+        { fuel: "654", logistic: "456", fuelUtilisation: 33 },
       ],
     }
 

@@ -53,7 +53,7 @@ describe("simulation view", () => {
       return {
         fuel: [{ service: { id: "123", name: "Fuel Service" } }],
         logistic: [{ service: { id: "321", name: "Fuel Logistic" } }],
-        matches: [{ fuel: "123", logistic: "321", redundancy: 66 }],
+        matches: [{ fuel: "123", logistic: "321", fuelUtilisation: 66 }],
       }
     })
   })

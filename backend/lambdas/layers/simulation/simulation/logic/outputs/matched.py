@@ -5,4 +5,4 @@ from dataclasses import dataclass
 class Matched:
     logistic: str
     fuel: str
-    redundancy: float
+    fuelUtilisation: float

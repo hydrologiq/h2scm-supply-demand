@@ -25,7 +25,7 @@ function SimulationResults({ results }: SimulationResultsProps) {
               FUEL TRANSPORTATION
             </Th>
             <Th textTransform={"capitalize"} width={"20%"} isNumeric>
-              REDUNDANCY (%)
+              FUEL UTILISATION (%)
             </Th>
           </Tr>
         </Thead>
@@ -41,7 +41,7 @@ function SimulationResults({ results }: SimulationResultsProps) {
                   <Tr key={toKey(`${match.fuel}-${match.logistic}`)}>
                     <Td>{fuelInstance.service?.name}</Td>
                     <Td>{logisticInstance.service?.name}</Td>
-                    <Td isNumeric>{match.redundancy}</Td>
+                    <Td isNumeric>{match.fuelUtilisation}</Td>
                   </Tr>
                 )
               )

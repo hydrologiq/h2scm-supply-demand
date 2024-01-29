@@ -52,7 +52,7 @@ class LogicLayer(SimulationLayer):
                     fuel_matches.append(fuel)
             if len(fuel_matches) > 0:
                 fuel_match = fuel_matches[0]
-                redundancy = round(
+                fuelUtilisation = round(
                     (
                         business_data.total_fuel()
                         / float(fuel_match.producer.dailyOfftakeCapacity)
@@ -64,7 +64,7 @@ class LogicLayer(SimulationLayer):
                     Matched(
                         logistic.service.id,
                         fuel_matches[0].service.id,
-                        redundancy,
+                        fuelUtilisation,
                     )
                 )
         return matches

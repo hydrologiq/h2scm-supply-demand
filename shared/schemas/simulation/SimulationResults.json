@@ -68,7 +68,7 @@
         "logistic": {
           "type": "string"
         },
-        "redundancy": {
+        "fuelUtilisation": {
           "type": "number"
         }
       },
