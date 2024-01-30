@@ -76,6 +76,9 @@
         },
         "transportDistance": {
           "type": "number"
+        },
+        "CO2e": {
+          "type": "number"
         }
       },
       "required": ["fuel", "logistic", "fuelUtilisation", "price", "transportDistance"],
@@ -152,6 +155,9 @@
         },
         "dailyOfftakeCapacity": {
           "type": "number"
+        },
+        "CO2ePerKg": {
+          "type": "number"
         }
       },
       "additionalProperties": false
@@ -164,6 +170,9 @@
         },
         "name": {
           "type": "string"
+        },
+        "CO2ePerKm": {
+          "type": "number"
         }
       },
       "additionalProperties": false

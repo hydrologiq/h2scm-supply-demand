@@ -74,6 +74,18 @@ class LogicLayer(SimulationLayer):
                     ),
                     2,
                 )
+                CO2e = (
+                    round(
+                        (business_data.total_fuel() * float(fuel.producer.CO2ePerKg))
+                        + fuel_distance * float(logistic.service.CO2ePerKm),
+                        2,
+                    )
+                    if (
+                        fuel.producer.CO2ePerKg is not None
+                        and logistic.service.CO2ePerKm is not None
+                    )
+                    else None
+                )
                 matches.append(
                     Matched(
                         logistic.service.id,
@@ -81,6 +93,7 @@ class LogicLayer(SimulationLayer):
                         fuelUtilisation,
                         price,
                         fuel_distance,
+                        CO2e,
                     )
                 )
         return matches
