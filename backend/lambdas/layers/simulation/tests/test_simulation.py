@@ -152,12 +152,12 @@ def test_base_simulation(requests_mock: Mocker):
     )
     assert len(sim_output.matches) == 1
     ## fuelUtilisation = (300 / 300) * 100 = 100
-    # price = (40 * 300) + 400 = 12000 + 400 = 12400
+    # price = (40 * 300) + (400 * 11.55) = 16620.0
     assert sim_output.matches[0] == Matched(
         logistic=to_id(LOGISTIC_RESPONSE_1.service),
         fuel=to_id(FUEL_RESPONSE_1.service),
         fuelUtilisation=100.0,
-        price=12400.0,
+        price=16620.0,
         transportDistance=11.55,
     )
 

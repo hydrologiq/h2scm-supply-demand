@@ -66,8 +66,13 @@ class LogicLayer(SimulationLayer):
                     2,
                 )
 
-                price = float(logistic.price.monetaryValue) + (
-                    float(fuel_match.price.monetaryValue) * business_data.total_fuel()
+                price = round(
+                    (float(logistic.price.monetaryValue) * fuel_distance)
+                    + (
+                        float(fuel_match.price.monetaryValue)
+                        * business_data.total_fuel()
+                    ),
+                    2,
                 )
                 matches.append(
                     Matched(
