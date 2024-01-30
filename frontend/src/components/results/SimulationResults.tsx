@@ -18,11 +18,14 @@ function SimulationResults({ results }: SimulationResultsProps) {
         <TableCaption>Simulation results</TableCaption>
         <Thead>
           <Tr>
-            <Th textTransform={"capitalize"} width={"40%"}>
+            <Th textTransform={"capitalize"} width={"30%"}>
               FUEL PRODUCER
             </Th>
-            <Th textTransform={"capitalize"} width={"40%"}>
+            <Th textTransform={"capitalize"} width={"30%"}>
               FUEL TRANSPORTATION
+            </Th>
+            <Th textTransform={"capitalize"} width={"20%"} isNumeric>
+              TOTAL PRICE (£)
             </Th>
             <Th textTransform={"capitalize"} width={"20%"} isNumeric>
               FUEL UTILISATION (%)
@@ -41,6 +44,7 @@ function SimulationResults({ results }: SimulationResultsProps) {
                   <Tr key={toKey(`${match.fuel}-${match.logistic}`)}>
                     <Td>{fuelInstance.service?.name}</Td>
                     <Td>{logisticInstance.service?.name}</Td>
+                    <Td isNumeric>{match.price}</Td>
                     <Td isNumeric>{match.fuelUtilisation}</Td>
                   </Tr>
                 )

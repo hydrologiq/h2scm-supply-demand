@@ -25,6 +25,7 @@ describe("simulation output", () => {
 
     expect(textInTable("FUEL PRODUCER")).toBeInTheDocument()
     expect(textInTable("FUEL TRANSPORTATION")).toBeInTheDocument()
+    expect(textInTable("TOTAL PRICE (£)")).toBeInTheDocument()
     expect(textInTable("FUEL UTILISATION (%)")).toBeInTheDocument()
   })
 
@@ -32,7 +33,7 @@ describe("simulation output", () => {
     const results: SimulationResultsSchemaType = {
       fuel: [{ service: { id: "123", name: "Fuel Service" } }],
       logistic: [{ service: { id: "321", name: "Fuel Logistic" } }],
-      matches: [{ fuel: "123", logistic: "321", fuelUtilisation: 66 }],
+      matches: [{ fuel: "123", logistic: "321", fuelUtilisation: 66, price: 33 }],
     }
 
     renderComponent(results)
@@ -40,6 +41,7 @@ describe("simulation output", () => {
     expect(row).toBeInTheDocument()
     const rowWithin = within(row)
     rowWithin.getByText("Fuel Logistic")
+    rowWithin.getByText("33")
     rowWithin.getByText("66")
   })
 
@@ -51,8 +53,8 @@ describe("simulation output", () => {
         { service: { id: "456", name: "Second Fuel Logistic" } },
       ],
       matches: [
-        { fuel: "123", logistic: "321", fuelUtilisation: 66 },
-        { fuel: "654", logistic: "456", fuelUtilisation: 33 },
+        { fuel: "123", logistic: "321", fuelUtilisation: 66, price: 123 },
+        { fuel: "654", logistic: "456", fuelUtilisation: 33, price: 321 },
       ],
     }
 
@@ -61,12 +63,14 @@ describe("simulation output", () => {
     expect(row).toBeInTheDocument()
     const rowWithin = within(row)
     rowWithin.getByText("Fuel Logistic")
+    rowWithin.getByText("123")
     rowWithin.getByText("66")
 
     const row2 = rowInTable("Second Fuel")
     expect(row2).toBeInTheDocument()
     const row2Within = within(row2)
     row2Within.getByText("Second Fuel Logistic")
+    row2Within.getByText("321")
     row2Within.getByText("33")
   })
 })
