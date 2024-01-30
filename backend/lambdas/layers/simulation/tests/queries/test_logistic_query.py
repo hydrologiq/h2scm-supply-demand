@@ -91,8 +91,6 @@ def test_run_logistic_query(requests_mock: Mocker):
     )
 
     minStorage = 125
-    lat = 12.55
-    long = 12.66
 
     register_sparql_query_mock(
         requests_mock,

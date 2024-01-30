@@ -173,7 +173,7 @@ def sparql_query_fuel(sum_of_fuel: float):
     return (
         """
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        select ?producer ?producerName ?producerDailyOfftakeCapacity ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?price ?priceMonetaryValue
+        select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerCO2ePerKg ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?price ?priceMonetaryValue
         where { 
             ?producer rdfs:label ?producerName ;
                       hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
@@ -181,6 +181,7 @@ def sparql_query_fuel(sum_of_fuel: float):
             FILTER(?producerDailyOfftakeCapacity >= """
         + f"{sum_of_fuel}"
         + """)
+            OPTIONAL { ?producer hydrogen_nrmm:CO2ePerKg ?producerCO2ePerKg. }
             ?dispenser rdfs:label ?dispenserName;
                       hydrogen_nrmm:lat ?dispenserLat;
                       hydrogen_nrmm:long ?dispenserLong;

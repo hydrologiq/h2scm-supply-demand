@@ -68,7 +68,11 @@ class BaseQuery:
                 else:
                     attribute_name = item_name.replace(class_key, "")
                     if len(attribute_name) > 0:
-                        attribute_name = attribute_name[0].lower() + attribute_name[1:]
+                        attribute_name = (
+                            attribute_name[0].lower() + attribute_name[1:]
+                            if (not attribute_name.startswith("CO2e"))
+                            else attribute_name
+                        )
                         raw_instances[class_key][attribute_name] = item_value
                     else:
                         raw_instances[class_key] = item_value

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 from simulation.query.queries import FuelQueryResponse
 from tests.helpers import to_id
 
@@ -18,14 +19,20 @@ class FuelResponse:
     serviceName: str
     price: str
     priceMonetaryValue: float
+    producerCO2ePerKg: Optional[float] = None
 
     def query_response(self) -> FuelQueryResponse:
+        producer = {
+            "id": to_id(self.producer),
+            "name": self.producerName,
+            "dailyOfftakeCapacity": self.producerDailyOfftakeCapacity,
+        }
+
+        if self.producerCO2ePerKg is not None:
+            producer["CO2ePerKg"] = self.producerCO2ePerKg
+
         return FuelQueryResponse(
-            producer={
-                "id": to_id(self.producer),
-                "name": self.producerName,
-                "dailyOfftakeCapacity": self.producerDailyOfftakeCapacity,
-            },
+            producer=producer,
             service={"id": to_id(self.service), "name": self.serviceName},
             dispenser={
                 "id": to_id(self.dispenser),
@@ -39,7 +46,7 @@ class FuelResponse:
         )
 
     def response_binding(self) -> object:
-        return {
+        binding = {
             "producer": {
                 "type": "uri",
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.producer}",
@@ -90,6 +97,14 @@ class FuelResponse:
                 "value": f"{self.priceMonetaryValue}",
             },
         }
+        if self.producerCO2ePerKg is not None:
+            binding["producerCO2ePerKg"] = {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": f"{self.producerCO2ePerKg}",
+            }
+
+        return binding
 
 
 def fuel_query_response_json(responses: list[FuelResponse]):
@@ -99,6 +114,7 @@ def fuel_query_response_json(responses: list[FuelResponse]):
                 "producer",
                 "producerName",
                 "producerDailyOfftakeCapacity",
+                "producerCO2ePerKg",
                 "dispenser",
                 "dispenserName",
                 "dispenserLat",

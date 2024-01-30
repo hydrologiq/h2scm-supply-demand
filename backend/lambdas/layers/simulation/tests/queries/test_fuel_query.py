@@ -8,6 +8,7 @@ from simulation.query.queries import (
 )
 from requests_mock import Mocker
 from tests.data import SPARQL_QUERY_FUEL_RESPONSE, sparql_query_fuel
+from tests.helpers.fuel import FuelResponse, fuel_query_response_json
 
 JSON_OUTPUT = json.loads(
     """
@@ -133,3 +134,52 @@ def test_run_fuel_query(requests_mock: Mocker):
     assert requests_mock.last_request is not None
     assert len(fuel_output) == 1
     assert json.loads(fuel_output[0].dumps()) == JSON_OUTPUT["fuel"][0]
+
+
+FUEL_RESPONSE_1 = FuelResponse(
+    producer="312",
+    producerName="Hydrogen Producer 1",
+    producerDailyOfftakeCapacity=600,
+    producerCO2ePerKg=10,
+    dispenser="31",
+    dispenserName="Dispensing Site 1",
+    dispenserLat=123,
+    dispenserLong=43.2,
+    dispenserFillingStationCapacity=3,
+    dispenserFillRate=10,
+    service="3",
+    serviceName="Fuel Service 1",
+    price="4",
+    priceMonetaryValue=40.0,
+)
+
+
+def test_run_fuel_query_with_co2e(requests_mock: Mocker):
+    fuel_query = FuelQuery(
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        )
+    )
+
+    fuel_total = 125
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_fuel(fuel_total),
+        fuel_query_response_json([FUEL_RESPONSE_1]),
+    )
+
+    fuel_output = fuel_query.query(FuelQueryInput(fuel_total))
+
+    assert requests_mock.last_request is not None
+    assert len(fuel_output) == 1
+
+    expected_fuel = {**(JSON_OUTPUT["fuel"][0])}
+    expected_fuel["producer"]["CO2ePerKg"] = 10
+    assert json.loads(fuel_output[0].dumps()) == expected_fuel
