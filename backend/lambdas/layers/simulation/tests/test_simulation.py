@@ -158,6 +158,7 @@ def test_base_simulation(requests_mock: Mocker):
         fuel=to_id(FUEL_RESPONSE_1.service),
         fuelUtilisation=100.0,
         price=12400.0,
+        transportDistance=11.55,
     )
 
 

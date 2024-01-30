@@ -73,8 +73,12 @@
         },
         "price": {
           "type": "number"
+        },
+        "transportDistance": {
+          "type": "number"
         }
       },
+      "required": ["fuel", "logistic", "fuelUtilisation", "price", "transportDistance"],
       "additionalProperties": false
     },
     "storage": {

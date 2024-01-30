@@ -38,8 +38,9 @@ class LogicLayer(SimulationLayer):
         matches: list[Matched] = []
         for logistic in data.logistic:
             fuel_matches: list[FuelQueryResponse] = []
+            fuel_distances: list[float] = []
             for fuel in data.fuel:
-                if (
+                fuel_distance = round(
                     distance(
                         (fuel.dispenser.lat, fuel.dispenser.long),
                         (
@@ -47,11 +48,15 @@ class LogicLayer(SimulationLayer):
                             business_data.project.location.long,
                         ),
                     ).km
-                    <= logistic.vehicle.transportDistance
-                ):
+                    * 2,
+                    2,
+                )
+                if fuel_distance <= logistic.vehicle.transportDistance:
                     fuel_matches.append(fuel)
+                    fuel_distances.append(fuel_distance)
             if len(fuel_matches) > 0:
                 fuel_match = fuel_matches[0]
+                fuel_distance = fuel_distances[0]
                 fuelUtilisation = round(
                     (
                         business_data.total_fuel()
@@ -62,7 +67,7 @@ class LogicLayer(SimulationLayer):
                 )
 
                 price = float(logistic.price.monetaryValue) + (
-                    float(fuel.price.monetaryValue) * business_data.total_fuel()
+                    float(fuel_match.price.monetaryValue) * business_data.total_fuel()
                 )
                 matches.append(
                     Matched(
@@ -70,6 +75,7 @@ class LogicLayer(SimulationLayer):
                         fuel_matches[0].service.id,
                         fuelUtilisation,
                         price,
+                        fuel_distance,
                     )
                 )
         return matches

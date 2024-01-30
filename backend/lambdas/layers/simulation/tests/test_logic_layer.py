@@ -10,7 +10,7 @@ JSON_INPUT = json.loads(
         {
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:12", "name": "Tube Trailer 1", "capacity": 300, "availableQuantity": 3 },
-          "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
+          "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 110 },
           "price": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
         },
         {
@@ -41,14 +41,14 @@ def test_run_logic_layer_output():
                 {"type": "TubeTrailer", "amount": 300},
                 {"type": "TubeTrailer", "amount": 185},
             ],
-            "project": {"location": {"lat": 3, "long": 4}},
+            "project": {"location": {"lat": 3, "long": 4.5}},
         }
     )
     logic_layer = LogicLayer()
 
     logic_output = logic_layer.run(logic_input, business_output)
 
-    # Second only matches as within transport range (97 miles vs 194 miles)
+    # Second only matches as within transport range (110 vs 123 km)
     # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
@@ -94,6 +94,7 @@ def test_run_logic_layer_output():
                 "fuel": "hydrogen_nrmm:3",
                 "fuelUtilisation": 80.83,
                 "price": 19440.0,
+                "transportDistance": 111.17,
             }
         ],
     }
