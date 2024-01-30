@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from simulation.query.queries import LogisticQueryResponse
 from tests.helpers import to_id
@@ -18,8 +19,13 @@ class LogisticResponse:
     serviceName: str
     price: str
     priceMonetaryValue: float
+    serviceCO2ePerKm: Optional[float] = None
 
     def query_response(self) -> LogisticQueryResponse:
+        service = {"id": to_id(self.service), "name": self.serviceName}
+        if self.serviceCO2ePerKm is not None:
+            service["CO2ePerKm"] = self.serviceCO2ePerKm
+
         return LogisticQueryResponse(
             storage={
                 "id": to_id(self.storage),
@@ -33,12 +39,12 @@ class LogisticResponse:
                 "availableQuantity": self.vehicleAvailableQuantity,
                 "transportDistance": self.vehicleTransportDistance,
             },
-            service={"id": to_id(self.service), "name": self.serviceName},
+            service=service,
             price={"id": to_id(self.price), "monetaryValue": self.priceMonetaryValue},
         )
 
     def response_binding(self) -> object:
-        return {
+        binding = {
             "storage": {
                 "type": "uri",
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.storage}",
@@ -85,6 +91,15 @@ class LogisticResponse:
             },
         }
 
+        if self.serviceCO2ePerKm is not None:
+            binding["serviceCO2ePerKm"] = {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": f"{self.serviceCO2ePerKm}",
+            }
+
+        return binding
+
 
 def logistic_query_response_json(responses: list[LogisticResponse]):
     return {
@@ -100,6 +115,7 @@ def logistic_query_response_json(responses: list[LogisticResponse]):
                 "vehicleTransportDistance",
                 "service",
                 "serviceName",
+                "serviceCO2ePerKm",
                 "price",
                 "priceMonetaryValue",
             ]

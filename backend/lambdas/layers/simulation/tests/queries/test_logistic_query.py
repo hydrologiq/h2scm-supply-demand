@@ -6,6 +6,7 @@ from simulation.query.queries import (
 )
 from requests_mock import Mocker
 from tests.data import SPARQL_QUERY_LOGISTIC_RESPONSE, sparql_query_logistic
+from tests.helpers.logistic import LogisticResponse, logistic_query_response_json
 
 JSON_INPUT = json.loads(
     """
@@ -104,3 +105,73 @@ def test_run_logistic_query(requests_mock: Mocker):
     assert len(logistic_output) == 2
     assert json.loads(logistic_output[0].dumps()) == JSON_OUTPUT["logistic"][0]
     assert json.loads(logistic_output[1].dumps()) == JSON_OUTPUT["logistic"][1]
+
+
+LOGISTIC_RESPONSE_1_CO2e = LogisticResponse(
+    storage="12",
+    storageName="Tube Trailer 1",
+    storageAvailableQuantity=3,
+    storageCapacity=300,
+    vehicle="123",
+    vehicleName="Vehicle 1",
+    vehicleAvailableQuantity=1,
+    vehicleTransportDistance=123,
+    service="1",
+    serviceName="Service 1",
+    serviceCO2ePerKm=0.5,
+    price="12345",
+    priceMonetaryValue=80.0,
+)
+
+LOGISTIC_RESPONSE_2_CO2e = LogisticResponse(
+    storage="21",
+    storageName="Tube Trailer 2",
+    storageAvailableQuantity=1,
+    storageCapacity=225,
+    vehicle="212",
+    vehicleName="Vehicle 2",
+    vehicleAvailableQuantity=2,
+    vehicleTransportDistance=123,
+    service="2",
+    serviceName="Service 2",
+    serviceCO2ePerKm=1,
+    price="214",
+    priceMonetaryValue=40.0,
+)
+
+
+def test_run_logistic_query_with_co2e(requests_mock: Mocker):
+    logistic_query = LogisticQuery(
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        )
+    )
+
+    minStorage = 125
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_logistic(minStorage),
+        logistic_query_response_json(
+            [LOGISTIC_RESPONSE_1_CO2e, LOGISTIC_RESPONSE_2_CO2e]
+        ),
+    )
+
+    logistic_output = logistic_query.query(LogisticQueryInput(minStorage))
+
+    assert requests_mock.last_request is not None
+    assert len(logistic_output) == 2
+
+    expected_logistic_1 = {**JSON_OUTPUT["logistic"][0]}
+    expected_logistic_1["service"]["CO2ePerKm"] = 0.5
+    assert json.loads(logistic_output[0].dumps()) == expected_logistic_1
+
+    expected_logistic_2 = {**JSON_OUTPUT["logistic"][1]}
+    expected_logistic_2["service"]["CO2ePerKm"] = 1
+    assert json.loads(logistic_output[1].dumps()) == expected_logistic_2
