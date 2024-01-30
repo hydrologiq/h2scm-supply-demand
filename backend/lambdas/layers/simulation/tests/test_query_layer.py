@@ -10,6 +10,7 @@ from simulation.query.queries import (
 )
 
 from simulation.query import QueryInput, QueryLayer
+import simulation.business.outputs as BusinessOutputs
 
 JSON_INPUT = json.loads(
     """
@@ -100,6 +101,8 @@ def test_run_query_layer_output():
 
             user_output = query_layer.run(query_input)
 
-            logistics_patched.assert_called_once_with(LogisticQueryInput(185))
+            logistics_patched.assert_called_once_with(
+                LogisticQueryInput(185, BusinessOutputs.Storage.TubeTrailer)
+            )
             fuel_patched.assert_called_once_with(FuelQueryInput(485))
             assert json.loads(user_output.dumps()) == JSON_OUTPUT

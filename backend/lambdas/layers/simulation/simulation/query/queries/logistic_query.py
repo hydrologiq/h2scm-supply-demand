@@ -39,14 +39,18 @@ class LogisticQuery(BaseQuery):
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceCO2ePerKm ?price ?priceMonetaryValue
 where {
-    ?storage rdf:type hydrogen_nrmm:TubeTrailer ;
+    ?storage rdf:type hydrogen_nrmm:"""
+            + f"{config.storageType}"
+            + """ ;
              rdfs:label ?storageName ;
              hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
              hydrogen_nrmm:capacity ?storageCapacity ;.
     FILTER(?storageCapacity >= """
             + f"{config.minStorage}"
             + """)
-    ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:TubeTrailer ;
+    ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:"""
+            + f"{config.storageType}"
+            + """ ;
              rdfs:label ?vehicleName ;
              hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
              hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.

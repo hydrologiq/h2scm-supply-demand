@@ -10,6 +10,7 @@ from tests.helpers.logistic import (
     logistic_query_response_json,
     sparql_query_logistic,
 )
+import simulation.business.outputs as BusinessOutputs
 
 JSON_INPUT = json.loads(
     """
@@ -133,7 +134,9 @@ def test_run_logistic_query(requests_mock: Mocker):
         logistic_query_response_json([LOGISTIC_RESPONSE_1, LOGISTIC_RESPONSE_2]),
     )
 
-    logistic_output = logistic_query.query(LogisticQueryInput(minStorage))
+    logistic_output = logistic_query.query(
+        LogisticQueryInput(minStorage, BusinessOutputs.Storage.TubeTrailer)
+    )
 
     assert requests_mock.last_request is not None
     assert len(logistic_output) == 2
@@ -197,7 +200,9 @@ def test_run_logistic_query_with_co2e(requests_mock: Mocker):
         ),
     )
 
-    logistic_output = logistic_query.query(LogisticQueryInput(minStorage))
+    logistic_output = logistic_query.query(
+        LogisticQueryInput(minStorage, BusinessOutputs.Storage.TubeTrailer)
+    )
 
     assert requests_mock.last_request is not None
     assert len(logistic_output) == 2
@@ -209,3 +214,66 @@ def test_run_logistic_query_with_co2e(requests_mock: Mocker):
     expected_logistic_2 = {**JSON_OUTPUT["logistic"][1]}
     expected_logistic_2["service"]["CO2ePerKm"] = 1
     assert json.loads(logistic_output[1].dumps()) == expected_logistic_2
+
+
+LOGISTIC_RESPONSE_MCP = LogisticResponse(
+    storage="12",
+    storageName="MCP Option 1",
+    storageAvailableQuantity=12,
+    storageCapacity=16.0,
+    vehicle="123",
+    vehicleName="Vehicle 1",
+    vehicleAvailableQuantity=1,
+    vehicleTransportDistance=123,
+    service="1",
+    serviceName="Service 1",
+    price="12345",
+    priceMonetaryValue=80.0,
+)
+
+JSON_OUTPUT_MCP = json.loads(
+    """
+    {
+      "logistic": [
+        {
+          "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
+          "storage": { "id": "hydrogen_nrmm:12", "name": "MCP Option 1", "capacity": 16, "availableQuantity": 12 },
+          "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
+          "price": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
+        }
+      ]
+    }
+    """
+)
+
+
+def test_run_logistic_query_with_mcp(requests_mock: Mocker):
+    logistic_query = LogisticQuery(
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        )
+    )
+
+    minStorage = 125
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_logistic(
+            minStorage, BusinessOutputs.Storage.ManifoldCylinderPallet
+        ),
+        logistic_query_response_json([LOGISTIC_RESPONSE_MCP]),
+    )
+
+    logistic_output = logistic_query.query(
+        LogisticQueryInput(minStorage, BusinessOutputs.Storage.ManifoldCylinderPallet)
+    )
+
+    assert requests_mock.last_request is not None
+    assert len(logistic_output) == 1
+    assert json.loads(logistic_output[0].dumps()) == JSON_OUTPUT_MCP["logistic"][0]

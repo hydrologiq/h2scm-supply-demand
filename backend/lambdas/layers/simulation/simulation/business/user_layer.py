@@ -14,23 +14,28 @@ class BusinessLayer(SimulationLayer):
 
     def __fuel_requirements(self, requirement: FuelInput) -> list[object]:
         tube_trailer_capacity = 300.0
-        no_full_trailers, partial_fuel = divmod(
-            requirement.amount / tube_trailer_capacity, 1
-        )
+        mcp_capacity = 16.5
+        mcp_threshold = 12
 
-        trailers = list(
-            BusinessOutputs.Fuel(
-                BusinessOutputs.Storage.TubeTrailer, tube_trailer_capacity
-            ).__dict__
-            for _ in range(0, int(no_full_trailers))
+        storage_option = BusinessOutputs.Storage.ManifoldCylinderPallet
+        capacity = mcp_capacity
+        no_storage, partial_fuel = divmod(requirement.amount / capacity, 1)
+        if no_storage > mcp_threshold:
+            storage_option = BusinessOutputs.Storage.TubeTrailer
+            capacity = tube_trailer_capacity
+            no_storage, partial_fuel = divmod(requirement.amount / capacity, 1)
+
+        storage_options = list(
+            BusinessOutputs.Fuel(storage_option, capacity).__dict__
+            for _ in range(0, int(no_storage))
         )
 
         if partial_fuel > 0:
-            trailers.append(
+            storage_options.append(
                 BusinessOutputs.Fuel(
-                    BusinessOutputs.Storage.TubeTrailer,
-                    tube_trailer_capacity * partial_fuel,
+                    storage_option,
+                    round(capacity * partial_fuel, 2),
                 ).__dict__
             )
 
-        return trailers
+        return storage_options
