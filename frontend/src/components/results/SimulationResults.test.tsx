@@ -25,6 +25,7 @@ describe("simulation output", () => {
 
     expect(textInTable("FUEL PRODUCER")).toBeInTheDocument()
     expect(textInTable("FUEL TRANSPORTATION")).toBeInTheDocument()
+    expect(textInTable("TOTAL CO2e")).toBeInTheDocument()
     expect(textInTable("TOTAL PRICE (£)")).toBeInTheDocument()
     expect(textInTable("FUEL UTILISATION (%)")).toBeInTheDocument()
   })
@@ -33,7 +34,7 @@ describe("simulation output", () => {
     const results: SimulationResultsSchemaType = {
       fuel: [{ service: { id: "123", name: "Fuel Service" } }],
       logistic: [{ service: { id: "321", name: "Fuel Logistic" } }],
-      matches: [{ fuel: "123", logistic: "321", fuelUtilisation: 66, price: 33 }],
+      matches: [{ fuel: "123", logistic: "321", fuelUtilisation: 66, price: 33, transportDistance: 10 }],
     }
 
     renderComponent(results)
@@ -43,6 +44,21 @@ describe("simulation output", () => {
     rowWithin.getByText("Fuel Logistic")
     rowWithin.getByText("33")
     rowWithin.getByText("66")
+    rowWithin.getByText("?")
+  })
+
+  it("shows match with CO2e", () => {
+    const results: SimulationResultsSchemaType = {
+      fuel: [{ service: { id: "123", name: "Fuel Service" } }],
+      logistic: [{ service: { id: "321", name: "Fuel Logistic" } }],
+      matches: [{ fuel: "123", logistic: "321", fuelUtilisation: 66, price: 33, transportDistance: 10, CO2e: 1 }],
+    }
+
+    renderComponent(results)
+    const row = rowInTable("Fuel Service")
+    expect(row).toBeInTheDocument()
+    const rowWithin = within(row)
+    rowWithin.getByText("1")
   })
 
   it("shows multiple matches", () => {
@@ -53,8 +69,8 @@ describe("simulation output", () => {
         { service: { id: "456", name: "Second Fuel Logistic" } },
       ],
       matches: [
-        { fuel: "123", logistic: "321", fuelUtilisation: 66, price: 123 },
-        { fuel: "654", logistic: "456", fuelUtilisation: 33, price: 321 },
+        { fuel: "123", logistic: "321", fuelUtilisation: 66, price: 123, transportDistance: 10 },
+        { fuel: "654", logistic: "456", fuelUtilisation: 33, price: 321, transportDistance: 10 },
       ],
     }
 
