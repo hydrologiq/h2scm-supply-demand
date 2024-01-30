@@ -7,8 +7,7 @@ from simulation.query.queries import (
     FuelQueryInput,
 )
 from requests_mock import Mocker
-from tests.data import SPARQL_QUERY_FUEL_RESPONSE, sparql_query_fuel
-from tests.helpers.fuel import FuelResponse, fuel_query_response_json
+from tests.helpers.fuel import FuelResponse, fuel_query_response_json, sparql_query_fuel
 
 JSON_OUTPUT = json.loads(
     """
@@ -108,6 +107,23 @@ def test_error_response(requests_mock: Mocker):
     )
 
 
+FUEL_RESPONSE_1 = FuelResponse(
+    producer="312",
+    producerName="Hydrogen Producer 1",
+    producerDailyOfftakeCapacity=600,
+    dispenser="31",
+    dispenserName="Dispensing Site 1",
+    dispenserLat=123,
+    dispenserLong=43.2,
+    dispenserFillingStationCapacity=3,
+    dispenserFillRate=10,
+    service="3",
+    serviceName="Fuel Service 1",
+    price="4",
+    priceMonetaryValue=40.0,
+)
+
+
 def test_run_fuel_query(requests_mock: Mocker):
     fuel_query = FuelQuery(
         QueryConfiguration(
@@ -126,7 +142,7 @@ def test_run_fuel_query(requests_mock: Mocker):
     register_sparql_query_mock(
         requests_mock,
         sparql_query_fuel(fuel_total),
-        SPARQL_QUERY_FUEL_RESPONSE,
+        fuel_query_response_json([FUEL_RESPONSE_1]),
     )
 
     fuel_output = fuel_query.query(FuelQueryInput(fuel_total))
@@ -136,7 +152,7 @@ def test_run_fuel_query(requests_mock: Mocker):
     assert json.loads(fuel_output[0].dumps()) == JSON_OUTPUT["fuel"][0]
 
 
-FUEL_RESPONSE_1 = FuelResponse(
+FUEL_RESPONSE_1_CO2e = FuelResponse(
     producer="312",
     producerName="Hydrogen Producer 1",
     producerDailyOfftakeCapacity=600,
@@ -172,7 +188,7 @@ def test_run_fuel_query_with_co2e(requests_mock: Mocker):
     register_sparql_query_mock(
         requests_mock,
         sparql_query_fuel(fuel_total),
-        fuel_query_response_json([FUEL_RESPONSE_1]),
+        fuel_query_response_json([FUEL_RESPONSE_1_CO2e]),
     )
 
     fuel_output = fuel_query.query(FuelQueryInput(fuel_total))

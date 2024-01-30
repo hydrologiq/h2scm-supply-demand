@@ -131,3 +131,31 @@ def fuel_query_response_json(responses: list[FuelResponse]):
             "bindings": [response.response_binding() for response in responses]
         },
     }
+
+
+def sparql_query_fuel(sum_of_fuel: float):
+    return (
+        """
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerCO2ePerKg ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?price ?priceMonetaryValue
+        where { 
+            ?producer rdfs:label ?producerName ;
+                      hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
+                      hydrogen_nrmm:basedAt ?dispenser ;.
+            FILTER(?producerDailyOfftakeCapacity >= """
+        + f"{sum_of_fuel}"
+        + """)
+            OPTIONAL { ?producer hydrogen_nrmm:CO2ePerKg ?producerCO2ePerKg. }
+            ?dispenser rdfs:label ?dispenserName;
+                      hydrogen_nrmm:lat ?dispenserLat;
+                      hydrogen_nrmm:long ?dispenserLong;
+                      hydrogen_nrmm:fillingStationCapacity ?dispenserFillingStationCapacity;
+                      hydrogen_nrmm:fillRate ?dispenserFillRate;.
+            ?service hydrogen_nrmm:includes ?producer ;
+                      rdfs:label ?serviceName;
+                      hydrogen_nrmm:typicalPricing ?quote;.
+            ?quote hydrogen_nrmm:price ?price;.
+            ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
+        }
+    """
+    )
