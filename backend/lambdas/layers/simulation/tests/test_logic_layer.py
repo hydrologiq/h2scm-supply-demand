@@ -104,6 +104,7 @@ def test_run_logic_layer_output():
                 "logistic": "hydrogen_nrmm:2",
                 "fuel": "hydrogen_nrmm:3",
                 "fuelUtilisation": 80.83,
+                "price": 19440.0,
             }
         ],
     }

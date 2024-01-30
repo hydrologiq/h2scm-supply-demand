@@ -6,3 +6,4 @@ class Matched:
     logistic: str
     fuel: str
     fuelUtilisation: float
+    price: float

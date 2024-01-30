@@ -60,11 +60,16 @@ class LogicLayer(SimulationLayer):
                     * 100,
                     2,
                 )
+
+                price = float(logistic.price.monetaryValue) + (
+                    float(fuel.price.monetaryValue) * business_data.total_fuel()
+                )
                 matches.append(
                     Matched(
                         logistic.service.id,
                         fuel_matches[0].service.id,
                         fuelUtilisation,
+                        price,
                     )
                 )
         return matches

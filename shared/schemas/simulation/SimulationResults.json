@@ -76,6 +76,9 @@
         },
         "fuelUtilisation": {
           "type": "number"
+        },
+        "price": {
+          "type": "number"
         }
       },
       "additionalProperties": false
