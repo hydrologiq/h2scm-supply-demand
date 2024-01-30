@@ -20,12 +20,12 @@ class LogisticResponse:
     serviceName: str
     price: str
     priceMonetaryValue: float
-    serviceCO2ePerKm: Optional[float] = None
+    serviceTransportCO2e: Optional[float] = None
 
     def query_response(self) -> LogisticQueryResponse:
         service = {"id": to_id(self.service), "name": self.serviceName}
-        if self.serviceCO2ePerKm is not None:
-            service["CO2ePerKm"] = self.serviceCO2ePerKm
+        if self.serviceTransportCO2e is not None:
+            service["transportCO2e"] = self.serviceTransportCO2e
 
         return LogisticQueryResponse(
             storage={
@@ -92,11 +92,11 @@ class LogisticResponse:
             },
         }
 
-        if self.serviceCO2ePerKm is not None:
-            binding["serviceCO2ePerKm"] = {
+        if self.serviceTransportCO2e is not None:
+            binding["serviceTransportCO2e"] = {
                 "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                 "type": "literal",
-                "value": f"{self.serviceCO2ePerKm}",
+                "value": f"{self.serviceTransportCO2e}",
             }
 
         return binding
@@ -116,7 +116,7 @@ def logistic_query_response_json(responses: list[LogisticResponse]):
                 "vehicleTransportDistance",
                 "service",
                 "serviceName",
-                "serviceCO2ePerKm",
+                "serviceTransportCO2e",
                 "price",
                 "priceMonetaryValue",
             ]
@@ -134,7 +134,7 @@ def sparql_query_logistic(
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceCO2ePerKm ?price ?priceMonetaryValue
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?price ?priceMonetaryValue
 where {
     ?storage rdf:type hydrogen_nrmm:"""
         + f"{storage_type}"
@@ -156,7 +156,7 @@ where {
              hydrogen_nrmm:includes ?storage;
              hydrogen_nrmm:includes ?vehicle;
              hydrogen_nrmm:typicalPricing ?quote;.
-    OPTIONAL { ?service hydrogen_nrmm:CO2ePerKm ?serviceCO2ePerKm. }
+    OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
     ?quote hydrogen_nrmm:price ?price;.
     ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
              hydrogen_nrmm:unit ?priceUnit;.

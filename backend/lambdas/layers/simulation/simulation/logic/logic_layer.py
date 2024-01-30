@@ -76,13 +76,16 @@ class LogicLayer(SimulationLayer):
                 )
                 CO2e = (
                     round(
-                        (business_data.total_fuel() * float(fuel.producer.CO2ePerKg))
-                        + fuel_distance * float(logistic.service.CO2ePerKm),
+                        (
+                            business_data.total_fuel()
+                            * float(fuel.producer.productionCO2e)
+                        )
+                        + fuel_distance * float(logistic.service.transportCO2e),
                         2,
                     )
                     if (
-                        fuel.producer.CO2ePerKg is not None
-                        and logistic.service.CO2ePerKm is not None
+                        fuel.producer.productionCO2e is not None
+                        and logistic.service.transportCO2e is not None
                     )
                     else None
                 )

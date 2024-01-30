@@ -34,7 +34,7 @@ class FuelQuery(BaseQuery):
         return (
             """
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerCO2ePerKg ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?price ?priceMonetaryValue
+        select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?price ?priceMonetaryValue
         where { 
             ?producer rdfs:label ?producerName ;
                       hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
@@ -42,7 +42,7 @@ class FuelQuery(BaseQuery):
             FILTER(?producerDailyOfftakeCapacity >= """
             + f"{config.total_fuel}"
             + """)
-            OPTIONAL { ?producer hydrogen_nrmm:CO2ePerKg ?producerCO2ePerKg. }
+            OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
             ?dispenser rdfs:label ?dispenserName;
                       hydrogen_nrmm:lat ?dispenserLat;
                       hydrogen_nrmm:long ?dispenserLong;

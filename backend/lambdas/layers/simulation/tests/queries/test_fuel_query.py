@@ -156,7 +156,7 @@ FUEL_RESPONSE_1_CO2e = FuelResponse(
     producer="312",
     producerName="Hydrogen Producer 1",
     producerDailyOfftakeCapacity=600,
-    producerCO2ePerKg=10,
+    producerProductionCO2e=10,
     dispenser="31",
     dispenserName="Dispensing Site 1",
     dispenserLat=123,
@@ -197,5 +197,5 @@ def test_run_fuel_query_with_co2e(requests_mock: Mocker):
     assert len(fuel_output) == 1
 
     expected_fuel = {**(JSON_OUTPUT["fuel"][0])}
-    expected_fuel["producer"]["CO2ePerKg"] = 10
+    expected_fuel["producer"]["productionCO2e"] = 10
     assert json.loads(fuel_output[0].dumps()) == expected_fuel

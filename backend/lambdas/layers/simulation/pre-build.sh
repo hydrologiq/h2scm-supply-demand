@@ -21,7 +21,7 @@ set -e
 #  GITHUB_PERSONAL_TOKEN - is an environment variable
 #
 # If your version/tag doesn't match, the script will exit with error.
-H2SCM_VERSION="v2.1.0"
+H2SCM_VERSION="v3.0.0"
 
 TOKEN=$GITHUB_PERSONAL_TOKEN
 REPO="hydrologiq/h2scm-ontology"

@@ -155,7 +155,7 @@ LOGISTIC_RESPONSE_1_CO2e = LogisticResponse(
     vehicleTransportDistance=123,
     service="1",
     serviceName="Service 1",
-    serviceCO2ePerKm=0.5,
+    serviceTransportCO2e=0.5,
     price="12345",
     priceMonetaryValue=80.0,
 )
@@ -171,7 +171,7 @@ LOGISTIC_RESPONSE_2_CO2e = LogisticResponse(
     vehicleTransportDistance=123,
     service="2",
     serviceName="Service 2",
-    serviceCO2ePerKm=1,
+    serviceTransportCO2e=1,
     price="214",
     priceMonetaryValue=40.0,
 )
@@ -208,11 +208,11 @@ def test_run_logistic_query_with_co2e(requests_mock: Mocker):
     assert len(logistic_output) == 2
 
     expected_logistic_1 = {**JSON_OUTPUT["logistic"][0]}
-    expected_logistic_1["service"]["CO2ePerKm"] = 0.5
+    expected_logistic_1["service"]["transportCO2e"] = 0.5
     assert json.loads(logistic_output[0].dumps()) == expected_logistic_1
 
     expected_logistic_2 = {**JSON_OUTPUT["logistic"][1]}
-    expected_logistic_2["service"]["CO2ePerKm"] = 1
+    expected_logistic_2["service"]["transportCO2e"] = 1
     assert json.loads(logistic_output[1].dumps()) == expected_logistic_2
 
 

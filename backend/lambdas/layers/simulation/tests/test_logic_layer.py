@@ -105,8 +105,8 @@ def test_run_logic_layer_output():
 
 def test_run_logic_layer_output_with_co2e():
     input_with_co2e = {**JSON_INPUT}
-    input_with_co2e["logistic"][1]["service"]["CO2ePerKm"] = 1
-    input_with_co2e["fuel"][0]["producer"]["CO2ePerKg"] = 1
+    input_with_co2e["logistic"][1]["service"]["transportCO2e"] = 1
+    input_with_co2e["fuel"][0]["producer"]["productionCO2e"] = 1
     logic_input = QueryOutput(**input_with_co2e)
     business_output = BusinessOutput(
         **{
@@ -131,7 +131,7 @@ def test_run_logic_layer_output_with_co2e():
                 "service": {
                     "id": "hydrogen_nrmm:2",
                     "name": "Service 2",
-                    "CO2ePerKm": 1,
+                    "transportCO2e": 1,
                 },
                 "storage": {
                     "id": "hydrogen_nrmm:21",
@@ -164,7 +164,7 @@ def test_run_logic_layer_output_with_co2e():
                     "id": "hydrogen_nrmm:312",
                     "name": "Hydrogen Producer 1",
                     "dailyOfftakeCapacity": 600,
-                    "CO2ePerKg": 1,
+                    "productionCO2e": 1,
                 },
             }
         ],

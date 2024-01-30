@@ -37,7 +37,7 @@ class LogisticQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceCO2ePerKm ?price ?priceMonetaryValue
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?price ?priceMonetaryValue
 where {
     ?storage rdf:type hydrogen_nrmm:"""
             + f"{config.storageType}"
@@ -59,7 +59,7 @@ where {
              hydrogen_nrmm:includes ?storage;
              hydrogen_nrmm:includes ?vehicle;
              hydrogen_nrmm:typicalPricing ?quote;.
-    OPTIONAL { ?service hydrogen_nrmm:CO2ePerKm ?serviceCO2ePerKm. }
+    OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
     ?quote hydrogen_nrmm:price ?price;.
     ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
              hydrogen_nrmm:unit ?priceUnit;.

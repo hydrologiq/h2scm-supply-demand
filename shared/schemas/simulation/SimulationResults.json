@@ -156,7 +156,7 @@
         "dailyOfftakeCapacity": {
           "type": "number"
         },
-        "CO2ePerKg": {
+        "productionCO2e": {
           "type": "number"
         }
       },
@@ -171,7 +171,7 @@
         "name": {
           "type": "string"
         },
-        "CO2ePerKm": {
+        "transportCO2e": {
           "type": "number"
         }
       },
