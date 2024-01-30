@@ -44,9 +44,6 @@
     "logistic": {
       "type": "object",
       "properties": {
-        "distro": {
-          "$ref": "#/$defs/distro"
-        },
         "service": {
           "$ref": "#/$defs/service"
         },
@@ -58,9 +55,6 @@
         },
         "price": {
           "$ref": "#/$defs/price"
-        },
-        "projectDistance": {
-          "type": "number"
         }
       },
       "additionalProperties": false
@@ -78,24 +72,6 @@
           "type": "number"
         },
         "price": {
-          "type": "number"
-        }
-      },
-      "additionalProperties": false
-    },
-    "distro": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "lat": {
-          "type": "number"
-        },
-        "long": {
           "type": "number"
         }
       },

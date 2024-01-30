@@ -16,11 +16,6 @@ class LogisticResponse:
     vehicleTransportDistance: float
     service: str
     serviceName: str
-    projectDistance: float
-    distro: str
-    distroName: str
-    distroLat: float
-    distroLong: float
     price: str
     priceMonetaryValue: float
 
@@ -39,14 +34,7 @@ class LogisticResponse:
                 "transportDistance": self.vehicleTransportDistance,
             },
             service={"id": to_id(self.service), "name": self.serviceName},
-            distro={
-                "id": to_id(self.distro),
-                "name": self.distroName,
-                "lat": self.distroLat,
-                "long": self.distroLong,
-            },
             price={"id": to_id(self.price), "monetaryValue": self.priceMonetaryValue},
-            projectDistance=self.projectDistance,
         )
 
     def response_binding(self) -> object:
@@ -86,26 +74,6 @@ class LogisticResponse:
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.service}",
             },
             "serviceName": {"type": "literal", "value": f"{self.serviceName}"},
-            "projectDistance": {
-                "datatype": "http://www.w3.org/2001/XMLSchema#float",
-                "type": "literal",
-                "value": f"{self.projectDistance}",
-            },
-            "distro": {
-                "type": "uri",
-                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.distro}",
-            },
-            "distroName": {"type": "literal", "value": f"{self.distroName}"},
-            "distroLat": {
-                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
-                "type": "literal",
-                "value": f"{self.distroLat}",
-            },
-            "distroLong": {
-                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
-                "type": "literal",
-                "value": f"{self.distroLong}",
-            },
             "price": {
                 "type": "uri",
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.price}",
@@ -132,11 +100,6 @@ def logistic_query_response_json(responses: list[LogisticResponse]):
                 "vehicleTransportDistance",
                 "service",
                 "serviceName",
-                "projectDistance",
-                "distro",
-                "distroName",
-                "distroLat",
-                "distroLong",
                 "price",
                 "priceMonetaryValue",
             ]

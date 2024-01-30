@@ -9,7 +9,6 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
     Storage,
     LogisticService,
     Vehicle,
-    DistributionSite,
 )
 
 
@@ -25,8 +24,6 @@ class LogisticQuery(BaseQuery):
             "storage": Storage,
             "service": LogisticService,
             "vehicle": Vehicle,
-            "distro": DistributionSite,
-            "projectDistance": Decimal,
             "price": Price,
         }
         matching_instances = self._get_matching_instances(
@@ -40,8 +37,7 @@ class LogisticQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX omgeo: <http://www.ontotext.com/owlim/geo#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?projectDistance ?distro ?distroName ?distroLat ?distroLong ?price ?priceMonetaryValue
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?price ?priceMonetaryValue
 where {
     ?storage rdf:type hydrogen_nrmm:TubeTrailer ;
              rdfs:label ?storageName ;
@@ -53,7 +49,6 @@ where {
     ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:TubeTrailer ;
              rdfs:label ?vehicleName ;
              hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
-             hydrogen_nrmm:basedAt ?distro ;
              hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.
     ?service rdf:type hydrogen_nrmm:LogisticService;
              rdfs:label ?serviceName ;
@@ -63,13 +58,6 @@ where {
     ?quote hydrogen_nrmm:price ?price;.
     ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
              hydrogen_nrmm:unit ?priceUnit;.
-    
-    ?distro rdfs:label ?distroName ;
-            hydrogen_nrmm:lat ?distroLat ;
-            hydrogen_nrmm:long ?distroLong ;.
-    BIND(omgeo:distance(?distroLat, ?distroLong, """
-            + f"{config.lat}, {config.long}"
-            + """) * 0.621371 as ?projectDistance)
 }
 """
         )

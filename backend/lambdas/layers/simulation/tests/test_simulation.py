@@ -56,11 +56,6 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     vehicleTransportDistance=25,
     service="3",
     serviceName="Logistics Service 1",
-    projectDistance=4.095,
-    distro="4",
-    distroName="Vehicle Yard 1",
-    distroLat=55.0144661,
-    distroLong=-1.669601,
     price="5",
     priceMonetaryValue=400,
 )
@@ -89,7 +84,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(300.0, user_input.location.lat, user_input.location.long),
+        sparql_query_logistic(300.0),
         logistic_query_response_json([]),
     )
 
@@ -125,7 +120,7 @@ def test_base_simulation(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(300.0, user_input.location.lat, user_input.location.long),
+        sparql_query_logistic(300.0),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
     )
 
@@ -173,7 +168,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(300.0, user_input.location.lat, user_input.location.long),
+        sparql_query_logistic(300.0),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
     )
 
@@ -214,7 +209,7 @@ def test_simulation_out_schema(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(300.0, user_input.location.lat, user_input.location.long),
+        sparql_query_logistic(300.0),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
     )
 

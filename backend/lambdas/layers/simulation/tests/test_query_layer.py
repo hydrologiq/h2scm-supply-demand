@@ -47,17 +47,13 @@ JSON_OUTPUT = json.loads(
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:12", "name": "Tube Trailer 1", "capacity": 300, "availableQuantity": 3 },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
-          "distro":  { "id": "hydrogen_nrmm:1234", "name": "Vehicle Yard 1", "lat": 1, "long": 2 },
-          "price": { "id": "hydrogen_nrmm:12345", "monetaryValue": 40},
-          "projectDistance": 12.345
+          "price": { "id": "hydrogen_nrmm:12345", "monetaryValue": 40}
         },
         {
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "storage": { "id": "hydrogen_nrmm:21", "name": "Tube Trailer 2", "capacity": 225, "availableQuantity": 1 },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
-          "distro":  { "id": "hydrogen_nrmm:213", "name": "Vehicle Yard 2", "lat": 2, "long": 3 },
-          "price": { "id": "hydrogen_nrmm:2124", "monetaryValue": 40},
-          "projectDistance": 54.321
+          "price": { "id": "hydrogen_nrmm:2124", "monetaryValue": 40}
         }
       ],
       "fuel": [
@@ -109,8 +105,6 @@ def test_run_query_layer_output():
 
             user_output = query_layer.run(query_input)
 
-            logistics_patched.assert_called_once_with(
-                LogisticQueryInput(185, 12.234, 43.221)
-            )
+            logistics_patched.assert_called_once_with(LogisticQueryInput(185))
             fuel_patched.assert_called_once_with(FuelQueryInput(485))
             assert json.loads(user_output.dumps()) == JSON_OUTPUT

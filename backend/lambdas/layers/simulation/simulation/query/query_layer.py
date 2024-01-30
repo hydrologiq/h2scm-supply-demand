@@ -21,8 +21,6 @@ class QueryLayer(SimulationLayer):
         logistics = LogisticQuery(self.configuration).query(
             LogisticQueryInput(
                 self.__minimum_fuel(data.fuel),
-                self.__project_lat(data.project),
-                self.__project_long(data.project),
             )
         )
         fuels = FuelQuery(self.configuration).query(
@@ -37,9 +35,3 @@ class QueryLayer(SimulationLayer):
         if len(fuel) > 0:
             return min([_fuel.amount for _fuel in fuel])
         raise Exception("Failed to find minimum fuel")
-
-    def __project_lat(self, project: Project):
-        return project.location.lat
-
-    def __project_long(self, project: Project):
-        return project.location.long

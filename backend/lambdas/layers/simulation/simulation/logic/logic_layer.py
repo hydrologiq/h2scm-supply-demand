@@ -3,7 +3,6 @@ from simulation.business import BusinessOutput
 from simulation.logic.outputs import Matched
 from simulation.logic.rules import RuleEngine, Rule
 from simulation.logic.rules.filter import (
-    DistanceFromProjectRule,
     FillingStationAvailabilityRule,
     VehicleAvailabilityRule,
 )
@@ -16,12 +15,10 @@ from simulation.logic import (
     LogicOutput,
 )
 from geopy.distance import distance
-from simulation.query import QueryInput
 
 
 class LogicLayer(SimulationLayer):
     rules: list[Rule] = [
-        DistanceFromProjectRule(),
         FillingStationAvailabilityRule(),
         VehicleAvailabilityRule(),
     ]
@@ -44,9 +41,12 @@ class LogicLayer(SimulationLayer):
             for fuel in data.fuel:
                 if (
                     distance(
-                        (logistic.distro.lat, logistic.distro.long),
                         (fuel.dispenser.lat, fuel.dispenser.long),
-                    ).miles
+                        (
+                            business_data.project.location.lat,
+                            business_data.project.location.long,
+                        ),
+                    ).km
                     <= logistic.vehicle.transportDistance
                 ):
                     fuel_matches.append(fuel)

@@ -16,11 +16,15 @@ class FilterRule(Rule):
         return input
 
     def _filter_logistic(
-        self, logistic: list[LogisticQueryResponse], query_input: QueryInput
+        self,
+        logistic: list[LogisticQueryResponse],
+        query_input: QueryInput,
     ) -> list[LogisticQueryResponse]:
         return logistic
 
     def _filter_fuel(
-        self, fuel: list[FuelQueryResponse], query_input: QueryInput
+        self,
+        fuel: list[FuelQueryResponse],
+        query_input: QueryInput,
     ) -> list[FuelQueryResponse]:
         return fuel
