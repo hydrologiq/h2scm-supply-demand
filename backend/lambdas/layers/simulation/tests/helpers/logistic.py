@@ -124,3 +124,34 @@ def logistic_query_response_json(responses: list[LogisticResponse]):
             "bindings": [response.response_binding() for response in responses]
         },
     }
+
+
+def sparql_query_logistic(minStorage: int):
+    return (
+        """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceCO2ePerKm ?price ?priceMonetaryValue
+where {
+    ?storage rdf:type hydrogen_nrmm:TubeTrailer ;
+             rdfs:label ?storageName ;
+             hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
+             hydrogen_nrmm:capacity ?storageCapacity ;.
+    FILTER(?storageCapacity >= """
+        + f"{minStorage}"
+        + """)
+    ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:TubeTrailer ;
+             rdfs:label ?vehicleName ;
+             hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
+             hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.
+    ?service rdf:type hydrogen_nrmm:LogisticService;
+             rdfs:label ?serviceName ;
+             hydrogen_nrmm:includes ?storage;
+             hydrogen_nrmm:includes ?vehicle;
+             hydrogen_nrmm:typicalPricing ?quote;.
+    OPTIONAL { ?service hydrogen_nrmm:CO2ePerKm ?serviceCO2ePerKm. }
+    ?quote hydrogen_nrmm:price ?price;.
+    ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
+             hydrogen_nrmm:unit ?priceUnit;.
+}
+"""
+    )

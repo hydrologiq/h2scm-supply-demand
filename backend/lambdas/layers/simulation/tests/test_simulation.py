@@ -14,8 +14,8 @@ from tests.helpers import (
     logistic_query_response_json,
     fuel_query_response_json,
     sparql_query_fuel,
+    sparql_query_logistic,
 )
-from tests.data import sparql_query_logistic
 
 from simulation.run_simulation import run_simulation
 from tests.helpers import to_id

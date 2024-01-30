@@ -10,11 +10,6 @@ from simulation.query.queries import (
 )
 
 from simulation.query import QueryInput, QueryLayer
-from requests_mock import Mocker
-from tests.data import (
-    SPARQL_QUERY_LOGISTIC_RESPONSE,
-    sparql_query_logistic,
-)
 
 JSON_INPUT = json.loads(
     """

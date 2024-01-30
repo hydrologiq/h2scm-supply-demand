@@ -5,8 +5,11 @@ from simulation.query.queries import (
     LogisticQueryInput,
 )
 from requests_mock import Mocker
-from tests.data import SPARQL_QUERY_LOGISTIC_RESPONSE, sparql_query_logistic
-from tests.helpers.logistic import LogisticResponse, logistic_query_response_json
+from tests.helpers.logistic import (
+    LogisticResponse,
+    logistic_query_response_json,
+    sparql_query_logistic,
+)
 
 JSON_INPUT = json.loads(
     """
@@ -78,6 +81,37 @@ def register_sparql_query_mock(
     )
 
 
+LOGISTIC_RESPONSE_1 = LogisticResponse(
+    storage="12",
+    storageName="Tube Trailer 1",
+    storageAvailableQuantity=3,
+    storageCapacity=300,
+    vehicle="123",
+    vehicleName="Vehicle 1",
+    vehicleAvailableQuantity=1,
+    vehicleTransportDistance=123,
+    service="1",
+    serviceName="Service 1",
+    price="12345",
+    priceMonetaryValue=80.0,
+)
+
+LOGISTIC_RESPONSE_2 = LogisticResponse(
+    storage="21",
+    storageName="Tube Trailer 2",
+    storageAvailableQuantity=1,
+    storageCapacity=225,
+    vehicle="212",
+    vehicleName="Vehicle 2",
+    vehicleAvailableQuantity=2,
+    vehicleTransportDistance=123,
+    service="2",
+    serviceName="Service 2",
+    price="214",
+    priceMonetaryValue=40.0,
+)
+
+
 def test_run_logistic_query(requests_mock: Mocker):
     logistic_query = LogisticQuery(
         QueryConfiguration(
@@ -96,7 +130,7 @@ def test_run_logistic_query(requests_mock: Mocker):
     register_sparql_query_mock(
         requests_mock,
         sparql_query_logistic(minStorage),
-        SPARQL_QUERY_LOGISTIC_RESPONSE,
+        logistic_query_response_json([LOGISTIC_RESPONSE_1, LOGISTIC_RESPONSE_2]),
     )
 
     logistic_output = logistic_query.query(LogisticQueryInput(minStorage))
