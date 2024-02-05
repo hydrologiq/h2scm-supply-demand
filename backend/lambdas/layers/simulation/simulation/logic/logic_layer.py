@@ -5,10 +5,10 @@ from simulation.logic.rules import RuleEngine, Rule
 from simulation.logic.rules.filter import (
     FillingStationAvailabilityRule,
     VehicleAvailabilityRule,
+    StorageAvailabilityRule,
 )
 from simulation.query.queries import (
     FuelQueryResponse,
-    LogisticQueryResponse,
 )
 from simulation.logic import (
     LogicInput,
@@ -21,6 +21,7 @@ class LogicLayer(SimulationLayer):
     rules: list[Rule] = [
         FillingStationAvailabilityRule(),
         VehicleAvailabilityRule(),
+        StorageAvailabilityRule(),
     ]
 
     def run(self, data: LogicInput, business_data: BusinessOutput) -> LogicOutput:

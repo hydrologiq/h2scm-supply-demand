@@ -1,5 +1,4 @@
 import json
-from mock import patch
 from simulation.business import (
     BusinessInput,
     BusinessLayer,

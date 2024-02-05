@@ -13,7 +13,6 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
 
 class StorageQuery(BaseQuery):
     def query(self, config: StorageQueryInput) -> list[StorageQueryResponse]:
-        print(config)
         return super().query(config)
 
     def _parse_query(self, resp_obj) -> list[StorageQueryResponse]:

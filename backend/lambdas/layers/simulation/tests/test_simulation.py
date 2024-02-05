@@ -1,7 +1,5 @@
 import json
 
-import pytest
-
 from jsonschema import validate
 from requests_mock import Mocker
 from simulation.business import BusinessInput

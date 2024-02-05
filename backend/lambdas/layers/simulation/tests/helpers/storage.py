@@ -89,28 +89,6 @@ def sparql_query_storage(
     minStorage: float,
     storage_type: BusinessOutputs.Storage = BusinessOutputs.Storage.TubeTrailer,
 ):
-    print(
-        """
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?quote ?quoteMonetaryValue
-where {
-    ?storage rdf:type hydrogen_nrmm:"""
-        + f"{storage_type}"
-        + """ ;
-             rdfs:label ?storageName ;
-             hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
-             hydrogen_nrmm:capacity ?storageCapacity ;.
-    FILTER(?storageCapacity >= """
-        + f"{minStorage}"
-        + """)
-    ?service rdf:type hydrogen_nrmm:Rental;
-             rdfs:label ?serviceName ;
-             hydrogen_nrmm:includes ?storage;
-    OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-               ?quote hydrogen_nrmm:monetaryValue ?quoteMonetaryValue. }
-}
-"""
-    )
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
