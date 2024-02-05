@@ -1,3 +1,4 @@
+import copy
 import json
 import pytest
 from simulation.query.queries import (
@@ -14,7 +15,7 @@ JSON_OUTPUT = json.loads(
     {
       "fuel": [
         {
-          "quote": { "id": "hydrogen_nrmm:4", "monetaryValue": 40.0 },
+          "quote": { "id": "hydrogen_nrmm:4", "monetaryValue": 40 },
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 123, "long": 43.2 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
@@ -204,6 +205,58 @@ def test_run_fuel_query_with_co2e(requests_mock: Mocker):
     assert requests_mock.last_request is not None
     assert len(fuel_output) == 1
 
-    expected_fuel = {**(JSON_OUTPUT["fuel"][0])}
+    expected_fuel = copy.deepcopy(JSON_OUTPUT["fuel"][0])
     expected_fuel["producer"]["productionCO2e"] = 10
     assert json.loads(fuel_output[0].dumps()) == expected_fuel
+
+
+FUEL_RESPONSE_1_DEPS = FuelResponse(
+    producer="312",
+    producerName="Hydrogen Producer 1",
+    producerDailyOfftakeCapacity=600,
+    dispenser="31",
+    dispenserName="Dispensing Site 1",
+    dispenserLat=123,
+    dispenserLong=43.2,
+    dispenserFillingStationCapacity=3,
+    dispenserFillRate=10,
+    service="3",
+    serviceName="Fuel Service 1",
+    quote="4",
+    quoteMonetaryValue=40.0,
+    serviceExclusiveUpstreamCompanies="5",
+    serviceExclusiveDownstreamCompanies="6",
+)
+
+
+def test_run_fuel_query_with_deps(requests_mock: Mocker):
+    fuel_query = FuelQuery(
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        )
+    )
+
+    fuel_total = 125
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_fuel(fuel_total),
+        fuel_query_response_json([FUEL_RESPONSE_1_DEPS]),
+    )
+
+    fuel_output = fuel_query.query(
+        FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+    )
+
+    assert requests_mock.last_request is not None
+    assert len(fuel_output) == 1
+    expected_deps = copy.deepcopy(JSON_OUTPUT["fuel"][0])
+    expected_deps["service"]["exclusiveUpstreamCompanies"] = ["hydrogen_nrmm:5"]
+    expected_deps["service"]["exclusiveDownstreamCompanies"] = ["hydrogen_nrmm:6"]
+    assert json.loads(fuel_output[0].dumps()) == expected_deps

@@ -1,3 +1,4 @@
+import copy
 import json
 from simulation.query.queries import (
     QueryConfiguration,
@@ -190,3 +191,50 @@ def test_run_storage_query_with_mcp(requests_mock: Mocker):
     assert requests_mock.last_request is not None
     assert len(storage_output) == 1
     assert json.loads(storage_output[0].dumps()) == JSON_OUTPUT_MCP["storageRental"][0]
+
+
+LOGISTIC_RESPONSE_2_DEPS = StorageResponse(
+    storage="21",
+    storageName="Tube Trailer 2",
+    storageAvailableQuantity=1,
+    storageCapacity=225,
+    service="2",
+    serviceName="Service 2",
+    quote="214",
+    quoteMonetaryValue=40.0,
+    serviceExclusiveUpstreamCompanies="5",
+    serviceExclusiveDownstreamCompanies="6",
+)
+
+
+def test_run_storage_query_with_deps(requests_mock: Mocker):
+    storage_query = StorageQuery(
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        )
+    )
+
+    minStorage = 125
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_storage(minStorage),
+        storage_query_response_json([LOGISTIC_RESPONSE_2_DEPS]),
+    )
+
+    storage_output = storage_query.query(
+        StorageQueryInput(minStorage, BusinessOutputs.Storage.TubeTrailer)
+    )
+
+    assert requests_mock.last_request is not None
+    assert len(storage_output) == 1
+    expected_deps = copy.deepcopy(JSON_OUTPUT["storageRental"][1])
+    expected_deps["service"]["exclusiveUpstreamCompanies"] = ["hydrogen_nrmm:5"]
+    expected_deps["service"]["exclusiveDownstreamCompanies"] = ["hydrogen_nrmm:6"]
+    assert json.loads(storage_output[0].dumps()) == expected_deps

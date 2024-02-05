@@ -1,3 +1,4 @@
+import copy
 import json
 from simulation.query.queries import (
     QueryConfiguration,
@@ -246,3 +247,48 @@ def test_run_logistic_query_with_mcp(requests_mock: Mocker):
     assert requests_mock.last_request is not None
     assert len(logistic_output) == 1
     assert json.loads(logistic_output[0].dumps()) == JSON_OUTPUT_MCP["logistic"][0]
+
+
+LOGISTIC_RESPONSE_DEPS = LogisticResponse(
+    vehicle="123",
+    vehicleName="Vehicle 1",
+    vehicleAvailableQuantity=1,
+    vehicleTransportDistance=123,
+    service="1",
+    serviceName="Service 1",
+    quote="12345",
+    quoteMonetaryValue=80.0,
+    serviceExclusiveUpstreamCompanies="5",
+    serviceExclusiveDownstreamCompanies="6",
+)
+
+
+def test_run_logistic_query_with_deps(requests_mock: Mocker):
+    logistic_query = LogisticQuery(
+        QueryConfiguration(
+            **{
+                "scm_api_id": SCM_API_ID,
+                "scm_api_region": SCM_API_REGION,
+                "scm_api_stage": SCM_API_STAGE,
+                "scm_repo": DEFAULT_REPO,
+                "scm_access_token": MOCKED_ACCESS_TOKEN,
+            }
+        )
+    )
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_logistic(),
+        logistic_query_response_json([LOGISTIC_RESPONSE_DEPS]),
+    )
+
+    logistic_output = logistic_query.query(
+        LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
+    )
+
+    assert requests_mock.last_request is not None
+    assert len(logistic_output) == 1
+    expected_deps = copy.deepcopy(JSON_OUTPUT_MCP["logistic"][0])
+    expected_deps["service"]["exclusiveUpstreamCompanies"] = ["hydrogen_nrmm:5"]
+    expected_deps["service"]["exclusiveDownstreamCompanies"] = ["hydrogen_nrmm:6"]
+    assert json.loads(logistic_output[0].dumps()) == expected_deps

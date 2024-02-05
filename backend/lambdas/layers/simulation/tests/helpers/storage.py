@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 import simulation.business.outputs as BusinessOutputs
 
 from simulation.query.queries import StorageQueryResponse
@@ -15,9 +16,19 @@ class StorageResponse:
     serviceName: str
     quote: str
     quoteMonetaryValue: float
+    serviceExclusiveDownstreamCompanies: Optional[str] = None
+    serviceExclusiveUpstreamCompanies: Optional[str] = None
 
     def query_response(self) -> StorageQueryResponse:
         service = {"id": to_id(self.service), "name": self.serviceName}
+        if self.serviceExclusiveDownstreamCompanies is not None:
+            service["exclusiveDownstreamCompanies"] = (
+                self.serviceExclusiveDownstreamCompanies
+            )
+        if self.serviceExclusiveUpstreamCompanies is not None:
+            service["exclusiveUpstreamCompanies"] = (
+                self.serviceExclusiveUpstreamCompanies
+            )
         return StorageQueryResponse(
             storage={
                 "id": to_id(self.storage),
@@ -61,6 +72,16 @@ class StorageResponse:
                 "value": f"{self.quoteMonetaryValue}",
             },
         }
+        if self.serviceExclusiveDownstreamCompanies is not None:
+            binding["serviceExclusiveDownstreamCompanies"] = {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.serviceExclusiveDownstreamCompanies}",
+            }
+        if self.serviceExclusiveUpstreamCompanies is not None:
+            binding["serviceExclusiveUpstreamCompanies"] = {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.serviceExclusiveUpstreamCompanies}",
+            }
 
         return binding
 
@@ -92,7 +113,7 @@ def sparql_query_storage(
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?quote ?quoteMonetaryValue
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue
 where {
     ?storage rdf:type hydrogen_nrmm:"""
         + f"{storage_type}"
@@ -108,6 +129,8 @@ where {
              hydrogen_nrmm:includes ?storage;
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
                ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
+    OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
+    OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
 }
 """
     )

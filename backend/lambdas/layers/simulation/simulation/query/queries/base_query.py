@@ -61,19 +61,27 @@ class BaseQuery:
                     raw_instances[class_key] = {}
                 item = binding[item_name]
                 item_value = item["value"]
-                if item["type"] == "uri":
+                attribute_name = item_name.replace(class_key, "")
+                if item["type"] == "uri" and len(attribute_name) == 0:
                     raw_instances[class_key]["id"] = item_value.replace(
                         "https://w3id.org/hydrologiq/hydrogen/nrmm", "hydrogen_nrmm:"
                     )
                 else:
-                    attribute_name = item_name.replace(class_key, "")
                     if len(attribute_name) > 0:
                         attribute_name = (
                             attribute_name[0].lower() + attribute_name[1:]
                             if (not attribute_name.startswith("CO2e"))
                             else attribute_name
                         )
-                        raw_instances[class_key][attribute_name] = item_value
+                        raw_instances[class_key][attribute_name] = (
+                            item_value.replace(
+                                "https://w3id.org/hydrologiq/hydrogen/nrmm",
+                                "hydrogen_nrmm:",
+                            )
+                            if (item["type"] == "uri")
+                            else item_value
+                        )
+
                     else:
                         raw_instances[class_key] = item_value
 

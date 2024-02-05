@@ -21,6 +21,8 @@ class FuelResponse:
     quote: str
     quoteMonetaryValue: float
     producerProductionCO2e: Optional[float] = None
+    serviceExclusiveDownstreamCompanies: Optional[str] = None
+    serviceExclusiveUpstreamCompanies: Optional[str] = None
 
     def query_response(self) -> FuelQueryResponse:
         producer = {
@@ -32,9 +34,18 @@ class FuelResponse:
         if self.producerProductionCO2e is not None:
             producer["productionCO2e"] = self.producerProductionCO2e
 
+        service = {"id": to_id(self.service), "name": self.serviceName}
+        if self.serviceExclusiveDownstreamCompanies is not None:
+            service["exclusiveDownstreamCompanies"] = (
+                self.serviceExclusiveDownstreamCompanies
+            )
+        if self.serviceExclusiveUpstreamCompanies is not None:
+            service["exclusiveUpstreamCompanies"] = (
+                self.serviceExclusiveUpstreamCompanies
+            )
         return FuelQueryResponse(
             producer=producer,
-            service={"id": to_id(self.service), "name": self.serviceName},
+            service=service,
             dispenser={
                 "id": to_id(self.dispenser),
                 "name": self.dispenserName,
@@ -104,7 +115,16 @@ class FuelResponse:
                 "type": "literal",
                 "value": f"{self.producerProductionCO2e}",
             }
-
+        if self.serviceExclusiveDownstreamCompanies is not None:
+            binding["serviceExclusiveDownstreamCompanies"] = {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.serviceExclusiveDownstreamCompanies}",
+            }
+        if self.serviceExclusiveUpstreamCompanies is not None:
+            binding["serviceExclusiveUpstreamCompanies"] = {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.serviceExclusiveUpstreamCompanies}",
+            }
         return binding
 
 
@@ -141,7 +161,7 @@ def sparql_query_fuel(
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?quote ?quoteMonetaryValue
+select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue
 where { 
     ?producer rdfs:label ?producerName ;
                 hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
@@ -162,5 +182,7 @@ where {
                 rdfs:label ?serviceName;
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
                 ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
+    OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
+    OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
 }"""
     )

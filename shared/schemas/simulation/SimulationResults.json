@@ -203,6 +203,12 @@
         },
         "transportCO2e": {
           "type": "number"
+        },
+        "exclusiveDownstreamCompanies": {
+          "type": "string"
+        },
+        "exclusiveUpstreamCompanies": {
+          "type": "string"
         }
       },
       "additionalProperties": false
