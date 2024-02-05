@@ -5,7 +5,7 @@ from simulation.query.queries import (
     LogisticQueryInput,
 )
 from simulation.query.queries.hydrogen_nrmm_optional import (
-    Price,
+    Quote,
     Storage,
     LogisticService,
     Vehicle,
@@ -24,7 +24,7 @@ class LogisticQuery(BaseQuery):
             "storage": Storage,
             "service": LogisticService,
             "vehicle": Vehicle,
-            "price": Price,
+            "quote": Quote,
         }
         matching_instances = self._get_matching_instances(
             bindings,
@@ -37,7 +37,7 @@ class LogisticQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?price ?priceMonetaryValue
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?quote ?quoteMonetaryValue
 where {
     ?storage rdf:type hydrogen_nrmm:"""
             + f"{config.storageType}"
@@ -57,12 +57,10 @@ where {
     ?service rdf:type hydrogen_nrmm:LogisticService;
              rdfs:label ?serviceName ;
              hydrogen_nrmm:includes ?storage;
-             hydrogen_nrmm:includes ?vehicle;
-             hydrogen_nrmm:typicalPricing ?quote;.
+             hydrogen_nrmm:includes ?vehicle;.
     OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
-    ?quote hydrogen_nrmm:price ?price;.
-    ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
-             hydrogen_nrmm:unit ?priceUnit;.
+    OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
+               ?quote hydrogen_nrmm:monetaryValue ?quoteMonetaryValue. }
 }
 """
         )

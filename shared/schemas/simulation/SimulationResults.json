@@ -35,8 +35,8 @@
         "service": {
           "$ref": "#/$defs/service"
         },
-        "price": {
-          "$ref": "#/$defs/price"
+        "quote": {
+          "$ref": "#/$defs/quote"
         }
       },
       "additionalProperties": false
@@ -53,8 +53,8 @@
         "vehicle": {
           "$ref": "#/$defs/vehicle"
         },
-        "price": {
-          "$ref": "#/$defs/price"
+        "quote": {
+          "$ref": "#/$defs/quote"
         }
       },
       "additionalProperties": false
@@ -81,7 +81,7 @@
           "type": "number"
         }
       },
-      "required": ["fuel", "logistic", "fuelUtilisation", "price", "transportDistance"],
+      "required": ["fuel", "logistic", "fuelUtilisation", "transportDistance"],
       "additionalProperties": false
     },
     "storage": {
@@ -177,7 +177,7 @@
       },
       "additionalProperties": false
     },
-    "price": {
+    "quote": {
       "type": "object",
       "properties": {
         "id": {

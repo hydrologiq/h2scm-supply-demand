@@ -3,10 +3,9 @@ from dataclasses import dataclass
 from simulation import BaseQueryResponse
 from simulation.query.queries.hydrogen_nrmm_optional import (
     LogisticService,
-    Price,
+    Quote,
     Storage,
     Vehicle,
-    DistributionSite,
 )
 
 
@@ -15,14 +14,14 @@ class LogisticQueryResponse(BaseQueryResponse):
     storage: Storage
     service: LogisticService
     vehicle: Vehicle
-    price: Price
+    quote: Quote
 
     def __init__(
         self,
         storage: Storage,
         service: LogisticService,
         vehicle: Vehicle,
-        price: Price,
+        quote: Quote,
     ):
         self.storage = (
             Storage(**storage) if not isinstance(storage, Storage) else storage
@@ -35,4 +34,4 @@ class LogisticQueryResponse(BaseQueryResponse):
         self.vehicle = (
             Vehicle(**vehicle) if not isinstance(vehicle, Vehicle) else vehicle
         )
-        self.price = Price(**price) if not isinstance(price, Price) else price
+        self.quote = Quote(**quote) if not isinstance(quote, Quote) else quote

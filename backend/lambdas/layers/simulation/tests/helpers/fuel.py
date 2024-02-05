@@ -17,8 +17,8 @@ class FuelResponse:
     dispenserFillRate: float
     service: str
     serviceName: str
-    price: str
-    priceMonetaryValue: float
+    quote: str
+    quoteMonetaryValue: float
     producerProductionCO2e: Optional[float] = None
 
     def query_response(self) -> FuelQueryResponse:
@@ -42,7 +42,7 @@ class FuelResponse:
                 "fillRate": self.dispenserFillRate,
                 "fillingStationCapacity": self.dispenserFillingStationCapacity,
             },
-            price={"id": to_id(self.price), "monetaryValue": self.priceMonetaryValue},
+            quote={"id": to_id(self.quote), "monetaryValue": self.quoteMonetaryValue},
         )
 
     def response_binding(self) -> object:
@@ -87,14 +87,14 @@ class FuelResponse:
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.service}",
             },
             "serviceName": {"type": "literal", "value": f"{self.serviceName}"},
-            "price": {
+            "quote": {
                 "type": "uri",
-                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.price}",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.quote}",
             },
-            "priceMonetaryValue": {
+            "quoteMonetaryValue": {
                 "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                 "type": "literal",
-                "value": f"{self.priceMonetaryValue}",
+                "value": f"{self.quoteMonetaryValue}",
             },
         }
         if self.producerProductionCO2e is not None:
@@ -123,8 +123,8 @@ def fuel_query_response_json(responses: list[FuelResponse]):
                 "dispenserFillRate",
                 "service",
                 "serviceName",
-                "price",
-                "priceMonetaryValue",
+                "quote",
+                "quoteMonetaryValue",
             ]
         },
         "results": {
@@ -136,26 +136,24 @@ def fuel_query_response_json(responses: list[FuelResponse]):
 def sparql_query_fuel(sum_of_fuel: float):
     return (
         """
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?price ?priceMonetaryValue
-        where { 
-            ?producer rdfs:label ?producerName ;
-                      hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
-                      hydrogen_nrmm:basedAt ?dispenser ;.
-            FILTER(?producerDailyOfftakeCapacity >= """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?quote ?quoteMonetaryValue
+where { 
+    ?producer rdfs:label ?producerName ;
+                hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
+                hydrogen_nrmm:basedAt ?dispenser ;.
+    FILTER(?producerDailyOfftakeCapacity >= """
         + f"{sum_of_fuel}"
         + """)
-            OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
-            ?dispenser rdfs:label ?dispenserName;
-                      hydrogen_nrmm:lat ?dispenserLat;
-                      hydrogen_nrmm:long ?dispenserLong;
-                      hydrogen_nrmm:fillingStationCapacity ?dispenserFillingStationCapacity;
-                      hydrogen_nrmm:fillRate ?dispenserFillRate;.
-            ?service hydrogen_nrmm:includes ?producer ;
-                      rdfs:label ?serviceName;
-                      hydrogen_nrmm:typicalPricing ?quote;.
-            ?quote hydrogen_nrmm:price ?price;.
-            ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
-        }
-    """
+    OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
+    ?dispenser rdfs:label ?dispenserName;
+                hydrogen_nrmm:lat ?dispenserLat;
+                hydrogen_nrmm:long ?dispenserLong;
+                hydrogen_nrmm:fillingStationCapacity ?dispenserFillingStationCapacity;
+                hydrogen_nrmm:fillRate ?dispenserFillRate;.
+    ?service hydrogen_nrmm:includes ?producer ;
+                rdfs:label ?serviceName;
+    OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
+                ?quote hydrogen_nrmm:monetaryValue ?quoteMonetaryValue. }
+}"""
     )

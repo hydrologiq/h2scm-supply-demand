@@ -19,7 +19,7 @@ SAMPLE_LOGIC_INPUT = {
                 "availableQuantity": 1,
                 "transportDistance": 123,
             },
-            "price": {"id": "hydrogen_nrmm:1234", "monetaryValue": 80},
+            "quote": {"id": "hydrogen_nrmm:1234", "monetaryValue": 80},
         },
         {
             "service": {"id": "hydrogen_nrmm:2", "name": "Service 2"},
@@ -35,7 +35,7 @@ SAMPLE_LOGIC_INPUT = {
                 "availableQuantity": 2,
                 "transportDistance": 123,
             },
-            "price": {"id": "hydrogen_nrmm:2134", "monetaryValue": 40},
+            "quote": {"id": "hydrogen_nrmm:2134", "monetaryValue": 40},
         },
     ],
     "fuel": [],

@@ -57,8 +57,8 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     vehicleTransportDistance=25,
     service="3",
     serviceName="Logistics Service 1",
-    price="5",
-    priceMonetaryValue=400,
+    quote="5",
+    quoteMonetaryValue=400,
 )
 
 FUEL_RESPONSE_1 = FuelResponse(
@@ -73,8 +73,8 @@ FUEL_RESPONSE_1 = FuelResponse(
     dispenserFillRate=10,
     service="7",
     serviceName="Fuel Service 1",
-    price="8",
-    priceMonetaryValue=40,
+    quote="8",
+    quoteMonetaryValue=40,
 )
 
 

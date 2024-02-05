@@ -13,18 +13,18 @@ JSON_INPUT = json.loads(
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:12", "name": "Tube Trailer 1", "capacity": 300, "availableQuantity": 3 },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 110 },
-          "price": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
         },
         {
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "storage": { "id": "hydrogen_nrmm:21", "name": "Tube Trailer 2", "capacity": 225, "availableQuantity": 1 },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
-          "price": { "id": "hydrogen_nrmm:2134", "monetaryValue": 40}
+          "quote": { "id": "hydrogen_nrmm:2134", "monetaryValue": 40}
         }
       ],
       "fuel": [
         {          
-          "price": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
+          "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
@@ -69,12 +69,12 @@ def test_run_logic_layer_output():
                     "availableQuantity": 2,
                     "transportDistance": 123,
                 },
-                "price": {"id": "hydrogen_nrmm:2134", "monetaryValue": 40},
+                "quote": {"id": "hydrogen_nrmm:2134", "monetaryValue": 40},
             },
         ],
         "fuel": [
             {
-                "price": {"id": "hydrogen_nrmm:314", "monetaryValue": 40},
+                "quote": {"id": "hydrogen_nrmm:314", "monetaryValue": 40},
                 "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
                 "dispenser": {
                     "id": "hydrogen_nrmm:31",
@@ -145,12 +145,12 @@ def test_run_logic_layer_output_with_co2e():
                     "availableQuantity": 2,
                     "transportDistance": 123,
                 },
-                "price": {"id": "hydrogen_nrmm:2134", "monetaryValue": 40},
+                "quote": {"id": "hydrogen_nrmm:2134", "monetaryValue": 40},
             },
         ],
         "fuel": [
             {
-                "price": {"id": "hydrogen_nrmm:314", "monetaryValue": 40},
+                "quote": {"id": "hydrogen_nrmm:314", "monetaryValue": 40},
                 "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
                 "dispenser": {
                     "id": "hydrogen_nrmm:31",

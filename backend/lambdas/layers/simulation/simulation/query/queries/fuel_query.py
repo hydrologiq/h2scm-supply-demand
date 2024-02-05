@@ -7,7 +7,7 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
     Hydrogen,
     FuelService,
     DispensingSite,
-    Price,
+    Quote,
 )
 
 
@@ -21,7 +21,7 @@ class FuelQuery(BaseQuery):
             "producer": Hydrogen,
             "service": FuelService,
             "dispenser": DispensingSite,
-            "price": Price,
+            "quote": Quote,
         }
         matching_instances = self._get_matching_instances(
             bindings,
@@ -33,26 +33,24 @@ class FuelQuery(BaseQuery):
     def _get_query(self, config: FuelQueryInput):
         return (
             """
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?price ?priceMonetaryValue
-        where { 
-            ?producer rdfs:label ?producerName ;
-                      hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
-                      hydrogen_nrmm:basedAt ?dispenser ;.
-            FILTER(?producerDailyOfftakeCapacity >= """
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?quote ?quoteMonetaryValue
+where { 
+    ?producer rdfs:label ?producerName ;
+                hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
+                hydrogen_nrmm:basedAt ?dispenser ;.
+    FILTER(?producerDailyOfftakeCapacity >= """
             + f"{config.total_fuel}"
             + """)
-            OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
-            ?dispenser rdfs:label ?dispenserName;
-                      hydrogen_nrmm:lat ?dispenserLat;
-                      hydrogen_nrmm:long ?dispenserLong;
-                      hydrogen_nrmm:fillingStationCapacity ?dispenserFillingStationCapacity;
-                      hydrogen_nrmm:fillRate ?dispenserFillRate;.
-            ?service hydrogen_nrmm:includes ?producer ;
-                      rdfs:label ?serviceName;
-                      hydrogen_nrmm:typicalPricing ?quote;.
-            ?quote hydrogen_nrmm:price ?price;.
-            ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
-        }
-    """
+    OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
+    ?dispenser rdfs:label ?dispenserName;
+                hydrogen_nrmm:lat ?dispenserLat;
+                hydrogen_nrmm:long ?dispenserLong;
+                hydrogen_nrmm:fillingStationCapacity ?dispenserFillingStationCapacity;
+                hydrogen_nrmm:fillRate ?dispenserFillRate;.
+    ?service hydrogen_nrmm:includes ?producer ;
+                rdfs:label ?serviceName;
+    OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
+                ?quote hydrogen_nrmm:monetaryValue ?quoteMonetaryValue. }
+}"""
         )

@@ -18,8 +18,8 @@ class LogisticResponse:
     vehicleTransportDistance: float
     service: str
     serviceName: str
-    price: str
-    priceMonetaryValue: float
+    quote: str
+    quoteMonetaryValue: float
     serviceTransportCO2e: Optional[float] = None
 
     def query_response(self) -> LogisticQueryResponse:
@@ -41,7 +41,7 @@ class LogisticResponse:
                 "transportDistance": self.vehicleTransportDistance,
             },
             service=service,
-            price={"id": to_id(self.price), "monetaryValue": self.priceMonetaryValue},
+            quote={"id": to_id(self.quote), "monetaryValue": self.quoteMonetaryValue},
         )
 
     def response_binding(self) -> object:
@@ -81,14 +81,14 @@ class LogisticResponse:
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.service}",
             },
             "serviceName": {"type": "literal", "value": f"{self.serviceName}"},
-            "price": {
+            "quote": {
                 "type": "uri",
-                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.price}",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.quote}",
             },
-            "priceMonetaryValue": {
+            "quoteMonetaryValue": {
                 "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                 "type": "literal",
-                "value": f"{self.priceMonetaryValue}",
+                "value": f"{self.quoteMonetaryValue}",
             },
         }
 
@@ -117,8 +117,8 @@ def logistic_query_response_json(responses: list[LogisticResponse]):
                 "service",
                 "serviceName",
                 "serviceTransportCO2e",
-                "price",
-                "priceMonetaryValue",
+                "quote",
+                "quoteMonetaryValue",
             ]
         },
         "results": {
@@ -134,7 +134,7 @@ def sparql_query_logistic(
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?price ?priceMonetaryValue
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?quote ?quoteMonetaryValue
 where {
     ?storage rdf:type hydrogen_nrmm:"""
         + f"{storage_type}"
@@ -154,12 +154,10 @@ where {
     ?service rdf:type hydrogen_nrmm:LogisticService;
              rdfs:label ?serviceName ;
              hydrogen_nrmm:includes ?storage;
-             hydrogen_nrmm:includes ?vehicle;
-             hydrogen_nrmm:typicalPricing ?quote;.
+             hydrogen_nrmm:includes ?vehicle;.
     OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
-    ?quote hydrogen_nrmm:price ?price;.
-    ?price hydrogen_nrmm:monetaryValue ?priceMonetaryValue;
-             hydrogen_nrmm:unit ?priceUnit;.
+    OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
+               ?quote hydrogen_nrmm:monetaryValue ?quoteMonetaryValue. }
 }
 """
     )

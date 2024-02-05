@@ -43,13 +43,13 @@ JSON_OUTPUT = json.loads(
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:12", "name": "Tube Trailer 1", "capacity": 300, "availableQuantity": 3 },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
-          "price": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
         },
         {
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "storage": { "id": "hydrogen_nrmm:21", "name": "Tube Trailer 2", "capacity": 225, "availableQuantity": 1 },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
-          "price": { "id": "hydrogen_nrmm:214", "monetaryValue": 40 }
+          "quote": { "id": "hydrogen_nrmm:214", "monetaryValue": 40 }
         }
       ]
     }
@@ -93,8 +93,8 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     vehicleTransportDistance=123,
     service="1",
     serviceName="Service 1",
-    price="12345",
-    priceMonetaryValue=80.0,
+    quote="12345",
+    quoteMonetaryValue=80.0,
 )
 
 LOGISTIC_RESPONSE_2 = LogisticResponse(
@@ -108,8 +108,8 @@ LOGISTIC_RESPONSE_2 = LogisticResponse(
     vehicleTransportDistance=123,
     service="2",
     serviceName="Service 2",
-    price="214",
-    priceMonetaryValue=40.0,
+    quote="214",
+    quoteMonetaryValue=40.0,
 )
 
 
@@ -156,8 +156,8 @@ LOGISTIC_RESPONSE_1_CO2e = LogisticResponse(
     service="1",
     serviceName="Service 1",
     serviceTransportCO2e=0.5,
-    price="12345",
-    priceMonetaryValue=80.0,
+    quote="12345",
+    quoteMonetaryValue=80.0,
 )
 
 LOGISTIC_RESPONSE_2_CO2e = LogisticResponse(
@@ -172,8 +172,8 @@ LOGISTIC_RESPONSE_2_CO2e = LogisticResponse(
     service="2",
     serviceName="Service 2",
     serviceTransportCO2e=1,
-    price="214",
-    priceMonetaryValue=40.0,
+    quote="214",
+    quoteMonetaryValue=40.0,
 )
 
 
@@ -227,8 +227,8 @@ LOGISTIC_RESPONSE_MCP = LogisticResponse(
     vehicleTransportDistance=123,
     service="1",
     serviceName="Service 1",
-    price="12345",
-    priceMonetaryValue=80.0,
+    quote="12345",
+    quoteMonetaryValue=80.0,
 )
 
 JSON_OUTPUT_MCP = json.loads(
@@ -239,7 +239,7 @@ JSON_OUTPUT_MCP = json.loads(
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:12", "name": "MCP Option 1", "capacity": 16, "availableQuantity": 12 },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
-          "price": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
         }
       ]
     }

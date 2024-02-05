@@ -9,7 +9,7 @@ SAMPLE_LOGIC_INPUT = {
     "logistic": [],
     "fuel": [
         {
-            "price": {"id": "hydrogen_nrmm:5", "monetaryValue": 40},
+            "quote": {"id": "hydrogen_nrmm:5", "monetaryValue": 40},
             "service": {"id": "hydrogen_nrmm:4", "name": "Fuel Service 2"},
             "dispenser": {
                 "id": "hydrogen_nrmm:41",
@@ -26,7 +26,7 @@ SAMPLE_LOGIC_INPUT = {
             },
         },
         {
-            "price": {"id": "hydrogen_nrmm:6", "monetaryValue": 400},
+            "quote": {"id": "hydrogen_nrmm:6", "monetaryValue": 400},
             "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
             "dispenser": {
                 "id": "hydrogen_nrmm:31",
