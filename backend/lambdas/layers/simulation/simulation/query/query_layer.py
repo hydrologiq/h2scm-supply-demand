@@ -20,18 +20,15 @@ class QueryLayer(SimulationLayer):
         self.configuration = config
 
     def run(self, data: QueryInput) -> QueryOutput:
+        storage_type = self.__storage_type(data.fuel)
         logistics = LogisticQuery(self.configuration).query(
-            LogisticQueryInput(self.__storage_type(data.fuel))
+            LogisticQueryInput(storage_type)
         )
         storageRental = StorageQuery(self.configuration).query(
-            StorageQueryInput(
-                self.__minimum_fuel(data.fuel), self.__storage_type(data.fuel)
-            )
+            StorageQueryInput(self.__minimum_fuel(data.fuel), storage_type)
         )
         fuels = FuelQuery(self.configuration).query(
-            FuelQueryInput(
-                data.total_fuel(),
-            )
+            FuelQueryInput(data.total_fuel(), storage_type)
         )
 
         return QueryOutput(logistics, fuels, storageRental)

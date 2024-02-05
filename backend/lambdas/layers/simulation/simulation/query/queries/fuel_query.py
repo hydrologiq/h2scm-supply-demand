@@ -38,10 +38,13 @@ select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProduction
 where { 
     ?producer rdfs:label ?producerName ;
                 hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
+                hydrogen_nrmm:storedIn ?producerStoredIn ;
                 hydrogen_nrmm:basedAt ?dispenser ;.
     FILTER(?producerDailyOfftakeCapacity >= """
             + f"{config.total_fuel}"
-            + """)
+            + """ && ?producerStoredIn IN ("""
+            + f"hydrogen_nrmm:{config.storage_type}"
+            + """))
     OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
     ?dispenser rdfs:label ?dispenserName;
                 hydrogen_nrmm:lat ?dispenserLat;

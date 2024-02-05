@@ -118,7 +118,9 @@ def test_run_query_layer_output():
                 logistics_patched.assert_called_once_with(
                     LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
                 )
-                fuel_patched.assert_called_once_with(FuelQueryInput(485))
+                fuel_patched.assert_called_once_with(
+                    FuelQueryInput(485, BusinessOutputs.Storage.TubeTrailer)
+                )
                 storage_patched.assert_called_once_with(
                     StorageQueryInput(185, BusinessOutputs.Storage.TubeTrailer)
                 )

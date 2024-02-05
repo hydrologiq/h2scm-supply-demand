@@ -1,4 +1,3 @@
-# import json
 import json
 import pytest
 from simulation.query.queries import (
@@ -8,6 +7,7 @@ from simulation.query.queries import (
 )
 from requests_mock import Mocker
 from tests.helpers.fuel import FuelResponse, fuel_query_response_json, sparql_query_fuel
+import simulation.business.outputs as BusinessOutputs
 
 JSON_OUTPUT = json.loads(
     """
@@ -73,7 +73,9 @@ def test_error_empty_response(requests_mock: Mocker):
     )
 
     with pytest.raises(Exception) as e_info:
-        fuel_query.query(FuelQueryInput(fuel_total))
+        fuel_query.query(
+            FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+        )
     assert str(e_info.value) == "failed to transform JSON from query"
 
 
@@ -100,7 +102,9 @@ def test_error_response(requests_mock: Mocker):
     )
 
     with pytest.raises(Exception) as e_info:
-        fuel_query.query(FuelQueryInput(fuel_total))
+        fuel_query.query(
+            FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+        )
     assert (
         str(e_info.value)
         == "400 Client Error: None for url: https://abcdef.execute-api.eu-west-2.amazonaws.com/dev/repositories/live/query/select?graphs=default"
@@ -145,7 +149,9 @@ def test_run_fuel_query(requests_mock: Mocker):
         fuel_query_response_json([FUEL_RESPONSE_1]),
     )
 
-    fuel_output = fuel_query.query(FuelQueryInput(fuel_total))
+    fuel_output = fuel_query.query(
+        FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+    )
 
     assert requests_mock.last_request is not None
     assert len(fuel_output) == 1
@@ -191,7 +197,9 @@ def test_run_fuel_query_with_co2e(requests_mock: Mocker):
         fuel_query_response_json([FUEL_RESPONSE_1_CO2e]),
     )
 
-    fuel_output = fuel_query.query(FuelQueryInput(fuel_total))
+    fuel_output = fuel_query.query(
+        FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+    )
 
     assert requests_mock.last_request is not None
     assert len(fuel_output) == 1

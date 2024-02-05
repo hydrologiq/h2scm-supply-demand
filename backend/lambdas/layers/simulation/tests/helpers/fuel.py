@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Optional
 from simulation.query.queries import FuelQueryResponse
 from tests.helpers import to_id
+import simulation.business.outputs as BusinessOutputs
 
 
 @dataclass
@@ -133,7 +134,10 @@ def fuel_query_response_json(responses: list[FuelResponse]):
     }
 
 
-def sparql_query_fuel(sum_of_fuel: float):
+def sparql_query_fuel(
+    sum_of_fuel: float,
+    storage_type: BusinessOutputs.Storage = BusinessOutputs.Storage.TubeTrailer,
+):
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -141,10 +145,13 @@ select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProduction
 where { 
     ?producer rdfs:label ?producerName ;
                 hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
+                hydrogen_nrmm:storedIn ?producerStoredIn ;
                 hydrogen_nrmm:basedAt ?dispenser ;.
     FILTER(?producerDailyOfftakeCapacity >= """
         + f"{sum_of_fuel}"
-        + """)
+        + """ && ?producerStoredIn IN ("""
+        + f"hydrogen_nrmm:{storage_type}"
+        + """))
     OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
     ?dispenser rdfs:label ?dispenserName;
                 hydrogen_nrmm:lat ?dispenserLat;
