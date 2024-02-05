@@ -43,6 +43,7 @@ SAMPLE_LOGIC_INPUT = {
             },
         },
     ],
+    "storageRental": [],
 }
 
 

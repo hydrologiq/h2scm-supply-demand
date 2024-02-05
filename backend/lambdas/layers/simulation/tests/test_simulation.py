@@ -11,10 +11,13 @@ from simulation.query.queries import QueryConfiguration
 from tests.helpers import (
     FuelResponse,
     LogisticResponse,
+    StorageResponse,
     logistic_query_response_json,
     fuel_query_response_json,
+    storage_query_response_json,
     sparql_query_fuel,
     sparql_query_logistic,
+    sparql_query_storage,
 )
 
 from simulation.run_simulation import run_simulation
@@ -57,6 +60,17 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     quoteMonetaryValue=400,
 )
 
+STORAGE_RESPONSE_1 = StorageResponse(
+    storage="10",
+    storageName="Vehicle 1",
+    storageAvailableQuantity=1,
+    storageCapacity=600,
+    service="3",
+    serviceName="Storage Service 1",
+    quote="5",
+    quoteMonetaryValue=1000,
+)
+
 FUEL_RESPONSE_1 = FuelResponse(
     producer="5",
     producerName="Producer 1",
@@ -77,6 +91,12 @@ FUEL_RESPONSE_1 = FuelResponse(
 def test_simulation_no_results(requests_mock: Mocker):
     user_input = BusinessInput(
         location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300)
+    )
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_storage(300.0),
+        storage_query_response_json([]),
     )
 
     register_sparql_query_mock(
@@ -107,12 +127,19 @@ def test_simulation_no_results(requests_mock: Mocker):
     assert sim_output is not None
     assert len(sim_output.fuel) == 0
     assert len(sim_output.logistic) == 0
+    assert len(sim_output.storageRental) == 0
     assert len(sim_output.matches) == 0
 
 
 def test_base_simulation(requests_mock: Mocker):
     user_input = BusinessInput(
         location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300)
+    )
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_storage(300.0),
+        storage_query_response_json([STORAGE_RESPONSE_1]),
     )
 
     register_sparql_query_mock(
@@ -147,6 +174,11 @@ def test_base_simulation(requests_mock: Mocker):
     assert (
         sim_output.logistic[0].dumps() == LOGISTIC_RESPONSE_1.query_response().dumps()
     )
+    assert len(sim_output.storageRental) == 1
+    assert (
+        sim_output.storageRental[0].dumps()
+        == STORAGE_RESPONSE_1.query_response().dumps()
+    )
     assert len(sim_output.matches) == 1
     ## fuelUtilisation = (300 / 300) * 100 = 100
     # price = (40 * 300) + (400) = 12000 + 400 = 12400
@@ -159,9 +191,15 @@ def test_base_simulation(requests_mock: Mocker):
     )
 
 
-def test_simulation_no_results(requests_mock: Mocker):
+def test_simulation_no_matches(requests_mock: Mocker):
     user_input = BusinessInput(
         location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300)
+    )
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_storage(300.0),
+        storage_query_response_json([STORAGE_RESPONSE_1]),
     )
 
     register_sparql_query_mock(
@@ -192,6 +230,7 @@ def test_simulation_no_results(requests_mock: Mocker):
     assert sim_output is not None
     assert len(sim_output.fuel) == 0
     assert len(sim_output.logistic) == 1
+    assert len(sim_output.storageRental) == 1
     assert len(sim_output.matches) == 0
     sim_output_json = json.loads(sim_output.dumps())
     assert "fuel" in sim_output_json
@@ -203,6 +242,12 @@ def test_simulation_no_results(requests_mock: Mocker):
 def test_simulation_out_schema(requests_mock: Mocker):
     user_input = BusinessInput(
         location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300)
+    )
+
+    register_sparql_query_mock(
+        requests_mock,
+        sparql_query_storage(300.0),
+        storage_query_response_json([STORAGE_RESPONSE_1]),
     )
 
     register_sparql_query_mock(

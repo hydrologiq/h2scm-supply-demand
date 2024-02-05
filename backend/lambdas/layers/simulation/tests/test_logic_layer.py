@@ -27,6 +27,13 @@ JSON_INPUT = json.loads(
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
         }
+      ],
+      "storageRental": [
+        {
+          "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
+          "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
+          "quote": { "id": "hydrogen_nrmm:413", "monetaryValue": 100}
+        }
       ]
     }
     """
@@ -81,6 +88,18 @@ def test_run_logic_layer_output():
                     "name": "Hydrogen Producer 1",
                     "dailyOfftakeCapacity": 600,
                 },
+            }
+        ],
+        "storageRental": [
+            {
+                "service": {"id": "hydrogen_nrmm:4", "name": "Service 3"},
+                "storage": {
+                    "id": "hydrogen_nrmm:412",
+                    "name": "Tube Trailer",
+                    "availableQuantity": 2,
+                    "capacity": 600,
+                },
+                "quote": {"id": "hydrogen_nrmm:413", "monetaryValue": 100},
             }
         ],
         "matches": [
@@ -152,6 +171,18 @@ def test_run_logic_layer_output_with_co2e():
                     "dailyOfftakeCapacity": 600,
                     "productionCO2e": 1,
                 },
+            }
+        ],
+        "storageRental": [
+            {
+                "service": {"id": "hydrogen_nrmm:4", "name": "Service 3"},
+                "storage": {
+                    "id": "hydrogen_nrmm:412",
+                    "name": "Tube Trailer",
+                    "availableQuantity": 2,
+                    "capacity": 600,
+                },
+                "quote": {"id": "hydrogen_nrmm:413", "monetaryValue": 100},
             }
         ],
         "matches": [

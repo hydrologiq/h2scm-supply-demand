@@ -38,7 +38,7 @@ JSON_INPUT = json.loads(
 JSON_OUTPUT = json.loads(
     """
     {
-      "rentalStorage": [
+      "storageRental": [
         {
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:12", "name": "Tube Trailer 1", "capacity": 300, "availableQuantity": 3 },
@@ -130,8 +130,8 @@ def test_run_storage_query(requests_mock: Mocker):
 
     assert requests_mock.last_request is not None
     assert len(storage_output) == 2
-    assert json.loads(storage_output[0].dumps()) == JSON_OUTPUT["rentalStorage"][0]
-    assert json.loads(storage_output[1].dumps()) == JSON_OUTPUT["rentalStorage"][1]
+    assert json.loads(storage_output[0].dumps()) == JSON_OUTPUT["storageRental"][0]
+    assert json.loads(storage_output[1].dumps()) == JSON_OUTPUT["storageRental"][1]
 
 
 LOGISTIC_RESPONSE_MCP = StorageResponse(
@@ -148,7 +148,7 @@ LOGISTIC_RESPONSE_MCP = StorageResponse(
 JSON_OUTPUT_MCP = json.loads(
     """
     {
-      "rentalStorage": [
+      "storageRental": [
         {
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:12", "name": "MCP Option 1", "capacity": 16, "availableQuantity": 12 },
@@ -189,4 +189,4 @@ def test_run_storage_query_with_mcp(requests_mock: Mocker):
 
     assert requests_mock.last_request is not None
     assert len(storage_output) == 1
-    assert json.loads(storage_output[0].dumps()) == JSON_OUTPUT_MCP["rentalStorage"][0]
+    assert json.loads(storage_output[0].dumps()) == JSON_OUTPUT_MCP["storageRental"][0]

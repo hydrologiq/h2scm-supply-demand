@@ -14,6 +14,12 @@
         "$ref": "#/$defs/logistic"
       }
     },
+    "storageRental": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/storageRental"
+      }
+    },
     "matches": {
       "type": "array",
       "items": {
@@ -47,11 +53,23 @@
         "service": {
           "$ref": "#/$defs/service"
         },
-        "storage": {
-          "$ref": "#/$defs/storage"
-        },
         "vehicle": {
           "$ref": "#/$defs/vehicle"
+        },
+        "quote": {
+          "$ref": "#/$defs/quote"
+        }
+      },
+      "additionalProperties": false
+    },
+    "storageRental": {
+      "type": "object",
+      "properties": {
+        "service": {
+          "$ref": "#/$defs/service"
+        },
+        "storage": {
+          "$ref": "#/$defs/storage"
         },
         "quote": {
           "$ref": "#/$defs/quote"

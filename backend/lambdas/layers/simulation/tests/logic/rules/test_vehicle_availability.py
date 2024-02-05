@@ -27,6 +27,7 @@ SAMPLE_LOGIC_INPUT = {
         },
     ],
     "fuel": [],
+    "storageRental": [],
 }
 
 

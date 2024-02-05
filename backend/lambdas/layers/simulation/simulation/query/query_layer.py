@@ -7,6 +7,8 @@ from simulation.query.queries import (
     LogisticQueryInput,
     FuelQuery,
     FuelQueryInput,
+    StorageQuery,
+    StorageQueryInput,
 )
 from simulation.query import QueryInput, QueryOutput
 
@@ -21,13 +23,18 @@ class QueryLayer(SimulationLayer):
         logistics = LogisticQuery(self.configuration).query(
             LogisticQueryInput(self.__storage_type(data.fuel))
         )
+        storageRental = StorageQuery(self.configuration).query(
+            StorageQueryInput(
+                self.__minimum_fuel(data.fuel), self.__storage_type(data.fuel)
+            )
+        )
         fuels = FuelQuery(self.configuration).query(
             FuelQueryInput(
                 data.total_fuel(),
             )
         )
 
-        return QueryOutput(logistics, fuels)
+        return QueryOutput(logistics, fuels, storageRental)
 
     def __minimum_fuel(self, fuel: list[Fuel]):
         if len(fuel) > 0:

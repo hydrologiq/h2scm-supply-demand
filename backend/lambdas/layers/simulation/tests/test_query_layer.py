@@ -7,6 +7,8 @@ from simulation.query.queries import (
     LogisticQueryInput,
     FuelQueryInput,
     FuelQueryResponse,
+    StorageQueryInput,
+    StorageQueryResponse,
 )
 
 from simulation.query import QueryInput, QueryLayer
@@ -50,6 +52,13 @@ JSON_OUTPUT = json.loads(
           "quote": { "id": "hydrogen_nrmm:2124", "monetaryValue": 40}
         }
       ],
+      "storageRental": [
+        {
+          "service": { "id": "hydrogen_nrmm:4", "name": "Service 1" },
+          "storage": { "id": "hydrogen_nrmm:423", "name": "Tube Trailer 1", "availableQuantity": 1, "capacity": 600 },
+          "quote": { "id": "hydrogen_nrmm:4234", "monetaryValue": 40}
+        }
+      ],
       "fuel": [
         {
           "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
@@ -84,23 +93,33 @@ def test_run_query_layer_output():
             fuel_patched.return_value = [
                 FuelQueryResponse(**fuel_entry) for fuel_entry in JSON_OUTPUT["fuel"]
             ]
-            query_input = QueryInput(**JSON_INPUT)
-            query_layer = QueryLayer(
-                QueryConfiguration(
-                    **{
-                        "scm_api_id": SCM_API_ID,
-                        "scm_api_region": SCM_API_REGION,
-                        "scm_api_stage": SCM_API_STAGE,
-                        "scm_repo": DEFAULT_REPO,
-                        "scm_access_token": MOCKED_ACCESS_TOKEN,
-                    }
+            with patch(
+                "simulation.query.queries.storage_query.StorageQuery.query"
+            ) as storage_patched:
+                storage_patched.return_value = [
+                    StorageQueryResponse(**storage_entry)
+                    for storage_entry in JSON_OUTPUT["storageRental"]
+                ]
+                query_input = QueryInput(**JSON_INPUT)
+                query_layer = QueryLayer(
+                    QueryConfiguration(
+                        **{
+                            "scm_api_id": SCM_API_ID,
+                            "scm_api_region": SCM_API_REGION,
+                            "scm_api_stage": SCM_API_STAGE,
+                            "scm_repo": DEFAULT_REPO,
+                            "scm_access_token": MOCKED_ACCESS_TOKEN,
+                        }
+                    )
                 )
-            )
 
-            user_output = query_layer.run(query_input)
+                user_output = query_layer.run(query_input)
 
-            logistics_patched.assert_called_once_with(
-                LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
-            )
-            fuel_patched.assert_called_once_with(FuelQueryInput(485))
-            assert json.loads(user_output.dumps()) == JSON_OUTPUT
+                logistics_patched.assert_called_once_with(
+                    LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
+                )
+                fuel_patched.assert_called_once_with(FuelQueryInput(485))
+                storage_patched.assert_called_once_with(
+                    StorageQueryInput(185, BusinessOutputs.Storage.TubeTrailer)
+                )
+                assert json.loads(user_output.dumps()) == JSON_OUTPUT
