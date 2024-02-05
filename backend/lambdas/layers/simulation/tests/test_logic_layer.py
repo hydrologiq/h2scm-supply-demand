@@ -209,3 +209,71 @@ def test_run_logic_layer_output_with_co2e():
             print(e)
             exception = True
         assert exception == False
+
+
+JSON_INPUT_EXCLUSIVE = json.loads(
+    """
+    {
+      "logistic": [
+        {
+          "service": { "id": "hydrogen_nrmm:1", "name": "Service 1", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:3"] },
+          "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 2, "transportDistance": 123 },
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
+        },
+        {
+          "service": { "id": "hydrogen_nrmm:2", "name": "Service 2", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:6"] },
+          "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
+          "quote": { "id": "hydrogen_nrmm:2134", "monetaryValue": 40}
+        }
+      ],
+      "fuel": [
+        {          
+          "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
+          "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:4"] },
+          "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
+          "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
+        }
+      ],
+      "storageRental": [
+        {
+          "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
+          "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
+          "quote": { "id": "hydrogen_nrmm:413", "monetaryValue": 100}
+        }
+      ]
+    }
+    """
+)
+
+
+def test_run_logic_layer_output_downstream_exclusivity():
+    logic_input = QueryOutput(**JSON_INPUT_EXCLUSIVE)
+    business_output = BusinessOutput(
+        **{
+            "fuel": [
+                {"type": "TubeTrailer", "amount": 300},
+                {"type": "TubeTrailer", "amount": 185},
+            ],
+            "project": {"location": {"lat": 3, "long": 4.5}},
+        }
+    )
+    logic_layer = LogicLayer()
+
+    logic_output = logic_layer.run(logic_input, business_output)
+
+    # Second only matches as within transport range (110 vs 123 km)
+    # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
+    # price -> (485 * 40) + 80 + 100 = 19400 + 80 + 100 = 19580
+    assert json.loads(logic_output.dumps()) == {
+        **(JSON_INPUT_EXCLUSIVE),
+        "matches": [
+            {
+                "logistic": "hydrogen_nrmm:1",
+                "fuel": "hydrogen_nrmm:3",
+                "fuelUtilisation": 80.83,
+                "price": 19580.0,
+                "transportDistance": 111.17,
+                "storage": {"id": "hydrogen_nrmm:4", "type": "TubeTrailer"},
+            }
+        ],
+    }
