@@ -4,7 +4,6 @@ from simulation.logic.outputs import Matched
 from simulation.logic.outputs.matched import MatchedStorage
 from simulation.logic.rules import RuleEngine, Rule
 from simulation.logic.rules.filter import (
-    FillingStationAvailabilityRule,
     VehicleAvailabilityRule,
     StorageAvailabilityRule,
 )
@@ -20,7 +19,6 @@ from geopy.distance import distance
 
 class LogicLayer(SimulationLayer):
     rules: list[Rule] = [
-        FillingStationAvailabilityRule(),
         VehicleAvailabilityRule(),
         StorageAvailabilityRule(),
     ]
