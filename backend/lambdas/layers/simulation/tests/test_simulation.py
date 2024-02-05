@@ -5,6 +5,7 @@ from requests_mock import Mocker
 from simulation.business import BusinessInput
 from simulation.business.inputs import Fuel, Location
 from simulation.logic.outputs import Matched
+from simulation.logic.outputs.matched import MatchedStorage
 from simulation.query.queries import QueryConfiguration
 from tests.helpers import (
     FuelResponse,
@@ -20,6 +21,7 @@ from tests.helpers import (
 
 from simulation.run_simulation import run_simulation
 from tests.helpers import to_id
+import simulation.business.outputs as BusinessOutputs
 
 SCM_API_ID = "abcdef"
 SCM_API_REGION = "eu-west-2"
@@ -179,13 +181,16 @@ def test_base_simulation(requests_mock: Mocker):
     )
     assert len(sim_output.matches) == 1
     ## fuelUtilisation = (300 / 300) * 100 = 100
-    # price = (40 * 300) + (400) = 12000 + 400 = 12400
+    # price = (40 * 300) + 400 + 1000 = 12000 + 400 + 1000= 13400
     assert sim_output.matches[0] == Matched(
         logistic=to_id(LOGISTIC_RESPONSE_1.service),
         fuel=to_id(FUEL_RESPONSE_1.service),
         fuelUtilisation=100.0,
-        price=12400.0,
+        price=13400.0,
         transportDistance=11.55,
+        storage=MatchedStorage(
+            to_id(STORAGE_RESPONSE_1.service), BusinessOutputs.Storage.TubeTrailer
+        ),
     )
 
 

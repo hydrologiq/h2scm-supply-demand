@@ -57,7 +57,7 @@ def test_run_logic_layer_output():
 
     # Second only matches as within transport range (110 vs 123 km)
     # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
-    # price -> (485 * 40) + (40) = 19400 + 40 = 19440
+    # price -> (485 * 40) + 40 + 100 = 19400 + 40 + 100 = 19540
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
             {
@@ -107,8 +107,9 @@ def test_run_logic_layer_output():
                 "logistic": "hydrogen_nrmm:2",
                 "fuel": "hydrogen_nrmm:3",
                 "fuelUtilisation": 80.83,
-                "price": 19440,
+                "price": 19540,
                 "transportDistance": 111.17,
+                "storage": {"id": "hydrogen_nrmm:4", "type": "TubeTrailer"},
             }
         ],
     }
@@ -134,7 +135,7 @@ def test_run_logic_layer_output_with_co2e():
 
     # Second only matches as within transport range (110 vs 123 km)
     # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
-    # price -> (485 * 40) + (40) = 19400 + 40 = 19440
+    # price -> (485 * 40) + 40 + 100 = 19400 + 40 + 100 = 19540
     # co2e -> (485 * 1) + (111.17 * 1) = 596.17
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
@@ -190,9 +191,10 @@ def test_run_logic_layer_output_with_co2e():
                 "logistic": "hydrogen_nrmm:2",
                 "fuel": "hydrogen_nrmm:3",
                 "fuelUtilisation": 80.83,
-                "price": 19440.0,
+                "price": 19540.0,
                 "transportDistance": 111.17,
                 "CO2e": 596.17,
+                "storage": {"id": "hydrogen_nrmm:4", "type": "TubeTrailer"},
             }
         ],
     }

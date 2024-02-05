@@ -1,6 +1,7 @@
 from simulation import SimulationLayer
 from simulation.business import BusinessOutput
 from simulation.logic.outputs import Matched
+from simulation.logic.outputs.matched import MatchedStorage
 from simulation.logic.rules import RuleEngine, Rule
 from simulation.logic.rules.filter import (
     FillingStationAvailabilityRule,
@@ -66,15 +67,6 @@ class LogicLayer(SimulationLayer):
                     * 100,
                     2,
                 )
-
-                price = round(
-                    (float(logistic.quote.monetaryValue))
-                    + (
-                        float(fuel_match.quote.monetaryValue)
-                        * business_data.total_fuel()
-                    ),
-                    2,
-                )
                 CO2e = (
                     round(
                         (
@@ -90,14 +82,29 @@ class LogicLayer(SimulationLayer):
                     )
                     else None
                 )
-                matches.append(
-                    Matched(
-                        logistic.service.id,
-                        fuel_matches[0].service.id,
-                        fuelUtilisation,
-                        price,
-                        fuel_distance,
-                        CO2e,
+                for storage_rental in data.storageRental:
+                    price = round(
+                        (float(logistic.quote.monetaryValue))
+                        + (
+                            float(fuel_match.quote.monetaryValue)
+                            * business_data.total_fuel()
+                        )
+                        + float(storage_rental.quote.monetaryValue),
+                        2,
                     )
-                )
+
+                    matches.append(
+                        Matched(
+                            logistic.service.id,
+                            fuel_matches[0].service.id,
+                            fuelUtilisation,
+                            price,
+                            fuel_distance,
+                            MatchedStorage(
+                                storage_rental.service.id, business_data.fuel[0].type
+                            ),
+                            CO2e,
+                        )
+                    )
+                    break
         return matches
