@@ -7,3 +7,6 @@ from simulation.query.queries.logistic_query import *
 from simulation.query.queries.fuel_query_input import *
 from simulation.query.queries.fuel_query_response import *
 from simulation.query.queries.fuel_query import *
+from simulation.query.queries.storage_query_input import *
+from simulation.query.queries.storage_query_response import *
+from simulation.query.queries.storage_query import *

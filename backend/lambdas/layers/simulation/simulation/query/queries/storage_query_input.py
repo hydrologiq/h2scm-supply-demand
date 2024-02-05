@@ -3,5 +3,6 @@ import simulation.business.outputs as BusinessOutputs
 
 
 @dataclass
-class LogisticQueryInput:
+class StorageQueryInput:
+    minStorage: float
     storageType: BusinessOutputs.Storage

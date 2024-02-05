@@ -19,9 +19,7 @@ class QueryLayer(SimulationLayer):
 
     def run(self, data: QueryInput) -> QueryOutput:
         logistics = LogisticQuery(self.configuration).query(
-            LogisticQueryInput(
-                self.__minimum_fuel(data.fuel), self.__storage_type(data.fuel)
-            )
+            LogisticQueryInput(self.__storage_type(data.fuel))
         )
         fuels = FuelQuery(self.configuration).query(
             FuelQueryInput(

@@ -8,10 +8,6 @@ from tests.helpers import to_id
 
 @dataclass
 class LogisticResponse:
-    storage: str
-    storageName: str
-    storageAvailableQuantity: float
-    storageCapacity: float
     vehicle: str
     vehicleName: str
     vehicleAvailableQuantity: float
@@ -28,12 +24,6 @@ class LogisticResponse:
             service["transportCO2e"] = self.serviceTransportCO2e
 
         return LogisticQueryResponse(
-            storage={
-                "id": to_id(self.storage),
-                "name": self.storageName,
-                "availableQuantity": self.storageAvailableQuantity,
-                "capacity": self.storageCapacity,
-            },
             vehicle={
                 "id": to_id(self.vehicle),
                 "name": self.vehicleName,
@@ -46,21 +36,6 @@ class LogisticResponse:
 
     def response_binding(self) -> object:
         binding = {
-            "storage": {
-                "type": "uri",
-                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.storage}",
-            },
-            "storageName": {"type": "literal", "value": f"{self.storageName}"},
-            "storageAvailableQuantity": {
-                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
-                "type": "literal",
-                "value": f"{self.storageAvailableQuantity}",
-            },
-            "storageCapacity": {
-                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
-                "type": "literal",
-                "value": f"{self.storageCapacity}",
-            },
             "vehicle": {
                 "type": "uri",
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.vehicle}",
@@ -106,10 +81,6 @@ def logistic_query_response_json(responses: list[LogisticResponse]):
     return {
         "head": {
             "vars": [
-                "storage",
-                "storageName",
-                "storageAvailableQuantity",
-                "storageCapacity",
                 "vehicle",
                 "vehicleName",
                 "vehicleAvailableQuantity",
@@ -128,23 +99,13 @@ def logistic_query_response_json(responses: list[LogisticResponse]):
 
 
 def sparql_query_logistic(
-    minStorage: int,
     storage_type: BusinessOutputs.Storage = BusinessOutputs.Storage.TubeTrailer,
 ):
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?quote ?quoteMonetaryValue
+select ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?quote ?quoteMonetaryValue
 where {
-    ?storage rdf:type hydrogen_nrmm:"""
-        + f"{storage_type}"
-        + """ ;
-             rdfs:label ?storageName ;
-             hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
-             hydrogen_nrmm:capacity ?storageCapacity ;.
-    FILTER(?storageCapacity >= """
-        + f"{minStorage}"
-        + """)
     ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:"""
         + f"{storage_type}"
         + """ ;
@@ -153,7 +114,6 @@ where {
              hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.
     ?service rdf:type hydrogen_nrmm:LogisticService;
              rdfs:label ?serviceName ;
-             hydrogen_nrmm:includes ?storage;
              hydrogen_nrmm:includes ?vehicle;.
     OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.

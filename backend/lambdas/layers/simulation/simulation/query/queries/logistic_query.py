@@ -6,7 +6,6 @@ from simulation.query.queries import (
 )
 from simulation.query.queries.hydrogen_nrmm_optional import (
     Quote,
-    Storage,
     LogisticService,
     Vehicle,
 )
@@ -21,7 +20,6 @@ class LogisticQuery(BaseQuery):
             raise Exception(f"Could not query with error -- {resp_obj}")
         bindings = resp_obj["results"]["bindings"]
         class_types = {
-            "storage": Storage,
             "service": LogisticService,
             "vehicle": Vehicle,
             "quote": Quote,
@@ -37,17 +35,8 @@ class LogisticQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?quote ?quoteMonetaryValue
+select ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?quote ?quoteMonetaryValue
 where {
-    ?storage rdf:type hydrogen_nrmm:"""
-            + f"{config.storageType}"
-            + """ ;
-             rdfs:label ?storageName ;
-             hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
-             hydrogen_nrmm:capacity ?storageCapacity ;.
-    FILTER(?storageCapacity >= """
-            + f"{config.minStorage}"
-            + """)
     ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:"""
             + f"{config.storageType}"
             + """ ;
@@ -56,7 +45,6 @@ where {
              hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.
     ?service rdf:type hydrogen_nrmm:LogisticService;
              rdfs:label ?serviceName ;
-             hydrogen_nrmm:includes ?storage;
              hydrogen_nrmm:includes ?vehicle;.
     OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.

@@ -47,10 +47,6 @@ def register_sparql_query_mock(
 
 
 LOGISTIC_RESPONSE_1 = LogisticResponse(
-    storage="1",
-    storageName="Test Storage 1",
-    storageAvailableQuantity=2,
-    storageCapacity=4,
     vehicle="2",
     vehicleName="Vehicle 1",
     vehicleAvailableQuantity=1,
@@ -85,7 +81,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(300.0),
+        sparql_query_logistic(),
         logistic_query_response_json([]),
     )
 
@@ -121,7 +117,7 @@ def test_base_simulation(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(300.0),
+        sparql_query_logistic(),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
     )
 
@@ -170,7 +166,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(300.0),
+        sparql_query_logistic(),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
     )
 
@@ -211,7 +207,7 @@ def test_simulation_out_schema(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(300.0),
+        sparql_query_logistic(),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
     )
 

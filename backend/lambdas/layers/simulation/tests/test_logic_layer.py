@@ -11,13 +11,11 @@ JSON_INPUT = json.loads(
       "logistic": [
         {
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
-          "storage": { "id": "hydrogen_nrmm:12", "name": "Tube Trailer 1", "capacity": 300, "availableQuantity": 3 },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 110 },
           "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
         },
         {
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
-          "storage": { "id": "hydrogen_nrmm:21", "name": "Tube Trailer 2", "capacity": 225, "availableQuantity": 1 },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
           "quote": { "id": "hydrogen_nrmm:2134", "monetaryValue": 40}
         }
@@ -57,12 +55,6 @@ def test_run_logic_layer_output():
         "logistic": [
             {
                 "service": {"id": "hydrogen_nrmm:2", "name": "Service 2"},
-                "storage": {
-                    "id": "hydrogen_nrmm:21",
-                    "name": "Tube Trailer 2",
-                    "capacity": 225,
-                    "availableQuantity": 1,
-                },
                 "vehicle": {
                     "id": "hydrogen_nrmm:212",
                     "name": "Vehicle 2",
@@ -132,12 +124,6 @@ def test_run_logic_layer_output_with_co2e():
                     "id": "hydrogen_nrmm:2",
                     "name": "Service 2",
                     "transportCO2e": 1,
-                },
-                "storage": {
-                    "id": "hydrogen_nrmm:21",
-                    "name": "Tube Trailer 2",
-                    "capacity": 225,
-                    "availableQuantity": 1,
                 },
                 "vehicle": {
                     "id": "hydrogen_nrmm:212",

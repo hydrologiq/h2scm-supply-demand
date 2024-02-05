@@ -41,13 +41,11 @@ JSON_OUTPUT = json.loads(
       "logistic": [
         {
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
-          "storage": { "id": "hydrogen_nrmm:12", "name": "Tube Trailer 1", "capacity": 300, "availableQuantity": 3 },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
           "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
         },
         {
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
-          "storage": { "id": "hydrogen_nrmm:21", "name": "Tube Trailer 2", "capacity": 225, "availableQuantity": 1 },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
           "quote": { "id": "hydrogen_nrmm:214", "monetaryValue": 40 }
         }
@@ -83,10 +81,6 @@ def register_sparql_query_mock(
 
 
 LOGISTIC_RESPONSE_1 = LogisticResponse(
-    storage="12",
-    storageName="Tube Trailer 1",
-    storageAvailableQuantity=3,
-    storageCapacity=300,
     vehicle="123",
     vehicleName="Vehicle 1",
     vehicleAvailableQuantity=1,
@@ -98,10 +92,6 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
 )
 
 LOGISTIC_RESPONSE_2 = LogisticResponse(
-    storage="21",
-    storageName="Tube Trailer 2",
-    storageAvailableQuantity=1,
-    storageCapacity=225,
     vehicle="212",
     vehicleName="Vehicle 2",
     vehicleAvailableQuantity=2,
@@ -126,16 +116,14 @@ def test_run_logistic_query(requests_mock: Mocker):
         )
     )
 
-    minStorage = 125
-
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(minStorage),
+        sparql_query_logistic(),
         logistic_query_response_json([LOGISTIC_RESPONSE_1, LOGISTIC_RESPONSE_2]),
     )
 
     logistic_output = logistic_query.query(
-        LogisticQueryInput(minStorage, BusinessOutputs.Storage.TubeTrailer)
+        LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
     )
 
     assert requests_mock.last_request is not None
@@ -145,10 +133,6 @@ def test_run_logistic_query(requests_mock: Mocker):
 
 
 LOGISTIC_RESPONSE_1_CO2e = LogisticResponse(
-    storage="12",
-    storageName="Tube Trailer 1",
-    storageAvailableQuantity=3,
-    storageCapacity=300,
     vehicle="123",
     vehicleName="Vehicle 1",
     vehicleAvailableQuantity=1,
@@ -161,10 +145,6 @@ LOGISTIC_RESPONSE_1_CO2e = LogisticResponse(
 )
 
 LOGISTIC_RESPONSE_2_CO2e = LogisticResponse(
-    storage="21",
-    storageName="Tube Trailer 2",
-    storageAvailableQuantity=1,
-    storageCapacity=225,
     vehicle="212",
     vehicleName="Vehicle 2",
     vehicleAvailableQuantity=2,
@@ -190,18 +170,16 @@ def test_run_logistic_query_with_co2e(requests_mock: Mocker):
         )
     )
 
-    minStorage = 125
-
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(minStorage),
+        sparql_query_logistic(),
         logistic_query_response_json(
             [LOGISTIC_RESPONSE_1_CO2e, LOGISTIC_RESPONSE_2_CO2e]
         ),
     )
 
     logistic_output = logistic_query.query(
-        LogisticQueryInput(minStorage, BusinessOutputs.Storage.TubeTrailer)
+        LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
     )
 
     assert requests_mock.last_request is not None
@@ -217,10 +195,6 @@ def test_run_logistic_query_with_co2e(requests_mock: Mocker):
 
 
 LOGISTIC_RESPONSE_MCP = LogisticResponse(
-    storage="12",
-    storageName="MCP Option 1",
-    storageAvailableQuantity=12,
-    storageCapacity=16.0,
     vehicle="123",
     vehicleName="Vehicle 1",
     vehicleAvailableQuantity=1,
@@ -237,7 +211,6 @@ JSON_OUTPUT_MCP = json.loads(
       "logistic": [
         {
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
-          "storage": { "id": "hydrogen_nrmm:12", "name": "MCP Option 1", "capacity": 16, "availableQuantity": 12 },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
           "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
         }
@@ -260,18 +233,14 @@ def test_run_logistic_query_with_mcp(requests_mock: Mocker):
         )
     )
 
-    minStorage = 125
-
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(
-            minStorage, BusinessOutputs.Storage.ManifoldCylinderPallet
-        ),
+        sparql_query_logistic(BusinessOutputs.Storage.ManifoldCylinderPallet),
         logistic_query_response_json([LOGISTIC_RESPONSE_MCP]),
     )
 
     logistic_output = logistic_query.query(
-        LogisticQueryInput(minStorage, BusinessOutputs.Storage.ManifoldCylinderPallet)
+        LogisticQueryInput(BusinessOutputs.Storage.ManifoldCylinderPallet)
     )
 
     assert requests_mock.last_request is not None

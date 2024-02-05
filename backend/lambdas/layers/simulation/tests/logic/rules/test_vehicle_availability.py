@@ -7,12 +7,6 @@ SAMPLE_LOGIC_INPUT = {
     "logistic": [
         {
             "service": {"id": "hydrogen_nrmm:1", "name": "Service 1"},
-            "storage": {
-                "id": "hydrogen_nrmm:12",
-                "name": "Tube Trailer 1",
-                "capacity": 300,
-                "availableQuantity": 3,
-            },
             "vehicle": {
                 "id": "hydrogen_nrmm:123",
                 "name": "Vehicle 1",
@@ -23,12 +17,6 @@ SAMPLE_LOGIC_INPUT = {
         },
         {
             "service": {"id": "hydrogen_nrmm:2", "name": "Service 2"},
-            "storage": {
-                "id": "hydrogen_nrmm:21",
-                "name": "Tube Trailer 2",
-                "capacity": 225,
-                "availableQuantity": 1,
-            },
             "vehicle": {
                 "id": "hydrogen_nrmm:212",
                 "name": "Vehicle 2",
