@@ -67,7 +67,7 @@ class LogicLayer(SimulationLayer):
                 )
 
                 price = round(
-                    (float(logistic.quote.monetaryValue) * fuel_distance)
+                    (float(logistic.quote.monetaryValue))
                     + (
                         float(fuel_match.quote.monetaryValue)
                         * business_data.total_fuel()

@@ -52,7 +52,7 @@ def test_run_logic_layer_output():
 
     # Second only matches as within transport range (110 vs 123 km)
     # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
-    # price -> (485 * 40) + (111.17 * 40) = 23846.8
+    # price -> (485 * 40) + (40) = 19400 + 40 = 19440
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
             {
@@ -96,7 +96,7 @@ def test_run_logic_layer_output():
                 "logistic": "hydrogen_nrmm:2",
                 "fuel": "hydrogen_nrmm:3",
                 "fuelUtilisation": 80.83,
-                "price": 23846.8,
+                "price": 19440,
                 "transportDistance": 111.17,
             }
         ],
@@ -123,7 +123,7 @@ def test_run_logic_layer_output_with_co2e():
 
     # Second only matches as within transport range (110 vs 123 km)
     # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
-    # price -> (485 * 40) + (111.17 * 40) = 23846.8
+    # price -> (485 * 40) + (40) = 19400 + 40 = 19440
     # co2e -> (485 * 1) + (111.17 * 1) = 596.17
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
@@ -173,7 +173,7 @@ def test_run_logic_layer_output_with_co2e():
                 "logistic": "hydrogen_nrmm:2",
                 "fuel": "hydrogen_nrmm:3",
                 "fuelUtilisation": 80.83,
-                "price": 23846.8,
+                "price": 19440.0,
                 "transportDistance": 111.17,
                 "CO2e": 596.17,
             }
