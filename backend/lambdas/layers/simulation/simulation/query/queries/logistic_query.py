@@ -48,7 +48,7 @@ where {
              hydrogen_nrmm:includes ?vehicle;.
     OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-               ?quote hydrogen_nrmm:monetaryValue ?quoteMonetaryValue. }
+               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
 }
 """
         )

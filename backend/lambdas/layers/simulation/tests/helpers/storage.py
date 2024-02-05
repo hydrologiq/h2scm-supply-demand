@@ -107,7 +107,7 @@ where {
              rdfs:label ?serviceName ;
              hydrogen_nrmm:includes ?storage;
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-               ?quote hydrogen_nrmm:monetaryValue ?quoteMonetaryValue. }
+               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
 }
 """
     )

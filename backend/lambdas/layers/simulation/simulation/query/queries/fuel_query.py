@@ -54,6 +54,6 @@ where {
     ?service hydrogen_nrmm:includes ?producer ;
                 rdfs:label ?serviceName;
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-                ?quote hydrogen_nrmm:monetaryValue ?quoteMonetaryValue. }
+                ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
 }"""
         )
