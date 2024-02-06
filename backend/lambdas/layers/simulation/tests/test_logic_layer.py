@@ -250,14 +250,14 @@ JSON_INPUT_EXCLUSIVE_DOWNSTREAM = json.loads(
         {
           "company": {"id": "hydrogen_nrmm:315"},  
           "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
-          "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:4"] },
+          "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:45"] },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
         },
         {      
           "company": {"id": "hydrogen_nrmm:615"},    
           "quote": { "id": "hydrogen_nrmm:614", "monetaryValue": 40},
-          "service": { "id": "hydrogen_nrmm:6", "name": "Fuel Service 2", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:5"] },
+          "service": { "id": "hydrogen_nrmm:6", "name": "Fuel Service 2", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:55"] },
           "dispenser": { "id": "hydrogen_nrmm:61", "name": "Dispensing Site 2", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:612", "name": "Hydrogen Producer 2", "dailyOfftakeCapacity": 600 }
         }
@@ -322,7 +322,7 @@ JSON_INPUT_EXCLUSIVE_UPSTREAM = json.loads(
         {       
           "company": {"id": "hydrogen_nrmm:515"},   
           "quote": { "id": "hydrogen_nrmm:514", "monetaryValue": 40},
-          "service": { "id": "hydrogen_nrmm:5", "name": "Fuel Service 2", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:1"] },
+          "service": { "id": "hydrogen_nrmm:5", "name": "Fuel Service 2", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:15"] },
           "dispenser": { "id": "hydrogen_nrmm:51", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:512", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
         }
@@ -330,13 +330,13 @@ JSON_INPUT_EXCLUSIVE_UPSTREAM = json.loads(
       "storageRental": [
         {
           "company": {"id": "hydrogen_nrmm:415"},
-          "service": { "id": "hydrogen_nrmm:4", "name": "Service 3", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:3"] },
+          "service": { "id": "hydrogen_nrmm:4", "name": "Service 3", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:315"] },
           "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
           "quote": { "id": "hydrogen_nrmm:413", "monetaryValue": 100}
         },
         {
           "company": {"id": "hydrogen_nrmm:615"},
-          "service": { "id": "hydrogen_nrmm:6", "name": "Service 4", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:5"] },
+          "service": { "id": "hydrogen_nrmm:6", "name": "Service 4", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:515"] },
           "storage": { "id": "hydrogen_nrmm:612", "name": "Tube Trailer 2", "availableQuantity": 2, "capacity": 600 },
           "quote": { "id": "hydrogen_nrmm:613", "monetaryValue": 100}
         }
