@@ -43,10 +43,10 @@ where {
                 hydrogen_nrmm:storedIn ?producerStoredIn ;
                 hydrogen_nrmm:basedAt ?dispenser ;.
     FILTER(?producerDailyOfftakeCapacity >= """
-            + f"{config.total_fuel}"
-            + """ && ?producerStoredIn IN ("""
-            + f"hydrogen_nrmm:{config.storage_type}"
-            + """))
+        + f"{config.total_fuel}"
+        + """ && ?producerStoredIn IN ("""
+        + f"{', '.join(map(lambda type: f"hydrogen_nrmm:{type}", config.storage_types))}"
+        + """))
     OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
     ?dispenser rdfs:label ?dispenserName;
                 hydrogen_nrmm:lat ?dispenserLat;

@@ -22,7 +22,6 @@ class QueryLayer(SimulationLayer):
         self.configuration = config
 
     def run(self, data: QueryInput) -> QueryOutput:
-        storage_type = self.__storage_type(data.fuel)
         storageRental = StorageQuery(self.configuration).query(
             StorageQueryInput(data.total_fuel())
         )
@@ -32,7 +31,7 @@ class QueryLayer(SimulationLayer):
         )
 
         fuels = FuelQuery(self.configuration).query(
-            FuelQueryInput(data.total_fuel(), storage_type)
+            FuelQueryInput(data.total_fuel(), storage_types)
         )
 
         return QueryOutput(logistics, fuels, storageRental)
@@ -46,8 +45,3 @@ class QueryLayer(SimulationLayer):
                 ]
             )
         )
-
-    def __storage_type(self, fuel: list[Fuel]):
-        if len(fuel) > 0:
-            return set([_fuel.type for _fuel in fuel]).pop()
-        raise Exception("Failed to find fuel storage type")

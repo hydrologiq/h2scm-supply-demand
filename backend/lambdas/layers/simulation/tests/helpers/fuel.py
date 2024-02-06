@@ -148,7 +148,7 @@ def fuel_query_response_json(responses: list[FuelResponse]):
 
 def sparql_query_fuel(
     sum_of_fuel: float,
-    storage_type: BusinessOutputs.Storage = BusinessOutputs.Storage.TubeTrailer,
+    storage_types: BusinessOutputs.Storage = [BusinessOutputs.Storage.TubeTrailer],
 ):
     return (
         """
@@ -162,7 +162,7 @@ where {
     FILTER(?producerDailyOfftakeCapacity >= """
         + f"{sum_of_fuel}"
         + """ && ?producerStoredIn IN ("""
-        + f"hydrogen_nrmm:{storage_type}"
+        + f"{', '.join(map(lambda type: f"hydrogen_nrmm:{type}", storage_types))}"
         + """))
     OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
     ?dispenser rdfs:label ?dispenserName;

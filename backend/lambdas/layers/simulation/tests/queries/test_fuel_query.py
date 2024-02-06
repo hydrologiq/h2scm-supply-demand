@@ -76,7 +76,7 @@ def test_error_empty_response(requests_mock: Mocker):
 
     with pytest.raises(Exception) as e_info:
         fuel_query.query(
-            FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+            FuelQueryInput(fuel_total, [BusinessOutputs.Storage.TubeTrailer])
         )
     assert str(e_info.value) == "failed to transform JSON from query"
 
@@ -105,7 +105,7 @@ def test_error_response(requests_mock: Mocker):
 
     with pytest.raises(Exception) as e_info:
         fuel_query.query(
-            FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+            FuelQueryInput(fuel_total, [BusinessOutputs.Storage.TubeTrailer])
         )
     assert (
         str(e_info.value)
@@ -153,7 +153,7 @@ def test_run_fuel_query(requests_mock: Mocker):
     )
 
     fuel_output = fuel_query.query(
-        FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+        FuelQueryInput(fuel_total, [BusinessOutputs.Storage.TubeTrailer])
     )
 
     assert requests_mock.last_request is not None
@@ -202,7 +202,7 @@ def test_run_fuel_query_with_co2e(requests_mock: Mocker):
     )
 
     fuel_output = fuel_query.query(
-        FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+        FuelQueryInput(fuel_total, [BusinessOutputs.Storage.TubeTrailer])
     )
 
     assert requests_mock.last_request is not None
@@ -255,7 +255,7 @@ def test_run_fuel_query_with_deps(requests_mock: Mocker):
     )
 
     fuel_output = fuel_query.query(
-        FuelQueryInput(fuel_total, BusinessOutputs.Storage.TubeTrailer)
+        FuelQueryInput(fuel_total, [BusinessOutputs.Storage.TubeTrailer])
     )
 
     assert requests_mock.last_request is not None

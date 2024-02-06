@@ -123,7 +123,7 @@ def test_run_query_layer_output():
                     LogisticQueryInput([BusinessOutputs.Storage.TubeTrailer])
                 )
                 fuel_patched.assert_called_once_with(
-                    FuelQueryInput(485, BusinessOutputs.Storage.TubeTrailer)
+                    FuelQueryInput(485, [BusinessOutputs.Storage.TubeTrailer])
                 )
                 storage_patched.assert_called_once_with(StorageQueryInput(485))
                 assert json.loads(user_output.dumps()) == JSON_OUTPUT
