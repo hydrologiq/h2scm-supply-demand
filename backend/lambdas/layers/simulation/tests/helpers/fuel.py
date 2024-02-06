@@ -14,8 +14,6 @@ class FuelResponse:
     dispenserName: str
     dispenserLat: float
     dispenserLong: float
-    dispenserFillingStationCapacity: int
-    dispenserFillRate: float
     service: str
     serviceName: str
     quote: str
@@ -52,8 +50,6 @@ class FuelResponse:
                 "name": self.dispenserName,
                 "lat": self.dispenserLat,
                 "long": self.dispenserLong,
-                "fillRate": self.dispenserFillRate,
-                "fillingStationCapacity": self.dispenserFillingStationCapacity,
             },
             quote={
                 "id": to_id(self.quote),
@@ -88,16 +84,6 @@ class FuelResponse:
                 "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                 "type": "literal",
                 "value": f"{self.dispenserLong}",
-            },
-            "dispenserFillingStationCapacity": {
-                "datatype": "http://www.w3.org/2001/XMLSchema#integer",
-                "type": "literal",
-                "value": f"{self.dispenserFillingStationCapacity}",
-            },
-            "dispenserFillRate": {
-                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
-                "type": "literal",
-                "value": f"{self.dispenserFillRate}",
             },
             "service": {
                 "type": "uri",
@@ -153,7 +139,7 @@ def sparql_query_fuel(
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
+select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
 where { 
     ?producer rdfs:label ?producerName ;
                 hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
@@ -167,9 +153,7 @@ where {
     OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
     ?dispenser rdfs:label ?dispenserName;
                 hydrogen_nrmm:lat ?dispenserLat;
-                hydrogen_nrmm:long ?dispenserLong;
-                hydrogen_nrmm:fillingStationCapacity ?dispenserFillingStationCapacity;
-                hydrogen_nrmm:fillRate ?dispenserFillRate;.
+                hydrogen_nrmm:long ?dispenserLong;.
     ?service hydrogen_nrmm:includes ?producer ;
                 rdfs:label ?serviceName;
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.

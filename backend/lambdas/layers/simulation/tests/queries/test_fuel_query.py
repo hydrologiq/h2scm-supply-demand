@@ -18,7 +18,7 @@ JSON_OUTPUT = json.loads(
           "company": { "id": "hydrogen_nrmm:5" },
           "quote": { "id": "hydrogen_nrmm:4", "monetaryValuePerUnit": 40 },
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
-          "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 123, "long": 43.2 },
+          "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "lat": 123, "long": 43.2 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
         }
       ]
@@ -121,8 +121,6 @@ FUEL_RESPONSE_1 = FuelResponse(
     dispenserName="Dispensing Site 1",
     dispenserLat=123,
     dispenserLong=43.2,
-    dispenserFillingStationCapacity=3,
-    dispenserFillRate=10,
     service="3",
     serviceName="Fuel Service 1",
     quote="4",
@@ -170,8 +168,6 @@ FUEL_RESPONSE_1_CO2e = FuelResponse(
     dispenserName="Dispensing Site 1",
     dispenserLat=123,
     dispenserLong=43.2,
-    dispenserFillingStationCapacity=3,
-    dispenserFillRate=10,
     service="3",
     serviceName="Fuel Service 1",
     quote="4",
@@ -221,8 +217,6 @@ FUEL_RESPONSE_1_DEPS = FuelResponse(
     dispenserName="Dispensing Site 1",
     dispenserLat=123,
     dispenserLong=43.2,
-    dispenserFillingStationCapacity=3,
-    dispenserFillRate=10,
     service="3",
     serviceName="Fuel Service 1",
     quote="4",

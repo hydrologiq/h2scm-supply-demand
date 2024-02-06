@@ -168,12 +168,6 @@
         "name": {
           "type": "string"
         },
-        "fillRate": {
-          "type": "number"
-        },
-        "fillingStationCapacity": {
-          "type": "number"
-        },
         "lat": {
           "type": "number"
         },
