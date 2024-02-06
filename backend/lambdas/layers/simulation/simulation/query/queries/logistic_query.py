@@ -5,6 +5,7 @@ from simulation.query.queries import (
     LogisticQueryInput,
 )
 from simulation.query.queries.hydrogen_nrmm_optional import (
+    Company,
     Quote,
     LogisticService,
     Vehicle,
@@ -23,6 +24,7 @@ class LogisticQuery(BaseQuery):
             "service": LogisticService,
             "vehicle": Vehicle,
             "quote": Quote,
+            "company": Company,
         }
         matching_instances = self._get_matching_instances(
             bindings,
@@ -35,7 +37,7 @@ class LogisticQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue
+select ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
 where {
     ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:"""
             + f"{config.storageType}"
@@ -51,6 +53,7 @@ where {
                ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
+    ?company hydrogen_nrmm:provides ?service;.
 }
 """
         )

@@ -58,6 +58,7 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     serviceName="Logistics Service 1",
     quote="5",
     quoteMonetaryValue=400,
+    company="25",
 )
 
 STORAGE_RESPONSE_1 = StorageResponse(

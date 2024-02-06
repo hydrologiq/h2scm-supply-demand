@@ -6,6 +6,7 @@ from simulation.query import QueryInput
 SAMPLE_LOGIC_INPUT = {
     "logistic": [
         {
+            "company": {"id": "hydrogen_nrmm:15"},
             "service": {"id": "hydrogen_nrmm:1", "name": "Service 1"},
             "vehicle": {
                 "id": "hydrogen_nrmm:123",
@@ -16,6 +17,7 @@ SAMPLE_LOGIC_INPUT = {
             "quote": {"id": "hydrogen_nrmm:1234", "monetaryValue": 80},
         },
         {
+            "company": {"id": "hydrogen_nrmm:25"},
             "service": {"id": "hydrogen_nrmm:2", "name": "Service 2"},
             "vehicle": {
                 "id": "hydrogen_nrmm:212",

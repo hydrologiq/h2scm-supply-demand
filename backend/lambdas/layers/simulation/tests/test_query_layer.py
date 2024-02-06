@@ -42,11 +42,13 @@ JSON_OUTPUT = json.loads(
     {
       "logistic": [
         {
+          "company": { "id": "hydrogen_nrmm:15" },
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
           "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 40}
         },
         {
+          "company": { "id": "hydrogen_nrmm:25" },
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
           "quote": { "id": "hydrogen_nrmm:2124", "monetaryValue": 40}

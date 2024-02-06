@@ -10,11 +10,13 @@ JSON_INPUT = json.loads(
     {
       "logistic": [
         {
+          "company": {"id": "hydrogen_nrmm:15"},
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 110 },
           "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
         },
         {
+          "company": {"id": "hydrogen_nrmm:25"},
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
           "quote": { "id": "hydrogen_nrmm:2134", "monetaryValue": 40}
@@ -62,6 +64,7 @@ def test_run_logic_layer_output():
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
             {
+                "company": {"id": "hydrogen_nrmm:25"},
                 "service": {"id": "hydrogen_nrmm:2", "name": "Service 2"},
                 "vehicle": {
                     "id": "hydrogen_nrmm:212",
@@ -142,6 +145,7 @@ def test_run_logic_layer_output_with_co2e():
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
             {
+                "company": {"id": "hydrogen_nrmm:25"},
                 "service": {
                     "id": "hydrogen_nrmm:2",
                     "name": "Service 2",
@@ -219,6 +223,7 @@ JSON_INPUT_EXCLUSIVE_DOWNSTREAM = json.loads(
     {
       "logistic": [
         {
+          "company": {"id": "hydrogen_nrmm:15"},
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 2, "transportDistance": 123 },
           "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
@@ -295,6 +300,7 @@ JSON_INPUT_EXCLUSIVE_UPSTREAM = json.loads(
     {
       "logistic": [
         {
+          "company": {"id": "hydrogen_nrmm:15"},
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 2, "transportDistance": 123 },
           "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}

@@ -61,6 +61,9 @@
         },
         "quote": {
           "$ref": "#/$defs/quote"
+        },
+        "company": {
+          "$ref": "#/$defs/company"
         }
       },
       "additionalProperties": false
