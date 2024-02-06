@@ -1,3 +1,4 @@
+import math
 from simulation import SimulationLayer
 from simulation.business import BusinessOutput
 from simulation.logic.outputs import Matched
@@ -60,7 +61,7 @@ class LogicLayer(SimulationLayer):
                             float(fuel_match.quote.monetaryValuePerUnit)
                             * business_data.total_fuel()
                         )
-                        + float(storage_rental.quote.monetaryValuePerUnit),
+                        + storage_cost(storage_rental, business_data.total_fuel()),
                         2,
                     )
                     CO2e = (
@@ -93,6 +94,12 @@ class LogicLayer(SimulationLayer):
                     )
 
         return matches
+
+
+def storage_cost(storage_rental: StorageQueryResponse, total_fuel: float):
+    return math.ceil(total_fuel / float(storage_rental.storage.capacity)) * float(
+        storage_rental.quote.monetaryValuePerUnit
+    )
 
 
 def meets_service_exclusivity(

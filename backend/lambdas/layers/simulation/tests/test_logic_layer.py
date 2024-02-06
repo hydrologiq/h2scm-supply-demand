@@ -35,7 +35,7 @@ JSON_INPUT = json.loads(
         {
           "company": {"id": "hydrogen_nrmm:415"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
-          "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
+          "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 300 },
           "quote": { "id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100}
         }
       ]
@@ -61,7 +61,8 @@ def test_run_logic_layer_output():
 
     # Second only matches as within transport range (110 vs 123 km)
     # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
-    # price -> (485 * 40) + 40 + 100 = 19400 + 40 + 100 = 19540
+    # price -> (485 * 40) + 40 + (100 * 2) = 19400 + 40 + 200 = 19640
+    # (fuel quantity * price per kg) + transport quote + (storage cost * quantity)
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
             {
@@ -104,7 +105,7 @@ def test_run_logic_layer_output():
                     "id": "hydrogen_nrmm:412",
                     "name": "Tube Trailer",
                     "availableQuantity": 2,
-                    "capacity": 600,
+                    "capacity": 300,
                 },
                 "quote": {"id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100},
             }
@@ -114,7 +115,7 @@ def test_run_logic_layer_output():
                 "logistic": "hydrogen_nrmm:2",
                 "fuel": "hydrogen_nrmm:3",
                 "fuelUtilisation": 80.83,
-                "price": 19540,
+                "price": 19640,
                 "transportDistance": 111.17,
                 "storage": {"id": "hydrogen_nrmm:4", "type": "TubeTrailer"},
             }
@@ -142,7 +143,8 @@ def test_run_logic_layer_output_with_co2e():
 
     # Second only matches as within transport range (110 vs 123 km)
     # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
-    # price -> (485 * 40) + 40 + 100 = 19400 + 40 + 100 = 19540
+    # price -> (485 * 40) + 40 + (100 * 2) = 19400 + 40 + 200 = 19640
+    # (fuel quantity * price per kg) + transport quote + (storage cost * quantity)
     # co2e -> (485 * 1) + (111.17 * 1) = 596.17
     assert json.loads(logic_output.dumps()) == {
         "logistic": [
@@ -191,7 +193,7 @@ def test_run_logic_layer_output_with_co2e():
                     "id": "hydrogen_nrmm:412",
                     "name": "Tube Trailer",
                     "availableQuantity": 2,
-                    "capacity": 600,
+                    "capacity": 300,
                 },
                 "quote": {"id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100},
             }
@@ -201,7 +203,7 @@ def test_run_logic_layer_output_with_co2e():
                 "logistic": "hydrogen_nrmm:2",
                 "fuel": "hydrogen_nrmm:3",
                 "fuelUtilisation": 80.83,
-                "price": 19540.0,
+                "price": 19640.0,
                 "transportDistance": 111.17,
                 "CO2e": 596.17,
                 "storage": {"id": "hydrogen_nrmm:4", "type": "TubeTrailer"},
@@ -236,7 +238,7 @@ JSON_INPUT_EXCLUSIVE_DOWNSTREAM = json.loads(
         {
           "company": {"id": "hydrogen_nrmm:45"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
-          "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
+          "storage": { "id": "hydrogen_nrmm:412", "name": "MCP 123", "availableQuantity": 100, "capacity": 6 },
           "quote": { "id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100}
         },
         {
@@ -284,7 +286,8 @@ def test_run_logic_layer_output_downstream_exclusivity():
 
     # first only matches due to exclusivity requirements
     # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
-    # price -> (485 * 40) + 80 + 100 = 19400 + 80 + 100 = 19580
+    # price -> (485 * 40) + 80 + (100 * 81) = 19400 + 80 + 8100 = 27580
+    # (fuel quantity * price per kg) + transport quote + (storage cost * quantity)
     assert json.loads(logic_output.dumps()) == {
         **(JSON_INPUT_EXCLUSIVE_DOWNSTREAM),
         "matches": [
@@ -292,7 +295,7 @@ def test_run_logic_layer_output_downstream_exclusivity():
                 "logistic": "hydrogen_nrmm:1",
                 "fuel": "hydrogen_nrmm:3",
                 "fuelUtilisation": 80.83,
-                "price": 19580.0,
+                "price": 27580.0,
                 "transportDistance": 111.17,
                 "storage": {"id": "hydrogen_nrmm:4", "type": "TubeTrailer"},
             }
