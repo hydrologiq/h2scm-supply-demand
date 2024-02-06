@@ -39,14 +39,12 @@ class StorageQuery(BaseQuery):
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
 where {
-    ?storage rdf:type hydrogen_nrmm:"""
-            + f"{config.storageType}"
-            + """ ;
+    ?storage rdf:type hydrogen_nrmm:Storage ;
              rdfs:label ?storageName ;
              hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
              hydrogen_nrmm:capacity ?storageCapacity ;.
-    FILTER(?storageCapacity >= """
-            + f"{config.minStorage}"
+    FILTER(?storageCapacity * ?storageAvailableQuantity >= """
+            + f"{config.totalFuel}"
             + """)
     ?service rdf:type hydrogen_nrmm:Rental;
              rdfs:label ?serviceName ;

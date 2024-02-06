@@ -101,23 +101,18 @@ def storage_query_response_json(responses: list[StorageResponse]):
     }
 
 
-def sparql_query_storage(
-    minStorage: float,
-    storage_type: BusinessOutputs.Storage = BusinessOutputs.Storage.TubeTrailer,
-):
+def sparql_query_storage(totalFuel: float):
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
 where {
-    ?storage rdf:type hydrogen_nrmm:"""
-        + f"{storage_type}"
-        + """ ;
+    ?storage rdf:type hydrogen_nrmm:Storage ;
              rdfs:label ?storageName ;
              hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
              hydrogen_nrmm:capacity ?storageCapacity ;.
-    FILTER(?storageCapacity >= """
-        + f"{minStorage}"
+    FILTER(?storageCapacity * ?storageAvailableQuantity >= """
+        + f"{totalFuel}"
         + """)
     ?service rdf:type hydrogen_nrmm:Rental;
              rdfs:label ?serviceName ;

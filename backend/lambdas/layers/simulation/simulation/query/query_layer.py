@@ -25,18 +25,13 @@ class QueryLayer(SimulationLayer):
             LogisticQueryInput(storage_type)
         )
         storageRental = StorageQuery(self.configuration).query(
-            StorageQueryInput(self.__minimum_fuel(data.fuel), storage_type)
+            StorageQueryInput(data.total_fuel())
         )
         fuels = FuelQuery(self.configuration).query(
             FuelQueryInput(data.total_fuel(), storage_type)
         )
 
         return QueryOutput(logistics, fuels, storageRental)
-
-    def __minimum_fuel(self, fuel: list[Fuel]):
-        if len(fuel) > 0:
-            return min([_fuel.amount for _fuel in fuel])
-        raise Exception("Failed to find minimum fuel")
 
     def __storage_type(self, fuel: list[Fuel]):
         if len(fuel) > 0:

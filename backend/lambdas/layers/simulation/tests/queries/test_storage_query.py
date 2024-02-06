@@ -121,17 +121,15 @@ def test_run_storage_query(requests_mock: Mocker):
         )
     )
 
-    minStorage = 125
+    totalFuel = 125
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_storage(minStorage),
+        sparql_query_storage(totalFuel),
         storage_query_response_json([LOGISTIC_RESPONSE_1, LOGISTIC_RESPONSE_2]),
     )
 
-    storage_output = storage_query.query(
-        StorageQueryInput(minStorage, BusinessOutputs.Storage.TubeTrailer)
-    )
+    storage_output = storage_query.query(StorageQueryInput(totalFuel))
 
     assert requests_mock.last_request is not None
     assert len(storage_output) == 2
@@ -180,19 +178,15 @@ def test_run_storage_query_with_mcp(requests_mock: Mocker):
         )
     )
 
-    minStorage = 125
+    totalFuel = 125
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_storage(
-            minStorage, BusinessOutputs.Storage.ManifoldCylinderPallet
-        ),
+        sparql_query_storage(totalFuel),
         storage_query_response_json([LOGISTIC_RESPONSE_MCP]),
     )
 
-    storage_output = storage_query.query(
-        StorageQueryInput(minStorage, BusinessOutputs.Storage.ManifoldCylinderPallet)
-    )
+    storage_output = storage_query.query(StorageQueryInput(totalFuel))
 
     assert requests_mock.last_request is not None
     assert len(storage_output) == 1
@@ -227,17 +221,15 @@ def test_run_storage_query_with_deps(requests_mock: Mocker):
         )
     )
 
-    minStorage = 125
+    totalFuel = 125
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_storage(minStorage),
+        sparql_query_storage(totalFuel),
         storage_query_response_json([LOGISTIC_RESPONSE_2_DEPS]),
     )
 
-    storage_output = storage_query.query(
-        StorageQueryInput(minStorage, BusinessOutputs.Storage.TubeTrailer)
-    )
+    storage_output = storage_query.query(StorageQueryInput(totalFuel))
 
     assert requests_mock.last_request is not None
     assert len(storage_output) == 1
