@@ -70,6 +70,7 @@ STORAGE_RESPONSE_1 = StorageResponse(
     serviceName="Storage Service 1",
     quote="5",
     quoteMonetaryValue=1000,
+    company="11",
 )
 
 FUEL_RESPONSE_1 = FuelResponse(

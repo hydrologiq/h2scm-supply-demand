@@ -33,6 +33,7 @@ JSON_INPUT = json.loads(
       ],
       "storageRental": [
         {
+          "company": {"id": "hydrogen_nrmm:415"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
           "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
           "quote": { "id": "hydrogen_nrmm:413", "monetaryValue": 100}
@@ -97,6 +98,7 @@ def test_run_logic_layer_output():
         ],
         "storageRental": [
             {
+                "company": {"id": "hydrogen_nrmm:415"},
                 "service": {"id": "hydrogen_nrmm:4", "name": "Service 3"},
                 "storage": {
                     "id": "hydrogen_nrmm:412",
@@ -183,6 +185,7 @@ def test_run_logic_layer_output_with_co2e():
         ],
         "storageRental": [
             {
+                "company": {"id": "hydrogen_nrmm:415"},
                 "service": {"id": "hydrogen_nrmm:4", "name": "Service 3"},
                 "storage": {
                     "id": "hydrogen_nrmm:412",
@@ -231,11 +234,13 @@ JSON_INPUT_EXCLUSIVE_DOWNSTREAM = json.loads(
       ],
       "storageRental": [
         {
+          "company": {"id": "hydrogen_nrmm:45"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
           "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
           "quote": { "id": "hydrogen_nrmm:413", "monetaryValue": 100}
         },
-         {
+        {
+          "company": {"id": "hydrogen_nrmm:55"},
           "service": { "id": "hydrogen_nrmm:5", "name": "Service 4", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:10"] },
           "storage": { "id": "hydrogen_nrmm:512", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
           "quote": { "id": "hydrogen_nrmm:513", "monetaryValue": 100}
@@ -324,11 +329,13 @@ JSON_INPUT_EXCLUSIVE_UPSTREAM = json.loads(
       ],
       "storageRental": [
         {
+          "company": {"id": "hydrogen_nrmm:415"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:3"] },
           "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
           "quote": { "id": "hydrogen_nrmm:413", "monetaryValue": 100}
         },
         {
+          "company": {"id": "hydrogen_nrmm:615"},
           "service": { "id": "hydrogen_nrmm:6", "name": "Service 4", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:5"] },
           "storage": { "id": "hydrogen_nrmm:612", "name": "Tube Trailer 2", "availableQuantity": 2, "capacity": 600 },
           "quote": { "id": "hydrogen_nrmm:613", "monetaryValue": 100}

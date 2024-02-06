@@ -16,6 +16,7 @@ class StorageResponse:
     serviceName: str
     quote: str
     quoteMonetaryValue: float
+    company: str
     serviceExclusiveDownstreamCompanies: Optional[str] = None
     serviceExclusiveUpstreamCompanies: Optional[str] = None
 
@@ -38,6 +39,7 @@ class StorageResponse:
             },
             service=service,
             quote={"id": to_id(self.quote), "monetaryValue": self.quoteMonetaryValue},
+            company={"id": to_id(self.company)},
         )
 
     def response_binding(self) -> object:
@@ -71,6 +73,10 @@ class StorageResponse:
                 "type": "literal",
                 "value": f"{self.quoteMonetaryValue}",
             },
+            "company": {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.company}",
+            },
         }
         if self.serviceExclusiveDownstreamCompanies is not None:
             binding["serviceExclusiveDownstreamCompanies"] = {
@@ -88,18 +94,7 @@ class StorageResponse:
 
 def storage_query_response_json(responses: list[StorageResponse]):
     return {
-        "head": {
-            "vars": [
-                "storage",
-                "storageName",
-                "storageAvailableQuantity",
-                "storageCapacity",
-                "service",
-                "serviceName",
-                "quote",
-                "quoteMonetaryValue",
-            ]
-        },
+        "head": {"vars": []},
         "results": {
             "bindings": [response.response_binding() for response in responses]
         },
@@ -113,7 +108,7 @@ def sparql_query_storage(
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
 where {
     ?storage rdf:type hydrogen_nrmm:"""
         + f"{storage_type}"
@@ -131,6 +126,7 @@ where {
                ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
+    ?company hydrogen_nrmm:provides ?service;.
 }
 """
     )

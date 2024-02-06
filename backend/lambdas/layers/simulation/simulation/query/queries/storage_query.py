@@ -8,6 +8,7 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
     Quote,
     Storage,
     Rental,
+    Company,
 )
 
 
@@ -23,6 +24,7 @@ class StorageQuery(BaseQuery):
             "storage": Storage,
             "service": Rental,
             "quote": Quote,
+            "company": Company,
         }
         matching_instances = self._get_matching_instances(
             bindings,
@@ -35,7 +37,7 @@ class StorageQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
 where {
     ?storage rdf:type hydrogen_nrmm:"""
             + f"{config.storageType}"
@@ -53,6 +55,7 @@ where {
                ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
+    ?company hydrogen_nrmm:provides ?service;.
 }
 """
         )

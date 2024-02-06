@@ -9,6 +9,7 @@ SAMPLE_LOGIC_INPUT = {
     "fuel": [],
     "storageRental": [
         {
+            "company": {"id": "hydrogen_nrmm:51"},
             "quote": {"id": "hydrogen_nrmm:5", "monetaryValue": 40},
             "service": {"id": "hydrogen_nrmm:4", "name": "Storage Service 2"},
             "storage": {
@@ -19,6 +20,7 @@ SAMPLE_LOGIC_INPUT = {
             },
         },
         {
+            "company": {"id": "hydrogen_nrmm:61"},
             "quote": {"id": "hydrogen_nrmm:6", "monetaryValue": 400},
             "service": {"id": "hydrogen_nrmm:3", "name": "Storage Service 1"},
             "storage": {

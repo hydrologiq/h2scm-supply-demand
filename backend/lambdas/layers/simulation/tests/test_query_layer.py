@@ -56,6 +56,7 @@ JSON_OUTPUT = json.loads(
       ],
       "storageRental": [
         {
+         "company": { "id": "hydrogen_nrmm:45" },
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:423", "name": "Tube Trailer 1", "availableQuantity": 1, "capacity": 600 },
           "quote": { "id": "hydrogen_nrmm:4234", "monetaryValue": 40}
