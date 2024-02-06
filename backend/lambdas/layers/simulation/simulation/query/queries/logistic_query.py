@@ -39,9 +39,8 @@ class LogisticQuery(BaseQuery):
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 select ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
 where {
-    ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:"""
-            + f"{config.storageType}"
-            + """ ;
+    VALUES ?storageType { """ + f"{' '.join(map(lambda type: f"hydrogen_nrmm:{type}", config.storageTypes))}" + """ }
+    ?vehicle hydrogen_nrmm:carries ?storageType ;
              rdfs:label ?vehicleName ;
              hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
              hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.

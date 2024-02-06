@@ -128,7 +128,7 @@ def test_run_logistic_query(requests_mock: Mocker):
     )
 
     logistic_output = logistic_query.query(
-        LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
+        LogisticQueryInput([BusinessOutputs.Storage.TubeTrailer])
     )
 
     assert requests_mock.last_request is not None
@@ -186,7 +186,7 @@ def test_run_logistic_query_with_co2e(requests_mock: Mocker):
     )
 
     logistic_output = logistic_query.query(
-        LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
+        LogisticQueryInput([BusinessOutputs.Storage.TubeTrailer])
     )
 
     assert requests_mock.last_request is not None
@@ -244,12 +244,12 @@ def test_run_logistic_query_with_mcp(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(BusinessOutputs.Storage.ManifoldCylinderPallet),
+        sparql_query_logistic([BusinessOutputs.Storage.ManifoldCylinderPallet]),
         logistic_query_response_json([LOGISTIC_RESPONSE_MCP]),
     )
 
     logistic_output = logistic_query.query(
-        LogisticQueryInput(BusinessOutputs.Storage.ManifoldCylinderPallet)
+        LogisticQueryInput([BusinessOutputs.Storage.ManifoldCylinderPallet])
     )
 
     assert requests_mock.last_request is not None
@@ -292,7 +292,7 @@ def test_run_logistic_query_with_deps(requests_mock: Mocker):
     )
 
     logistic_output = logistic_query.query(
-        LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
+        LogisticQueryInput([BusinessOutputs.Storage.TubeTrailer])
     )
 
     assert requests_mock.last_request is not None

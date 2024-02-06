@@ -104,7 +104,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
     register_sparql_query_mock(
         requests_mock,
-        sparql_query_logistic(),
+        sparql_query_logistic([]),
         logistic_query_response_json([]),
     )
 

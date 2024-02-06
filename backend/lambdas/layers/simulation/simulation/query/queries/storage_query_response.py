@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from simulation import BaseQueryResponse
+import simulation
 from simulation.query.queries.hydrogen_nrmm_optional import (
     Company,
     Rental,
@@ -23,9 +24,17 @@ class StorageQueryResponse(BaseQueryResponse):
         quote: Quote,
         company: Company,
     ):
-        self.storage = (
-            Storage(**storage) if not isinstance(storage, Storage) else storage
-        )
+        if "type" in storage:
+            class_type = getattr(
+                simulation.query.queries.hydrogen_nrmm_optional,
+                storage["type"].replace("hydrogen_nrmm:", ""),
+            )
+            del storage["type"]
+            self.storage = class_type(**storage)
+        else:
+            self.storage = (
+                Storage(**storage) if not isinstance(storage, Storage) else storage
+            )
         self.service = Rental(**service) if not isinstance(service, Rental) else service
         self.quote = Quote(**quote) if not isinstance(quote, Quote) else quote
         self.company = (

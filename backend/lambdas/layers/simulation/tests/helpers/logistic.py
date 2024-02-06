@@ -113,16 +113,15 @@ def logistic_query_response_json(responses: list[LogisticResponse]):
 
 
 def sparql_query_logistic(
-    storage_type: BusinessOutputs.Storage = BusinessOutputs.Storage.TubeTrailer,
+    storage_types: list[BusinessOutputs.Storage] = [BusinessOutputs.Storage.TubeTrailer],
 ):
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 select ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
 where {
-    ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:"""
-        + f"{storage_type}"
-        + """ ;
+    VALUES ?storageType { """ + f"{' '.join(map(lambda type: f"hydrogen_nrmm:{type}", storage_types))}" + """ }
+    ?vehicle hydrogen_nrmm:carries ?storageType ;
              rdfs:label ?vehicleName ;
              hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
              hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.

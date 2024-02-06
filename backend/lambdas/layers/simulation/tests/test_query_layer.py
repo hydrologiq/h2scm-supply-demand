@@ -58,7 +58,7 @@ JSON_OUTPUT = json.loads(
         {
          "company": { "id": "hydrogen_nrmm:45" },
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 1" },
-          "storage": { "id": "hydrogen_nrmm:423", "name": "Tube Trailer 1", "availableQuantity": 1, "capacity": 600 },
+          "storage": { "id": "hydrogen_nrmm:423", "name": "Tube Trailer 1", "availableQuantity": 1, "capacity": 600, "type": "hydrogen_nrmm:TubeTrailer" },
           "quote": { "id": "hydrogen_nrmm:4234", "monetaryValuePerUnit": 40}
         }
       ],
@@ -120,7 +120,7 @@ def test_run_query_layer_output():
                 user_output = query_layer.run(query_input)
 
                 logistics_patched.assert_called_once_with(
-                    LogisticQueryInput(BusinessOutputs.Storage.TubeTrailer)
+                    LogisticQueryInput([BusinessOutputs.Storage.TubeTrailer])
                 )
                 fuel_patched.assert_called_once_with(
                     FuelQueryInput(485, BusinessOutputs.Storage.TubeTrailer)
