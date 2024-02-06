@@ -15,7 +15,7 @@ class LogisticResponse:
     service: str
     serviceName: str
     quote: str
-    quoteMonetaryValue: float
+    quoteMonetaryValuePerUnit: float
     company: str
     serviceTransportCO2e: Optional[float] = None
     serviceExclusiveDownstreamCompanies: Optional[str] = None
@@ -41,7 +41,10 @@ class LogisticResponse:
                 "transportDistance": self.vehicleTransportDistance,
             },
             service=service,
-            quote={"id": to_id(self.quote), "monetaryValue": self.quoteMonetaryValue},
+            quote={
+                "id": to_id(self.quote),
+                "monetaryValuePerUnit": self.quoteMonetaryValuePerUnit,
+            },
             company={"id": to_id(self.company)},
         )
 
@@ -71,10 +74,10 @@ class LogisticResponse:
                 "type": "uri",
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.quote}",
             },
-            "quoteMonetaryValue": {
+            "quoteMonetaryValuePerUnit": {
                 "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                 "type": "literal",
-                "value": f"{self.quoteMonetaryValue}",
+                "value": f"{self.quoteMonetaryValuePerUnit}",
             },
             "company": {
                 "type": "uri",
@@ -115,7 +118,7 @@ def sparql_query_logistic(
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
+select ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
 where {
     ?vehicle hydrogen_nrmm:carries hydrogen_nrmm:"""
         + f"{storage_type}"
@@ -128,7 +131,7 @@ where {
              hydrogen_nrmm:includes ?vehicle;.
     OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
+               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValuePerUnit. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
     ?company hydrogen_nrmm:provides ?service;.

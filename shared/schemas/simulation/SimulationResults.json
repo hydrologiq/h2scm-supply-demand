@@ -228,7 +228,7 @@
         "id": {
           "type": "string"
         },
-        "monetaryValue": {
+        "monetaryValuePerUnit": {
           "type": "number"
         }
       },

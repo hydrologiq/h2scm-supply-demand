@@ -13,19 +13,19 @@ JSON_INPUT = json.loads(
           "company": {"id": "hydrogen_nrmm:15"},
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 110 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 80}
         },
         {
           "company": {"id": "hydrogen_nrmm:25"},
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:2134", "monetaryValue": 40}
+          "quote": { "id": "hydrogen_nrmm:2134", "monetaryValuePerUnit": 40}
         }
       ],
       "fuel": [
         {
           "company": {"id": "hydrogen_nrmm:315"},
-          "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
+          "quote": { "id": "hydrogen_nrmm:314", "monetaryValuePerUnit": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
@@ -36,7 +36,7 @@ JSON_INPUT = json.loads(
           "company": {"id": "hydrogen_nrmm:415"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
           "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
-          "quote": { "id": "hydrogen_nrmm:413", "monetaryValue": 100}
+          "quote": { "id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100}
         }
       ]
     }
@@ -73,13 +73,13 @@ def test_run_logic_layer_output():
                     "availableQuantity": 2,
                     "transportDistance": 123,
                 },
-                "quote": {"id": "hydrogen_nrmm:2134", "monetaryValue": 40},
+                "quote": {"id": "hydrogen_nrmm:2134", "monetaryValuePerUnit": 40},
             },
         ],
         "fuel": [
             {
                 "company": {"id": "hydrogen_nrmm:315"},
-                "quote": {"id": "hydrogen_nrmm:314", "monetaryValue": 40},
+                "quote": {"id": "hydrogen_nrmm:314", "monetaryValuePerUnit": 40},
                 "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
                 "dispenser": {
                     "id": "hydrogen_nrmm:31",
@@ -106,7 +106,7 @@ def test_run_logic_layer_output():
                     "availableQuantity": 2,
                     "capacity": 600,
                 },
-                "quote": {"id": "hydrogen_nrmm:413", "monetaryValue": 100},
+                "quote": {"id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100},
             }
         ],
         "matches": [
@@ -159,13 +159,13 @@ def test_run_logic_layer_output_with_co2e():
                     "availableQuantity": 2,
                     "transportDistance": 123,
                 },
-                "quote": {"id": "hydrogen_nrmm:2134", "monetaryValue": 40},
+                "quote": {"id": "hydrogen_nrmm:2134", "monetaryValuePerUnit": 40},
             },
         ],
         "fuel": [
             {
                 "company": {"id": "hydrogen_nrmm:315"},
-                "quote": {"id": "hydrogen_nrmm:314", "monetaryValue": 40},
+                "quote": {"id": "hydrogen_nrmm:314", "monetaryValuePerUnit": 40},
                 "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
                 "dispenser": {
                     "id": "hydrogen_nrmm:31",
@@ -193,7 +193,7 @@ def test_run_logic_layer_output_with_co2e():
                     "availableQuantity": 2,
                     "capacity": 600,
                 },
-                "quote": {"id": "hydrogen_nrmm:413", "monetaryValue": 100},
+                "quote": {"id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100},
             }
         ],
         "matches": [
@@ -229,7 +229,7 @@ JSON_INPUT_EXCLUSIVE_DOWNSTREAM = json.loads(
           "company": {"id": "hydrogen_nrmm:15"},
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 2, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 80}
         }
       ],
       "storageRental": [
@@ -237,26 +237,26 @@ JSON_INPUT_EXCLUSIVE_DOWNSTREAM = json.loads(
           "company": {"id": "hydrogen_nrmm:45"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
           "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
-          "quote": { "id": "hydrogen_nrmm:413", "monetaryValue": 100}
+          "quote": { "id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100}
         },
         {
           "company": {"id": "hydrogen_nrmm:55"},
           "service": { "id": "hydrogen_nrmm:5", "name": "Service 4", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:10"] },
           "storage": { "id": "hydrogen_nrmm:512", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
-          "quote": { "id": "hydrogen_nrmm:513", "monetaryValue": 100}
+          "quote": { "id": "hydrogen_nrmm:513", "monetaryValuePerUnit": 100}
         }
       ],
         "fuel": [
         {
           "company": {"id": "hydrogen_nrmm:315"},  
-          "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
+          "quote": { "id": "hydrogen_nrmm:314", "monetaryValuePerUnit": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:45"] },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
         },
         {      
           "company": {"id": "hydrogen_nrmm:615"},    
-          "quote": { "id": "hydrogen_nrmm:614", "monetaryValue": 40},
+          "quote": { "id": "hydrogen_nrmm:614", "monetaryValuePerUnit": 40},
           "service": { "id": "hydrogen_nrmm:6", "name": "Fuel Service 2", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:55"] },
           "dispenser": { "id": "hydrogen_nrmm:61", "name": "Dispensing Site 2", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:612", "name": "Hydrogen Producer 2", "dailyOfftakeCapacity": 600 }
@@ -308,20 +308,20 @@ JSON_INPUT_EXCLUSIVE_UPSTREAM = json.loads(
           "company": {"id": "hydrogen_nrmm:15"},
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 2, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80}
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 80}
         }
       ],
       "fuel": [
         {        
           "company": {"id": "hydrogen_nrmm:315"},  
-          "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
+          "quote": { "id": "hydrogen_nrmm:314", "monetaryValuePerUnit": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
         },
         {       
           "company": {"id": "hydrogen_nrmm:515"},   
-          "quote": { "id": "hydrogen_nrmm:514", "monetaryValue": 40},
+          "quote": { "id": "hydrogen_nrmm:514", "monetaryValuePerUnit": 40},
           "service": { "id": "hydrogen_nrmm:5", "name": "Fuel Service 2", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:15"] },
           "dispenser": { "id": "hydrogen_nrmm:51", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:512", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
@@ -332,13 +332,13 @@ JSON_INPUT_EXCLUSIVE_UPSTREAM = json.loads(
           "company": {"id": "hydrogen_nrmm:415"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:315"] },
           "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
-          "quote": { "id": "hydrogen_nrmm:413", "monetaryValue": 100}
+          "quote": { "id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100}
         },
         {
           "company": {"id": "hydrogen_nrmm:615"},
           "service": { "id": "hydrogen_nrmm:6", "name": "Service 4", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:515"] },
           "storage": { "id": "hydrogen_nrmm:612", "name": "Tube Trailer 2", "availableQuantity": 2, "capacity": 600 },
-          "quote": { "id": "hydrogen_nrmm:613", "monetaryValue": 100}
+          "quote": { "id": "hydrogen_nrmm:613", "monetaryValuePerUnit": 100}
         }
       ]
     }

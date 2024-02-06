@@ -55,12 +55,12 @@ class LogicLayer(SimulationLayer):
                     ):
                         break
                     price = round(
-                        (float(logistic.quote.monetaryValue))
+                        (float(logistic.quote.monetaryValuePerUnit))
                         + (
-                            float(fuel_match.quote.monetaryValue)
+                            float(fuel_match.quote.monetaryValuePerUnit)
                             * business_data.total_fuel()
                         )
-                        + float(storage_rental.quote.monetaryValue),
+                        + float(storage_rental.quote.monetaryValuePerUnit),
                         2,
                     )
                     CO2e = (

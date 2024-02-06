@@ -44,13 +44,13 @@ JSON_OUTPUT = json.loads(
           "company": { "id": "hydrogen_nrmm:15" },
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:12", "name": "Tube Trailer 1", "capacity": 300, "availableQuantity": 3 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 80 }
         },
         {
           "company": { "id": "hydrogen_nrmm:25" },
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "storage": { "id": "hydrogen_nrmm:21", "name": "Tube Trailer 2", "capacity": 225, "availableQuantity": 1 },
-          "quote": { "id": "hydrogen_nrmm:214", "monetaryValue": 40 }
+          "quote": { "id": "hydrogen_nrmm:214", "monetaryValuePerUnit": 40 }
         }
       ]
     }
@@ -91,7 +91,7 @@ LOGISTIC_RESPONSE_1 = StorageResponse(
     service="1",
     serviceName="Service 1",
     quote="12345",
-    quoteMonetaryValue=80.0,
+    quoteMonetaryValuePerUnit=80.0,
     company="15",
 )
 
@@ -103,7 +103,7 @@ LOGISTIC_RESPONSE_2 = StorageResponse(
     service="2",
     serviceName="Service 2",
     quote="214",
-    quoteMonetaryValue=40.0,
+    quoteMonetaryValuePerUnit=40.0,
     company="25",
 )
 
@@ -145,7 +145,7 @@ LOGISTIC_RESPONSE_MCP = StorageResponse(
     service="1",
     serviceName="Service 1",
     quote="12345",
-    quoteMonetaryValue=80.0,
+    quoteMonetaryValuePerUnit=80.0,
     company="15",
 )
 
@@ -157,7 +157,7 @@ JSON_OUTPUT_MCP = json.loads(
           "company": { "id": "hydrogen_nrmm:15" },
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:12", "name": "MCP Option 1", "capacity": 16, "availableQuantity": 12 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 80 }
         }
       ]
     }
@@ -201,7 +201,7 @@ LOGISTIC_RESPONSE_2_DEPS = StorageResponse(
     service="2",
     serviceName="Service 2",
     quote="214",
-    quoteMonetaryValue=40.0,
+    quoteMonetaryValuePerUnit=40.0,
     company="25",
     serviceExclusiveUpstreamCompanies="5",
     serviceExclusiveDownstreamCompanies="6",

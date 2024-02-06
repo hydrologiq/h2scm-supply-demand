@@ -45,13 +45,13 @@ JSON_OUTPUT = json.loads(
           "company": { "id": "hydrogen_nrmm:15" },
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 40}
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 40}
         },
         {
           "company": { "id": "hydrogen_nrmm:25" },
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:2124", "monetaryValue": 40}
+          "quote": { "id": "hydrogen_nrmm:2124", "monetaryValuePerUnit": 40}
         }
       ],
       "storageRental": [
@@ -59,13 +59,13 @@ JSON_OUTPUT = json.loads(
          "company": { "id": "hydrogen_nrmm:45" },
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:423", "name": "Tube Trailer 1", "availableQuantity": 1, "capacity": 600 },
-          "quote": { "id": "hydrogen_nrmm:4234", "monetaryValue": 40}
+          "quote": { "id": "hydrogen_nrmm:4234", "monetaryValuePerUnit": 40}
         }
       ],
       "fuel": [
         {
           "company": { "id": "hydrogen_nrmm:3145" },
-          "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
+          "quote": { "id": "hydrogen_nrmm:314", "monetaryValuePerUnit": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 123, "long": 43.2 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }

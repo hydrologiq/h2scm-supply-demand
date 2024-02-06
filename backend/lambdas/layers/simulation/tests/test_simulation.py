@@ -57,7 +57,7 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     service="3",
     serviceName="Logistics Service 1",
     quote="5",
-    quoteMonetaryValue=400,
+    quoteMonetaryValuePerUnit=400,
     company="25",
 )
 
@@ -69,7 +69,7 @@ STORAGE_RESPONSE_1 = StorageResponse(
     service="3",
     serviceName="Storage Service 1",
     quote="5",
-    quoteMonetaryValue=1000,
+    quoteMonetaryValuePerUnit=1000,
     company="11",
 )
 
@@ -86,7 +86,7 @@ FUEL_RESPONSE_1 = FuelResponse(
     service="7",
     serviceName="Fuel Service 1",
     quote="8",
-    quoteMonetaryValue=40,
+    quoteMonetaryValuePerUnit=40,
     company="9",
 )
 

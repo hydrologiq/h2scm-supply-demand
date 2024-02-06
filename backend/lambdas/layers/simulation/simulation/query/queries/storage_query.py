@@ -37,7 +37,7 @@ class StorageQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
 where {
     ?storage rdf:type hydrogen_nrmm:Storage ;
              rdfs:label ?storageName ;
@@ -50,7 +50,7 @@ where {
              rdfs:label ?serviceName ;
              hydrogen_nrmm:includes ?storage;
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
+               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValuePerUnit. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
     ?company hydrogen_nrmm:provides ?service;.

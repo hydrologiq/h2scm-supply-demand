@@ -15,7 +15,7 @@ class StorageResponse:
     service: str
     serviceName: str
     quote: str
-    quoteMonetaryValue: float
+    quoteMonetaryValuePerUnit: float
     company: str
     serviceExclusiveDownstreamCompanies: Optional[str] = None
     serviceExclusiveUpstreamCompanies: Optional[str] = None
@@ -38,7 +38,10 @@ class StorageResponse:
                 "capacity": self.storageCapacity,
             },
             service=service,
-            quote={"id": to_id(self.quote), "monetaryValue": self.quoteMonetaryValue},
+            quote={
+                "id": to_id(self.quote),
+                "monetaryValuePerUnit": self.quoteMonetaryValuePerUnit,
+            },
             company={"id": to_id(self.company)},
         )
 
@@ -68,10 +71,10 @@ class StorageResponse:
                 "type": "uri",
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.quote}",
             },
-            "quoteMonetaryValue": {
+            "quoteMonetaryValuePerUnit": {
                 "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                 "type": "literal",
-                "value": f"{self.quoteMonetaryValue}",
+                "value": f"{self.quoteMonetaryValuePerUnit}",
             },
             "company": {
                 "type": "uri",
@@ -105,7 +108,7 @@ def sparql_query_storage(totalFuel: float):
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
 where {
     ?storage rdf:type hydrogen_nrmm:Storage ;
              rdfs:label ?storageName ;
@@ -118,7 +121,7 @@ where {
              rdfs:label ?serviceName ;
              hydrogen_nrmm:includes ?storage;
     OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
+               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValuePerUnit. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
     ?company hydrogen_nrmm:provides ?service;.

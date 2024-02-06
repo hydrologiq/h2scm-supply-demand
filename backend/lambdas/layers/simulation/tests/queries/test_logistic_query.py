@@ -44,13 +44,13 @@ JSON_OUTPUT = json.loads(
           "company": { "id": "hydrogen_nrmm:15" },
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 80 }
         },
         {
           "company": { "id": "hydrogen_nrmm:25" },
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:214", "monetaryValue": 40 }
+          "quote": { "id": "hydrogen_nrmm:214", "monetaryValuePerUnit": 40 }
         }
       ]
     }
@@ -91,7 +91,7 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     service="1",
     serviceName="Service 1",
     quote="12345",
-    quoteMonetaryValue=80.0,
+    quoteMonetaryValuePerUnit=80.0,
     company="15",
 )
 
@@ -103,7 +103,7 @@ LOGISTIC_RESPONSE_2 = LogisticResponse(
     service="2",
     serviceName="Service 2",
     quote="214",
-    quoteMonetaryValue=40.0,
+    quoteMonetaryValuePerUnit=40.0,
     company="25",
 )
 
@@ -146,7 +146,7 @@ LOGISTIC_RESPONSE_1_CO2e = LogisticResponse(
     serviceName="Service 1",
     serviceTransportCO2e=0.5,
     quote="12345",
-    quoteMonetaryValue=80.0,
+    quoteMonetaryValuePerUnit=80.0,
     company="15",
 )
 
@@ -159,7 +159,7 @@ LOGISTIC_RESPONSE_2_CO2e = LogisticResponse(
     serviceName="Service 2",
     serviceTransportCO2e=1,
     quote="214",
-    quoteMonetaryValue=40.0,
+    quoteMonetaryValuePerUnit=40.0,
     company="25",
 )
 
@@ -209,7 +209,7 @@ LOGISTIC_RESPONSE_MCP = LogisticResponse(
     service="1",
     serviceName="Service 1",
     quote="12345",
-    quoteMonetaryValue=80.0,
+    quoteMonetaryValuePerUnit=80.0,
     company="15",
 )
 
@@ -221,7 +221,7 @@ JSON_OUTPUT_MCP = json.loads(
           "company": { "id": "hydrogen_nrmm:15" },
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValue": 80 }
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 80 }
         }
       ]
     }
@@ -265,7 +265,7 @@ LOGISTIC_RESPONSE_DEPS = LogisticResponse(
     service="1",
     serviceName="Service 1",
     quote="12345",
-    quoteMonetaryValue=80.0,
+    quoteMonetaryValuePerUnit=80.0,
     company="15",
     serviceExclusiveUpstreamCompanies="5",
     serviceExclusiveDownstreamCompanies="6",

@@ -16,7 +16,7 @@ JSON_OUTPUT = json.loads(
       "fuel": [
         {
           "company": { "id": "hydrogen_nrmm:5" },
-          "quote": { "id": "hydrogen_nrmm:4", "monetaryValue": 40 },
+          "quote": { "id": "hydrogen_nrmm:4", "monetaryValuePerUnit": 40 },
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 123, "long": 43.2 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
@@ -126,7 +126,7 @@ FUEL_RESPONSE_1 = FuelResponse(
     service="3",
     serviceName="Fuel Service 1",
     quote="4",
-    quoteMonetaryValue=40.0,
+    quoteMonetaryValuePerUnit=40.0,
     company="5",
 )
 
@@ -175,7 +175,7 @@ FUEL_RESPONSE_1_CO2e = FuelResponse(
     service="3",
     serviceName="Fuel Service 1",
     quote="4",
-    quoteMonetaryValue=40.0,
+    quoteMonetaryValuePerUnit=40.0,
     company="5",
 )
 
@@ -226,7 +226,7 @@ FUEL_RESPONSE_1_DEPS = FuelResponse(
     service="3",
     serviceName="Fuel Service 1",
     quote="4",
-    quoteMonetaryValue=40.0,
+    quoteMonetaryValuePerUnit=40.0,
     company="5",
     serviceExclusiveUpstreamCompanies="5",
     serviceExclusiveDownstreamCompanies="6",
