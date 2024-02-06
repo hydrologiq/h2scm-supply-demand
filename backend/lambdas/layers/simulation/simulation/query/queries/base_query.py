@@ -1,11 +1,22 @@
 from decimal import Decimal
 import requests
 from simulation import BaseQueryResponse
+import simulation
 from simulation.query.queries import (
     QueryConfiguration,
     BaseQueryInput,
 )
 from simulation.query.queries.hydrogen_nrmm_optional import YAMLRoot
+
+import importlib
+
+
+def class_for_name(module_name, class_name):
+    # load the module, will raise ImportError if module cannot be loaded
+    m = importlib.import_module(module_name)
+    # get the class, will raise AttributeError if class cannot be found
+    c = getattr(m, class_name)
+    return c
 
 
 class BaseQuery:
@@ -42,9 +53,14 @@ class BaseQuery:
                             matching_instances[i][instance]
                         )
                     else:
-                        matching_instances[i][instance] = class_type(
-                            **matching_instances[i][instance]
-                        )
+                        instance_data = matching_instances[i][instance]
+                        if "type" in instance_data:
+                            class_type = getattr(
+                                simulation.query.queries.hydrogen_nrmm_optional,
+                                instance_data["type"].replace("hydrogen_nrmm:", ""),
+                            )
+                            del instance_data["type"]
+                        matching_instances[i][instance] = class_type(**instance_data)
 
     def _get_matching_instances(self, bindings, class_types: dict) -> list[dict]:
         return [
@@ -73,7 +89,7 @@ class BaseQuery:
                             if (not attribute_name.startswith("CO2e"))
                             else attribute_name
                         )
-                        raw_instances[class_key][attribute_name] = (
+                        attr_value = (
                             item_value.replace(
                                 "https://w3id.org/hydrologiq/hydrogen/nrmm",
                                 "hydrogen_nrmm:",
@@ -81,6 +97,11 @@ class BaseQuery:
                             if (item["type"] == "uri")
                             else item_value
                         )
+
+                        if attribute_name == "type":
+                            raw_instances[class_key][attribute_name] = attr_value
+                        else:
+                            raw_instances[class_key][attribute_name] = attr_value
 
                     else:
                         raw_instances[class_key] = item_value

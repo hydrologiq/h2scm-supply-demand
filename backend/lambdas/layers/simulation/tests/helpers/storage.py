@@ -3,6 +3,10 @@ from typing import Optional
 import simulation.business.outputs as BusinessOutputs
 
 from simulation.query.queries import StorageQueryResponse
+from simulation.query.queries.hydrogen_nrmm_optional import (
+    ManifoldCylinderPallet,
+    TubeTrailer,
+)
 from tests.helpers import to_id
 
 
@@ -17,6 +21,7 @@ class StorageResponse:
     quote: str
     quoteMonetaryValuePerUnit: float
     company: str
+    storageType: BusinessOutputs.Storage = BusinessOutputs.Storage.TubeTrailer
     serviceExclusiveDownstreamCompanies: Optional[str] = None
     serviceExclusiveUpstreamCompanies: Optional[str] = None
 
@@ -30,13 +35,18 @@ class StorageResponse:
             service["exclusiveUpstreamCompanies"] = (
                 self.serviceExclusiveUpstreamCompanies
             )
+        storage = {
+            "id": to_id(self.storage),
+            "name": self.storageName,
+            "availableQuantity": self.storageAvailableQuantity,
+            "capacity": self.storageCapacity,
+        }
         return StorageQueryResponse(
-            storage={
-                "id": to_id(self.storage),
-                "name": self.storageName,
-                "availableQuantity": self.storageAvailableQuantity,
-                "capacity": self.storageCapacity,
-            },
+            storage=(
+                ManifoldCylinderPallet(**storage)
+                if (self.storageType == BusinessOutputs.Storage.ManifoldCylinderPallet)
+                else TubeTrailer(**storage)
+            ),
             service=service,
             quote={
                 "id": to_id(self.quote),
@@ -61,6 +71,10 @@ class StorageResponse:
                 "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
                 "type": "literal",
                 "value": f"{self.storageCapacity}",
+            },
+            "storageType": {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.storageType}",
             },
             "service": {
                 "type": "uri",
@@ -108,9 +122,10 @@ def sparql_query_storage(totalFuel: float):
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
+select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?storageType ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
 where {
-    ?storage rdf:type hydrogen_nrmm:Storage ;
+    VALUES ?storageType { hydrogen_nrmm:TubeTrailer hydrogen_nrmm:ManifoldCylinderPallet }
+    ?storage rdf:type ?storageType;
              rdfs:label ?storageName ;
              hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
              hydrogen_nrmm:capacity ?storageCapacity ;.
