@@ -21,7 +21,8 @@ JSON_INPUT = json.loads(
         }
       ],
       "fuel": [
-        {          
+        {
+          "company": {"id": "hydrogen_nrmm:315"},
           "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
@@ -73,6 +74,7 @@ def test_run_logic_layer_output():
         ],
         "fuel": [
             {
+                "company": {"id": "hydrogen_nrmm:315"},
                 "quote": {"id": "hydrogen_nrmm:314", "monetaryValue": 40},
                 "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
                 "dispenser": {
@@ -156,6 +158,7 @@ def test_run_logic_layer_output_with_co2e():
         ],
         "fuel": [
             {
+                "company": {"id": "hydrogen_nrmm:315"},
                 "quote": {"id": "hydrogen_nrmm:314", "monetaryValue": 40},
                 "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
                 "dispenser": {
@@ -234,13 +237,15 @@ JSON_INPUT_EXCLUSIVE_DOWNSTREAM = json.loads(
         }
       ],
         "fuel": [
-        {          
+        {
+          "company": {"id": "hydrogen_nrmm:315"},  
           "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:4"] },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
         },
-        {          
+        {      
+          "company": {"id": "hydrogen_nrmm:615"},    
           "quote": { "id": "hydrogen_nrmm:614", "monetaryValue": 40},
           "service": { "id": "hydrogen_nrmm:6", "name": "Fuel Service 2", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:5"] },
           "dispenser": { "id": "hydrogen_nrmm:61", "name": "Dispensing Site 2", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
@@ -296,13 +301,15 @@ JSON_INPUT_EXCLUSIVE_UPSTREAM = json.loads(
         }
       ],
       "fuel": [
-        {          
+        {        
+          "company": {"id": "hydrogen_nrmm:315"},  
           "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },
           "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
         },
-        {          
+        {       
+          "company": {"id": "hydrogen_nrmm:515"},   
           "quote": { "id": "hydrogen_nrmm:514", "monetaryValue": 40},
           "service": { "id": "hydrogen_nrmm:5", "name": "Fuel Service 2", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:1"] },
           "dispenser": { "id": "hydrogen_nrmm:51", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 3, "long": 4 },

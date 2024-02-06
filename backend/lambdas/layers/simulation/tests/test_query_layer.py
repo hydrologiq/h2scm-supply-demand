@@ -61,6 +61,7 @@ JSON_OUTPUT = json.loads(
       ],
       "fuel": [
         {
+          "company": { "id": "hydrogen_nrmm:3145" },
           "quote": { "id": "hydrogen_nrmm:314", "monetaryValue": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "fillRate": 10, "fillingStationCapacity": 3, "lat": 123, "long": 43.2 },

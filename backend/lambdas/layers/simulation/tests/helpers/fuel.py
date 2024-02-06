@@ -20,6 +20,7 @@ class FuelResponse:
     serviceName: str
     quote: str
     quoteMonetaryValue: float
+    company: str
     producerProductionCO2e: Optional[float] = None
     serviceExclusiveDownstreamCompanies: Optional[str] = None
     serviceExclusiveUpstreamCompanies: Optional[str] = None
@@ -55,6 +56,7 @@ class FuelResponse:
                 "fillingStationCapacity": self.dispenserFillingStationCapacity,
             },
             quote={"id": to_id(self.quote), "monetaryValue": self.quoteMonetaryValue},
+            company={"id": to_id(self.company)},
         )
 
     def response_binding(self) -> object:
@@ -108,6 +110,10 @@ class FuelResponse:
                 "type": "literal",
                 "value": f"{self.quoteMonetaryValue}",
             },
+            "company": {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.company}",
+            },
         }
         if self.producerProductionCO2e is not None:
             binding["producerProductionCO2e"] = {
@@ -130,24 +136,7 @@ class FuelResponse:
 
 def fuel_query_response_json(responses: list[FuelResponse]):
     return {
-        "head": {
-            "vars": [
-                "producer",
-                "producerName",
-                "producerDailyOfftakeCapacity",
-                "producerProductionCO2e",
-                "dispenser",
-                "dispenserName",
-                "dispenserLat",
-                "dispenserLong",
-                "dispenserFillingStationCapacity",
-                "dispenserFillRate",
-                "service",
-                "serviceName",
-                "quote",
-                "quoteMonetaryValue",
-            ]
-        },
+        "head": {"vars": []},
         "results": {
             "bindings": [response.response_binding() for response in responses]
         },
@@ -161,7 +150,7 @@ def sparql_query_fuel(
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue
+select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
 where { 
     ?producer rdfs:label ?producerName ;
                 hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
@@ -184,5 +173,6 @@ where {
                 ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
+    ?company hydrogen_nrmm:provides ?service;.
 }"""
     )

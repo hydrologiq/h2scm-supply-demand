@@ -85,6 +85,7 @@ FUEL_RESPONSE_1 = FuelResponse(
     serviceName="Fuel Service 1",
     quote="8",
     quoteMonetaryValue=40,
+    company="9",
 )
 
 

@@ -8,6 +8,7 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
     FuelService,
     DispensingSite,
     Quote,
+    Company,
 )
 
 
@@ -22,6 +23,7 @@ class FuelQuery(BaseQuery):
             "service": FuelService,
             "dispenser": DispensingSite,
             "quote": Quote,
+            "company": Company,
         }
         matching_instances = self._get_matching_instances(
             bindings,
@@ -34,7 +36,7 @@ class FuelQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue
+select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?dispenserFillingStationCapacity ?dispenserFillRate ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValue ?company
 where { 
     ?producer rdfs:label ?producerName ;
                 hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
@@ -57,5 +59,6 @@ where {
                 ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValue. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
     OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
+    ?company hydrogen_nrmm:provides ?service;.
 }"""
         )

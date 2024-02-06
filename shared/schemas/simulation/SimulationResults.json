@@ -43,6 +43,9 @@
         },
         "quote": {
           "$ref": "#/$defs/quote"
+        },
+        "company": {
+          "$ref": "#/$defs/company"
         }
       },
       "additionalProperties": false
@@ -221,6 +224,15 @@
         },
         "monetaryValue": {
           "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "company": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
         }
       },
       "additionalProperties": false
