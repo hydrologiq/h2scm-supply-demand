@@ -1,4 +1,3 @@
-import json
 from simulation.logic.logic_input import LogicInput
 from simulation.logic.rules.filter import VehicleAvailabilityRule
 from simulation.query import QueryInput

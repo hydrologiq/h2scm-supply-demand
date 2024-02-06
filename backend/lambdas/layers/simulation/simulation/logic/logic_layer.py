@@ -5,7 +5,6 @@ from simulation.logic.outputs.matched import MatchedStorage
 from simulation.logic.rules import RuleEngine, Rule
 from simulation.logic.rules.filter import (
     VehicleAvailabilityRule,
-    StorageAvailabilityRule,
 )
 from simulation.query.queries import (
     FuelQueryResponse,
@@ -22,7 +21,6 @@ from geopy.distance import distance
 class LogicLayer(SimulationLayer):
     rules: list[Rule] = [
         VehicleAvailabilityRule(),
-        StorageAvailabilityRule(),
     ]
 
     def run(self, data: LogicInput, business_data: BusinessOutput) -> LogicOutput:
