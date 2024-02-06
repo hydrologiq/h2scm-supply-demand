@@ -1,3 +1,4 @@
+import copy
 import json
 
 from jsonschema import validate
@@ -35,7 +36,7 @@ JSON_INPUT = json.loads(
         {
           "company": {"id": "hydrogen_nrmm:415"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
-          "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 300 },
+          "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 300, "type": "hydrogen_nrmm:TubeTrailer" },
           "quote": { "id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100}
         }
       ]
@@ -45,13 +46,11 @@ JSON_INPUT = json.loads(
 
 
 def test_run_logic_layer_output():
-    logic_input = QueryOutput(**JSON_INPUT)
+    query_input = copy.deepcopy(JSON_INPUT)
+    logic_input = QueryOutput(**query_input)
     business_output = BusinessOutput(
         **{
-            "fuel": [
-                {"type": "TubeTrailer", "amount": 300},
-                {"type": "TubeTrailer", "amount": 185},
-            ],
+            "fuel": {"total": 485},
             "project": {"location": {"lat": 3, "long": 4.5}},
         }
     )
@@ -64,52 +63,7 @@ def test_run_logic_layer_output():
     # price -> (485 * 40) + 40 + (100 * 2) = 19400 + 40 + 200 = 19640
     # (fuel quantity * price per kg) + transport quote + (storage cost * quantity)
     assert json.loads(logic_output.dumps()) == {
-        "logistic": [
-            {
-                "company": {"id": "hydrogen_nrmm:25"},
-                "service": {"id": "hydrogen_nrmm:2", "name": "Service 2"},
-                "vehicle": {
-                    "id": "hydrogen_nrmm:212",
-                    "name": "Vehicle 2",
-                    "availableQuantity": 2,
-                    "transportDistance": 123,
-                },
-                "quote": {"id": "hydrogen_nrmm:2134", "monetaryValuePerUnit": 40},
-            },
-        ],
-        "fuel": [
-            {
-                "company": {"id": "hydrogen_nrmm:315"},
-                "quote": {"id": "hydrogen_nrmm:314", "monetaryValuePerUnit": 40},
-                "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
-                "dispenser": {
-                    "id": "hydrogen_nrmm:31",
-                    "name": "Dispensing Site 1",
-                    "fillRate": 10,
-                    "fillingStationCapacity": 3,
-                    "lat": 3,
-                    "long": 4,
-                },
-                "producer": {
-                    "id": "hydrogen_nrmm:312",
-                    "name": "Hydrogen Producer 1",
-                    "dailyOfftakeCapacity": 600,
-                },
-            }
-        ],
-        "storageRental": [
-            {
-                "company": {"id": "hydrogen_nrmm:415"},
-                "service": {"id": "hydrogen_nrmm:4", "name": "Service 3"},
-                "storage": {
-                    "id": "hydrogen_nrmm:412",
-                    "name": "Tube Trailer",
-                    "availableQuantity": 2,
-                    "capacity": 300,
-                },
-                "quote": {"id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100},
-            }
-        ],
+        **(query_input),
         "matches": [
             {
                 "logistic": "hydrogen_nrmm:2",
@@ -124,80 +78,28 @@ def test_run_logic_layer_output():
 
 
 def test_run_logic_layer_output_with_co2e():
-    input_with_co2e = {**JSON_INPUT}
+    input_with_co2e = copy.deepcopy(JSON_INPUT)
+    input_with_co2e["logistic"][0]["vehicle"]["availableQuantity"] = 0
     input_with_co2e["logistic"][1]["service"]["transportCO2e"] = 1
     input_with_co2e["fuel"][0]["producer"]["productionCO2e"] = 1
     logic_input = QueryOutput(**input_with_co2e)
     business_output = BusinessOutput(
         **{
-            "fuel": [
-                {"type": "TubeTrailer", "amount": 300},
-                {"type": "TubeTrailer", "amount": 185},
-            ],
+            "fuel": {"total": 485},
             "project": {"location": {"lat": 3, "long": 4.5}},
         }
     )
     logic_layer = LogicLayer()
 
     logic_output = logic_layer.run(logic_input, business_output)
-
+    del input_with_co2e["logistic"][0]
     # Second only matches as within transport range (110 vs 123 km)
     # fuelUtilisation -> (485 / 600) * 100 = 80.8333333333333
     # price -> (485 * 40) + 40 + (100 * 2) = 19400 + 40 + 200 = 19640
     # (fuel quantity * price per kg) + transport quote + (storage cost * quantity)
     # co2e -> (485 * 1) + (111.17 * 1) = 596.17
     assert json.loads(logic_output.dumps()) == {
-        "logistic": [
-            {
-                "company": {"id": "hydrogen_nrmm:25"},
-                "service": {
-                    "id": "hydrogen_nrmm:2",
-                    "name": "Service 2",
-                    "transportCO2e": 1,
-                },
-                "vehicle": {
-                    "id": "hydrogen_nrmm:212",
-                    "name": "Vehicle 2",
-                    "availableQuantity": 2,
-                    "transportDistance": 123,
-                },
-                "quote": {"id": "hydrogen_nrmm:2134", "monetaryValuePerUnit": 40},
-            },
-        ],
-        "fuel": [
-            {
-                "company": {"id": "hydrogen_nrmm:315"},
-                "quote": {"id": "hydrogen_nrmm:314", "monetaryValuePerUnit": 40},
-                "service": {"id": "hydrogen_nrmm:3", "name": "Fuel Service 1"},
-                "dispenser": {
-                    "id": "hydrogen_nrmm:31",
-                    "name": "Dispensing Site 1",
-                    "fillRate": 10,
-                    "fillingStationCapacity": 3,
-                    "lat": 3,
-                    "long": 4,
-                },
-                "producer": {
-                    "id": "hydrogen_nrmm:312",
-                    "name": "Hydrogen Producer 1",
-                    "dailyOfftakeCapacity": 600,
-                    "productionCO2e": 1,
-                },
-            }
-        ],
-        "storageRental": [
-            {
-                "company": {"id": "hydrogen_nrmm:415"},
-                "service": {"id": "hydrogen_nrmm:4", "name": "Service 3"},
-                "storage": {
-                    "id": "hydrogen_nrmm:412",
-                    "name": "Tube Trailer",
-                    "availableQuantity": 2,
-                    "capacity": 300,
-                },
-                "quote": {"id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100},
-            }
-        ],
+        **(input_with_co2e),
         "matches": [
             {
                 "logistic": "hydrogen_nrmm:2",
@@ -238,13 +140,13 @@ JSON_INPUT_EXCLUSIVE_DOWNSTREAM = json.loads(
         {
           "company": {"id": "hydrogen_nrmm:45"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3" },
-          "storage": { "id": "hydrogen_nrmm:412", "name": "MCP 123", "availableQuantity": 100, "capacity": 6 },
+          "storage": { "id": "hydrogen_nrmm:412", "name": "MCP 123", "availableQuantity": 100, "capacity": 6, "type": "hydrogen_nrmm:ManifoldCylinderPallet" },
           "quote": { "id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100}
         },
         {
           "company": {"id": "hydrogen_nrmm:55"},
           "service": { "id": "hydrogen_nrmm:5", "name": "Service 4", "exclusiveDownstreamCompanies": ["hydrogen_nrmm:10"] },
-          "storage": { "id": "hydrogen_nrmm:512", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
+          "storage": { "id": "hydrogen_nrmm:512", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600, "type": "hydrogen_nrmm:TubeTrailer" },
           "quote": { "id": "hydrogen_nrmm:513", "monetaryValuePerUnit": 100}
         }
       ],
@@ -273,10 +175,7 @@ def test_run_logic_layer_output_downstream_exclusivity():
     logic_input = QueryOutput(**JSON_INPUT_EXCLUSIVE_DOWNSTREAM)
     business_output = BusinessOutput(
         **{
-            "fuel": [
-                {"type": "TubeTrailer", "amount": 300},
-                {"type": "TubeTrailer", "amount": 185},
-            ],
+            "fuel": {"total": 485},
             "project": {"location": {"lat": 3, "long": 4.5}},
         }
     )
@@ -297,7 +196,7 @@ def test_run_logic_layer_output_downstream_exclusivity():
                 "fuelUtilisation": 80.83,
                 "price": 27580.0,
                 "transportDistance": 111.17,
-                "storage": {"id": "hydrogen_nrmm:4", "type": "TubeTrailer"},
+                "storage": {"id": "hydrogen_nrmm:4", "type": "ManifoldCylinderPallet"},
             }
         ],
     }
@@ -334,13 +233,13 @@ JSON_INPUT_EXCLUSIVE_UPSTREAM = json.loads(
         {
           "company": {"id": "hydrogen_nrmm:415"},
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 3", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:315"] },
-          "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600 },
+          "storage": { "id": "hydrogen_nrmm:412", "name": "Tube Trailer", "availableQuantity": 2, "capacity": 600, "type": "hydrogen_nrmm:TubeTrailer" },
           "quote": { "id": "hydrogen_nrmm:413", "monetaryValuePerUnit": 100}
         },
         {
           "company": {"id": "hydrogen_nrmm:615"},
           "service": { "id": "hydrogen_nrmm:6", "name": "Service 4", "exclusiveUpstreamCompanies": ["hydrogen_nrmm:515"] },
-          "storage": { "id": "hydrogen_nrmm:612", "name": "Tube Trailer 2", "availableQuantity": 2, "capacity": 600 },
+          "storage": { "id": "hydrogen_nrmm:612", "name": "Tube Trailer 2", "availableQuantity": 2, "capacity": 600, "type": "hydrogen_nrmm:TubeTrailer" },
           "quote": { "id": "hydrogen_nrmm:613", "monetaryValuePerUnit": 100}
         }
       ]
@@ -353,10 +252,7 @@ def test_run_logic_layer_output_upstream_exclusivity():
     logic_input = QueryOutput(**JSON_INPUT_EXCLUSIVE_UPSTREAM)
     business_output = BusinessOutput(
         **{
-            "fuel": [
-                {"type": "TubeTrailer", "amount": 300},
-                {"type": "TubeTrailer", "amount": 185},
-            ],
+            "fuel": {"total": 485},
             "project": {"location": {"lat": 3, "long": 4.5}},
         }
     )

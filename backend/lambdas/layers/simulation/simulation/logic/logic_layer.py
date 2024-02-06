@@ -87,7 +87,8 @@ class LogicLayer(SimulationLayer):
                             price,
                             fuel_distance,
                             MatchedStorage(
-                                storage_rental.service.id, business_data.fuel[0].type
+                                storage_rental.service.id,
+                                storage_rental.storage.class_name,
                             ),
                             CO2e,
                         )

@@ -16,7 +16,7 @@ SAMPLE_LOGIC_INPUT = {
                 "id": "hydrogen_nrmm:41",
                 "name": "Dispensing Site 2",
                 "fillRate": 12,
-                "fillingStationCapacity": 1,
+                "fillingStationCapacity": 0,
                 "lat": 32.1,
                 "long": 12.3,
             },
@@ -52,10 +52,7 @@ SAMPLE_LOGIC_INPUT = {
 def test_filters_available_filling_stations():
     query_input = QueryInput(
         **{
-            "fuel": [
-                {"type": "TubeTrailer", "amount": 300},
-                {"type": "TubeTrailer", "amount": 185},
-            ],
+            "fuel": {"total": 485},
             "project": {"location": {"lat": 12.234, "long": 43.221}},
         }
     )

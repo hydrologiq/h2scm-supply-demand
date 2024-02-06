@@ -118,7 +118,7 @@ def storage_query_response_json(responses: list[StorageResponse]):
     }
 
 
-def sparql_query_storage(totalFuel: float):
+def sparql_query_storage(totalFuel: int):
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -130,7 +130,7 @@ where {
              hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
              hydrogen_nrmm:capacity ?storageCapacity ;.
     FILTER(?storageCapacity * ?storageAvailableQuantity >= """
-        + f"{totalFuel}"
+        + f"{int(totalFuel)}"
         + """)
     ?service rdf:type hydrogen_nrmm:Rental;
              rdfs:label ?serviceName ;

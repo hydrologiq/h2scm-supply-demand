@@ -5,15 +5,16 @@ from dataclasses import dataclass
 
 @dataclass
 class BusinessOutput(SimulationData):
-    fuel: list[Fuel]
+    fuel: Fuel
     project: Project
 
     def __post_init__(self):
         self.project = Project(**self.project)
-        self.fuel = list(map(lambda r: Fuel(**r), self.fuel))
+        self.fuel = Fuel(**self.fuel)
 
-    def total_fuel(self) -> float:
-        return sum([_fuel.amount for _fuel in self.fuel])
+    def total_fuel(self) -> int:
+        return int(self.fuel.total)
 
+    ## TODO(AAS): Assuming a single vehicle needed since we are only supporting one refuelling a week
     def required_no_vehicles(self) -> int:
-        return len(self.fuel)
+        return 1

@@ -10,7 +10,7 @@ SAMPLE_LOGIC_INPUT = {
             "vehicle": {
                 "id": "hydrogen_nrmm:123",
                 "name": "Vehicle 1",
-                "availableQuantity": 1,
+                "availableQuantity": 0,
                 "transportDistance": 123,
             },
             "quote": {"id": "hydrogen_nrmm:1234", "monetaryValuePerUnit": 80},
@@ -35,10 +35,7 @@ SAMPLE_LOGIC_INPUT = {
 def test_filters_out_vehicle():
     query_input = QueryInput(
         **{
-            "fuel": [
-                {"type": "TubeTrailer", "amount": 300},
-                {"type": "TubeTrailer", "amount": 185},
-            ],
+            "fuel": {"total": 485},
             "project": {"location": {"lat": 12.234, "long": 43.221}},
         }
     )

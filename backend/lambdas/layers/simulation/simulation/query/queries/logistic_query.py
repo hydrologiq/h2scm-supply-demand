@@ -1,4 +1,3 @@
-from decimal import Decimal
 from simulation.query.queries import (
     BaseQuery,
     LogisticQueryResponse,

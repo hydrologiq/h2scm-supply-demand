@@ -17,16 +17,7 @@ import simulation.business.outputs as BusinessOutputs
 JSON_INPUT = json.loads(
     """
     {
-        "fuel": [
-            {
-                "type": "TubeTrailer",
-                "amount": 300
-            },
-            {
-                "type": "TubeTrailer",
-                "amount": 185
-            }
-        ],
+        "fuel": {"total": 485},
         "project": {
             "location": {
                 "lat": 12.234,

@@ -70,6 +70,7 @@ STORAGE_RESPONSE_1 = StorageResponse(
     serviceName="Storage Service 1",
     quote="5",
     quoteMonetaryValuePerUnit=1000,
+    storageType=BusinessOutputs.Storage.TubeTrailer,
     company="11",
 )
 
@@ -136,7 +137,7 @@ def test_simulation_no_results(requests_mock: Mocker):
 
 def test_base_simulation(requests_mock: Mocker):
     user_input = BusinessInput(
-        location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300)
+        location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300.0)
     )
 
     register_sparql_query_mock(
@@ -247,7 +248,7 @@ def test_simulation_no_matches(requests_mock: Mocker):
 
 def test_simulation_out_schema(requests_mock: Mocker):
     user_input = BusinessInput(
-        location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(300)
+        location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(amount=300)
     )
 
     register_sparql_query_mock(
