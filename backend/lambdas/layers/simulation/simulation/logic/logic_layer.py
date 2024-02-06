@@ -103,15 +103,35 @@ def meets_service_exclusivity(
     storage_rental: StorageQueryResponse,
 ):
     valid = True
-    # Downstream -> logistic -> fuel -> storage
+    # Downstream -> fuel -> storage -> logistic
     valid = (
-        fuel.service.id in logistic.service.exclusiveDownstreamCompanies
-        if valid and isinstance(logistic.service.exclusiveDownstreamCompanies, list)
+        storage_rental.service.id in fuel.service.exclusiveDownstreamCompanies
+        if valid
+        and isinstance(fuel.service.exclusiveDownstreamCompanies, list)
+        and len(fuel.service.exclusiveDownstreamCompanies) > 0
         else valid
     )
     valid = (
-        storage_rental.service.id in fuel.service.exclusiveDownstreamCompanies
-        if valid and isinstance(fuel.service.exclusiveDownstreamCompanies, list)
+        logistic.service.id in storage_rental.service.exclusiveDownstreamCompanies
+        if valid
+        and isinstance(storage_rental.service.exclusiveDownstreamCompanies, list)
+        and len(storage_rental.service.exclusiveDownstreamCompanies) > 0
+        else valid
+    )
+
+    # Upstream -> logistic -> storage -> fuel
+    valid = (
+        fuel.service.id in storage_rental.service.exclusiveUpstreamCompanies
+        if valid
+        and isinstance(storage_rental.service.exclusiveUpstreamCompanies, list)
+        and len(storage_rental.service.exclusiveUpstreamCompanies) > 0
+        else valid
+    )
+    valid = (
+        storage_rental.service.id in logistic.service.exclusiveUpstreamCompanies
+        if valid
+        and isinstance(logistic.service.exclusiveUpstreamCompanies, list)
+        and len(logistic.service.exclusiveUpstreamCompanies) > 0
         else valid
     )
 
