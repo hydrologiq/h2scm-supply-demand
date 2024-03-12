@@ -5,7 +5,14 @@ from requests_mock import Mocker
 from simulation.business import BusinessInput
 from simulation.business.inputs import Fuel, Location
 from simulation.logic.outputs import Matched
-from simulation.logic.outputs.matched import MatchedStorage
+from simulation.logic.outputs.matched import (
+    Breakdown,
+    BreakdownItem,
+    MatchedInstance,
+    Production,
+    ProductionCapacity,
+    ServiceType,
+)
 from simulation.query.queries import QueryConfiguration
 from tests.helpers import (
     FuelResponse,
@@ -36,10 +43,11 @@ def register_sparql_query_mock(
     query: str,
     response: str | object,
     repo: str = DEFAULT_REPO,
+    graphs: list[str] = ["default"],
 ):
     return requests_mock.register_uri(
         "POST",
-        f"https://{SCM_API_ID}.execute-api.{SCM_API_REGION}.amazonaws.com/{SCM_API_STAGE}/repositories/{repo}/query/select?graphs=default",
+        f"https://{SCM_API_ID}.execute-api.{SCM_API_REGION}.amazonaws.com/{SCM_API_STAGE}/repositories/{repo}/query/select?graphs={','.join(graphs)}",
         request_headers={
             "Authorization": f"Bearer {MOCKED_ACCESS_TOKEN}",
         },
@@ -58,6 +66,8 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     serviceName="Logistics Service 1",
     quote="5",
     quoteMonetaryValuePerUnit=400,
+    quoteCurrency="GBP",
+    quoteUnit="trip",
     company="25",
 )
 
@@ -70,6 +80,8 @@ STORAGE_RESPONSE_1 = StorageResponse(
     serviceName="Storage Service 1",
     quote="5",
     quoteMonetaryValuePerUnit=1000,
+    quoteCurrency="GBP",
+    quoteUnit="week",
     storageType=BusinessOutputs.Storage.TubeTrailer,
     company="11",
 )
@@ -77,7 +89,8 @@ STORAGE_RESPONSE_1 = StorageResponse(
 FUEL_RESPONSE_1 = FuelResponse(
     producer="5",
     producerName="Producer 1",
-    producerDailyOfftakeCapacity=300,
+    producerWeeklyProductionCapacity=300,
+    producerType=BusinessOutputs.Producer.ElectrolyticHydrogen,
     dispenser="6",
     dispenserName="Dispensing Site 1",
     dispenserLat=54.99849,
@@ -86,6 +99,8 @@ FUEL_RESPONSE_1 = FuelResponse(
     serviceName="Fuel Service 1",
     quote="8",
     quoteMonetaryValuePerUnit=40,
+    quoteCurrency="GBP",
+    quoteUnit="kg",
     company="9",
 )
 
@@ -182,16 +197,66 @@ def test_base_simulation(requests_mock: Mocker):
         == STORAGE_RESPONSE_1.query_response().dumps()
     )
     assert len(sim_output.matches) == 1
-    ## fuelUtilisation = (300 / 300) * 100 = 100
-    # price = (40 * 300) + 400 + 1000 = 12000 + 400 + 1000= 13400
     assert sim_output.matches[0] == Matched(
-        logistic=to_id(LOGISTIC_RESPONSE_1.service),
-        fuel=to_id(FUEL_RESPONSE_1.service),
-        fuelUtilisation=100.0,
-        price=13400.0,
+        logistic=MatchedInstance(
+            to_id(LOGISTIC_RESPONSE_1.service),
+            LOGISTIC_RESPONSE_1.serviceName,
+            False,
+            False,
+            "hydrogen_nrmm:",
+        ),
+        fuel=MatchedInstance(
+            to_id(FUEL_RESPONSE_1.service),
+            FUEL_RESPONSE_1.serviceName,
+            False,
+            False,
+            "hydrogen_nrmm:",
+        ),
+        cost=Breakdown(
+            total=13400.0,
+            breakdown=[
+                BreakdownItem(
+                    ServiceType.fuel,
+                    to_id(FUEL_RESPONSE_1.service),
+                    300.0,
+                    40.0,
+                    "kg",
+                    "GBP",
+                ),
+                BreakdownItem(
+                    ServiceType.storageRental,
+                    to_id(STORAGE_RESPONSE_1.service),
+                    1.0,
+                    1000.0,
+                    "week",
+                    "GBP",
+                ),
+                BreakdownItem(
+                    ServiceType.logistic,
+                    to_id(LOGISTIC_RESPONSE_1.service),
+                    1.0,
+                    400.0,
+                    "trip",
+                    "GBP",
+                ),
+            ],
+        ),
+        production=Production(
+            capacity=ProductionCapacity(weekly=300.0, weeklyUsed=100.0),
+            method=BusinessOutputs.Producer.ElectrolyticHydrogen,
+            location=Location(
+                lat=54.99849,
+                long=-1.7691325,
+            ),
+        ),
         transportDistance=11.55,
-        storage=MatchedStorage(
-            to_id(STORAGE_RESPONSE_1.service), BusinessOutputs.Storage.TubeTrailer
+        storage=MatchedInstance(
+            to_id(STORAGE_RESPONSE_1.service),
+            STORAGE_RESPONSE_1.serviceName,
+            False,
+            False,
+            "hydrogen_nrmm:",
+            BusinessOutputs.Storage.TubeTrailer,
         ),
     )
 
@@ -248,23 +313,27 @@ def test_simulation_out_schema(requests_mock: Mocker):
     user_input = BusinessInput(
         location=Location(lat=55.0495388, long=-1.7529721), fuel=Fuel(amount=300)
     )
+    graphs = ["default", "abc"]
 
     register_sparql_query_mock(
         requests_mock,
         sparql_query_storage(300.0),
         storage_query_response_json([STORAGE_RESPONSE_1]),
+        graphs=graphs,
     )
 
     register_sparql_query_mock(
         requests_mock,
         sparql_query_logistic(),
         logistic_query_response_json([LOGISTIC_RESPONSE_1]),
+        graphs=graphs,
     )
 
     register_sparql_query_mock(
         requests_mock,
         sparql_query_fuel(300.0),
         fuel_query_response_json([FUEL_RESPONSE_1]),
+        graphs=graphs,
     )
 
     sim_output = run_simulation(
@@ -278,6 +347,7 @@ def test_simulation_out_schema(requests_mock: Mocker):
                 "scm_access_token": MOCKED_ACCESS_TOKEN,
             }
         ),
+        graphs=graphs,
     )
 
     with open("tests/schema/SimulationResults.json") as schema:

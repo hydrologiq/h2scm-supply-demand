@@ -10,6 +10,7 @@ import SimulationView from "@views/SimulationView"
 import BodyWrapper from "@components/BodyWrapper"
 import { mode } from "@chakra-ui/theme-tools"
 import { alertAnatomy as parts } from "@chakra-ui/anatomy"
+import "@fontsource/montserrat"
 
 const breakpoints = {
   base: "0px",

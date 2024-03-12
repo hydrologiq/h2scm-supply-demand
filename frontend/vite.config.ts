@@ -12,11 +12,26 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      "@assets": fileURLToPath(new URL("./src/assets/", import.meta.url)),
       "@views": fileURLToPath(new URL("./src/views/", import.meta.url)),
       "@components": fileURLToPath(new URL("./src/components/", import.meta.url)),
       "@api": fileURLToPath(new URL("./src/api/", import.meta.url)),
       "@utils": fileURLToPath(new URL("./src/utils/", import.meta.url)),
       "@custom/types": fileURLToPath(new URL("./src/types/", import.meta.url)),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (
+            id.includes("node_modules") &&
+            ["@emotion", "react", "framer-motion"].filter((name) => id.includes(name)).length === 0
+          ) {
+            return id.toString().split("node_modules/")[1].split("/")[0].toString()
+          }
+        },
+      },
     },
   },
 })

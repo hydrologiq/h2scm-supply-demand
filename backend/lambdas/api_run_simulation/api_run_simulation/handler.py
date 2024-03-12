@@ -34,6 +34,21 @@ def lambda_handler(event: APIGatewayProxyEventV2, context: LambdaContext):
     if repo is None:
         return build_error("Path parameter not provided", "repo is missing")
 
+    debug = False
+    instances = ["default"]
+    if event.query_string_parameters is not None:
+        debug = event.query_string_parameters.get("debug")
+        if debug is None:
+            debug = False
+
+        instances_param = event.query_string_parameters.get("instances")
+        if instances_param is not None:
+            if isinstance(instances_param, list):
+                instances = instances_param
+            elif instances_param.find(","):
+                instances = instances_param.split(",")
+            else:
+                instances = [instances_param]
     try:
         access_token = None
         if (
@@ -56,8 +71,8 @@ def lambda_handler(event: APIGatewayProxyEventV2, context: LambdaContext):
         return build_response(
             200,
             run_simulation(
-                BusinessInput.from_dict(json.loads(event.body)), query_config
-            ).dumps(),
+                BusinessInput.from_dict(json.loads(event.body)), query_config, instances
+            ).dumps(not debug),
         )
     except Exception as ex:
         return build_error("Failed to run simulation -- ", str(ex))

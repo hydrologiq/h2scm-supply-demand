@@ -3,15 +3,33 @@
   "type": "object",
   "properties": {
     "location": {
-      "$ref": "#/$defs/location"
+      "$ref": "#/definitions/locationInput"
     },
     "fuel": {
-      "$ref": "#/$defs/fuel"
+      "$ref": "#/definitions/fuelInput"
+    },
+    "query": {
+      "$ref": "#/definitions/queryInput"
     }
   },
-  "$defs": {
-    "location": {
-      "title": "Project site location",
+  "definitions": {
+    "APIInput": {
+      "type": "object",
+      "properties": {
+        "location": {
+          "$ref": "#/definitions/locationInput"
+        },
+        "fuel": {
+          "$ref": "#/definitions/fuelInput"
+        },
+        "query": {
+          "$ref": "#/definitions/queryInput"
+        }
+      },
+      "required": ["location", "fuel", "query"]
+    },
+    "locationInput": {
+      "title": "Site location",
       "type": "object",
       "properties": {
         "lat": {
@@ -25,18 +43,40 @@
       },
       "required": ["lat", "long"]
     },
-    "fuel": {
-      "title": "Project fuel requirement",
+    "fuelInput": {
+      "title": "Hydrogen",
       "type": "object",
       "properties": {
         "amount": {
           "title": "Amount",
           "type": "number",
-          "description": "The total amount of fuel required per week in kg "
+          "description": "The total amount of hydrogen required per week in kg ",
+          "minimum": 1
+        }
+      }
+    },
+    "queryInput": {
+      "title": "Advanced testbed configuration",
+      "type": "object",
+      "properties": {
+        "instance": {
+          "title": "Instance(s)",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/instanceInput"
+          },
+          "uniqueItems": true,
+          "minimum": 1,
+          "description": "The public or private (🔒) instance(s) to use when querying"
         }
       },
-      "required": ["amount"]
+      "required": ["instance"]
+    },
+    "instanceInput": {
+      "type": "string",
+      "oneOf": [{ "const": "default", "title": "Default" }],
+      "default": ["default"]
     }
   },
-  "required": ["location", "fuel"]
+  "required": ["location", "fuel", "query"]
 }

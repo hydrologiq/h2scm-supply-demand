@@ -25,10 +25,40 @@
       "items": {
         "$ref": "#/$defs/match"
       }
-    },
-    "additionalProperties": false
+    }
   },
   "$defs": {
+    "APIResponse": {
+      "type": "object",
+      "properties": {
+        "fuel": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fuel"
+          }
+        },
+        "logistic": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/logistic"
+          }
+        },
+        "storageRental": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/storageRental"
+          }
+        },
+        "matches": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/match"
+          }
+        }
+      },
+      "required": ["matches"],
+      "additionalProperties": false
+    },
     "fuel": {
       "type": "object",
       "properties": {
@@ -46,6 +76,9 @@
         },
         "company": {
           "$ref": "#/$defs/company"
+        },
+        "instance": {
+          "$ref": "#/$defs/graphInstance"
         }
       },
       "additionalProperties": false
@@ -64,6 +97,9 @@
         },
         "company": {
           "$ref": "#/$defs/company"
+        },
+        "instance": {
+          "$ref": "#/$defs/graphInstance"
         }
       },
       "additionalProperties": false
@@ -82,45 +118,11 @@
         },
         "company": {
           "$ref": "#/$defs/company"
+        },
+        "instance": {
+          "$ref": "#/$defs/graphInstance"
         }
       },
-      "additionalProperties": false
-    },
-    "match": {
-      "type": "object",
-      "properties": {
-        "fuel": {
-          "type": "string"
-        },
-        "logistic": {
-          "type": "string"
-        },
-        "storage": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string"
-            },
-            "type": {
-              "type": "string"
-            }
-          },
-          "required": ["id", "type"]
-        },
-        "fuelUtilisation": {
-          "type": "number"
-        },
-        "price": {
-          "type": "number"
-        },
-        "transportDistance": {
-          "type": "number"
-        },
-        "CO2e": {
-          "type": "number"
-        }
-      },
-      "required": ["fuel", "logistic", "storage", "fuelUtilisation", "transportDistance"],
       "additionalProperties": false
     },
     "storage": {
@@ -186,13 +188,23 @@
         "name": {
           "type": "string"
         },
-        "dailyOfftakeCapacity": {
+        "weeklyProductionCapacity": {
           "type": "number"
         },
         "productionCO2e": {
           "type": "number"
+        },
+        "source": {
+          "$ref": "#/$defs/productionSource"
+        },
+        "storedIn": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
+      "required": ["id", "name", "weeklyProductionCapacity"],
       "additionalProperties": false
     },
     "service": {
@@ -214,6 +226,7 @@
           "type": "string"
         }
       },
+      "required": ["id", "name"],
       "additionalProperties": false
     },
     "quote": {
@@ -224,6 +237,12 @@
         },
         "monetaryValuePerUnit": {
           "type": "number"
+        },
+        "currency": {
+          "type": "string"
+        },
+        "unit": {
+          "type": "string"
         }
       },
       "additionalProperties": false
@@ -236,7 +255,173 @@
         }
       },
       "additionalProperties": false
+    },
+    "match": {
+      "type": "object",
+      "properties": {
+        "fuel": {
+          "$ref": "#/$defs/instance"
+        },
+        "logistic": {
+          "$ref": "#/$defs/instance"
+        },
+        "storage": {
+          "$ref": "#/$defs/instance"
+        },
+        "cost": {
+          "$ref": "#/$defs/cost"
+        },
+        "CO2e": {
+          "$ref": "#/$defs/CO2e"
+        },
+        "production": {
+          "$ref": "#/$defs/production"
+        },
+        "transportDistance": {
+          "type": "number"
+        }
+      },
+      "required": ["fuel", "logistic", "storage", "cost", "production", "transportDistance"],
+      "additionalProperties": false
+    },
+    "cost": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "breakdown": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/breakdown"
+          }
+        }
+      },
+      "required": ["total", "breakdown"],
+      "additionalProperties": false
+    },
+    "CO2e": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number"
+        },
+        "breakdown": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/breakdown"
+          }
+        }
+      },
+      "required": ["total", "breakdown"],
+      "additionalProperties": false
+    },
+    "instance": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "exclusiveDownstream": {
+          "type": "boolean"
+        },
+        "exclusiveUpstream": {
+          "type": "boolean"
+        },
+        "type": {
+          "type": "string"
+        },
+        "instance": {
+          "$ref": "#/$defs/graphInstance"
+        }
+      },
+      "required": ["id", "name", "exclusiveDownstream", "exclusiveUpstream", "instance"],
+      "additionalProperties": false
+    },
+    "breakdown": {
+      "type": "object",
+      "properties": {
+        "serviceType": {
+          "type": "string",
+          "enum": ["logistic", "fuel", "storageRental"]
+        },
+        "service": {
+          "type": "string",
+          "description": "The ID of the service that is attached to this breakdown"
+        },
+        "quantity": {
+          "type": "number"
+        },
+        "perUnit": {
+          "type": "number"
+        },
+        "unit": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": ["serviceType", "service", "quantity", "perUnit", "unit", "value"],
+      "additionalProperties": false
+    },
+    "production": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "$ref": "#/$defs/productionMethod"
+        },
+        "source": {
+          "$ref": "#/$defs/productionSource"
+        },
+        "capacity": {
+          "$ref": "#/$defs/productionCapacity"
+        },
+        "location": {
+          "$ref": "#/$defs/location"
+        }
+      },
+      "required": ["method", "capacity", "location"],
+      "additionalProperties": false
+    },
+    "productionMethod": {
+      "type": "string",
+      "enum": ["ElectrolyticHydrogen", "SteamMethaneReformingHydrogen", "Hydrogen"]
+    },
+    "productionSource": {
+      "type": "string",
+      "enum": ["Grid", "Grid Renewable", "Nuclear", "Wind", "Solar"]
+    },
+    "productionCapacity": {
+      "type": "object",
+      "properties": {
+        "weekly": {
+          "type": "number"
+        },
+        "weeklyUsed": {
+          "type": "number"
+        }
+      },
+      "required": ["weekly", "weeklyUsed"]
+    },
+    "graphInstance": {
+      "type": "string"
+    },
+    "location": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "long": {
+          "type": "number"
+        }
+      },
+      "required": ["lat", "long"]
     }
   },
-  "required": ["fuel", "logistic", "matches"]
+  "required": ["matches"]
 }

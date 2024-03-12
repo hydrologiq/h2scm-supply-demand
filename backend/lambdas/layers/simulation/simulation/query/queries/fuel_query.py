@@ -13,8 +13,8 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
 
 
 class FuelQuery(BaseQuery):
-    def query(self, config: FuelQueryInput) -> list[FuelQueryResponse]:
-        return super().query(config)
+    def query(self, config: FuelQueryInput, graphs: list[str] = ["default"]) -> list[FuelQueryResponse]:
+        return super().query(config, graphs)
 
     def _parse_query(self, resp_obj) -> list[FuelQueryResponse]:
         bindings = resp_obj["results"]["bindings"]
@@ -24,6 +24,7 @@ class FuelQuery(BaseQuery):
             "dispenser": DispensingSite,
             "quote": Quote,
             "company": Company,
+            "instance": str
         }
         matching_instances = self._get_matching_instances(
             bindings,
@@ -36,27 +37,34 @@ class FuelQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?producer ?producerName ?producerDailyOfftakeCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
-where { 
-    ?producer rdfs:label ?producerName ;
-                hydrogen_nrmm:dailyOfftakeCapacity ?producerDailyOfftakeCapacity ;
-                hydrogen_nrmm:storedIn ?producerStoredIn ;
-                hydrogen_nrmm:basedAt ?dispenser ;.
-    FILTER(?producerDailyOfftakeCapacity >= """
-        + f"{config.total_fuel}"
-        + """ && ?producerStoredIn IN ("""
-        + f"{', '.join(map(lambda type: f"hydrogen_nrmm:{type}", config.storage_types))}"
-        + """))
-    OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e. }
-    ?dispenser rdfs:label ?dispenserName;
-                hydrogen_nrmm:lat ?dispenserLat;
-                hydrogen_nrmm:long ?dispenserLong;.
-    ?service hydrogen_nrmm:includes ?producer ;
-                rdfs:label ?serviceName;
-    OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-                ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValuePerUnit. }
-    OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
-    OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
-    ?company hydrogen_nrmm:provides ?service;.
+select ?instance ?producer ?producerStoredIn ?producerType ?producerName ?producerSource ?producerWeeklyProductionCapacity ?producerProductionCO2e ?dispenser ?dispenserName ?dispenserLat ?dispenserLong ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?quoteUnit ?quoteCurrency ?company
+where {
+    VALUES ?producerType { hydrogen_nrmm:ElectrolyticHydrogen hydrogen_nrmm:SteamMethaneReformingHydrogen }
+    GRAPH ?instance {
+        ?producer   rdf:type ?producerType ;
+                    rdfs:label ?producerName ;
+                    hydrogen_nrmm:weeklyProductionCapacity ?producerWeeklyProductionCapacity ;
+                    hydrogen_nrmm:storedIn ?producerStoredIn ;
+                    hydrogen_nrmm:basedAt ?dispenser ;.
+        FILTER(?producerWeeklyProductionCapacity >= """
+            + f"{config.total_fuel}"
+            + """ && ?producerStoredIn IN ("""
+            + f"{', '.join(map(lambda type: f"hydrogen_nrmm:{type}", config.storage_types))}"
+            + """))
+        OPTIONAL { ?producer hydrogen_nrmm:productionCO2e ?producerProductionCO2e }
+        OPTIONAL { ?producer hydrogen_nrmm:source ?producerSource }
+        ?dispenser rdfs:label ?dispenserName;
+                    hydrogen_nrmm:lat ?dispenserLat;
+                    hydrogen_nrmm:long ?dispenserLong;.
+        ?service hydrogen_nrmm:includes ?producer ;
+                    rdfs:label ?serviceName;
+        OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
+                    ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValuePerUnit;
+                            hydrogen_nrmm:unit ?quoteUnit;
+                            hydrogen_nrmm:currency ?quoteCurrency;. }
+        OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
+        OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
+        ?company hydrogen_nrmm:provides ?service;.
+    }
 }"""
         )

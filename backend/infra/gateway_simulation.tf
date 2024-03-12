@@ -1,5 +1,5 @@
 data "template_file" "simulation_openapi" {
-  template = "${file("${path.module}/../openapi/simulation.yml")}"
+  template = "${file("${path.module}/../openapi/SupplyDemandAPI.yml")}"
 
 
   vars = {

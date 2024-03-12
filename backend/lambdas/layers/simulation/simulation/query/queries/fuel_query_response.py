@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from simulation import BaseQueryResponse
+from simulation.query.queries import BaseServiceQueryResponse
 from simulation.query.queries.hydrogen_nrmm_optional import (
     FuelService,
     Hydrogen,
@@ -11,12 +11,13 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
 
 
 @dataclass
-class FuelQueryResponse(BaseQueryResponse):
+class FuelQueryResponse(BaseServiceQueryResponse):
     producer: Hydrogen
     service: FuelService
     dispenser: DispensingSite
     quote: Quote
     company: Company
+    instance: str
 
     def __init__(
         self,
@@ -25,6 +26,7 @@ class FuelQueryResponse(BaseQueryResponse):
         dispenser: DispensingSite,
         quote: Quote,
         company: Company,
+        instance: str,
     ):
         self.producer = (
             Hydrogen(**producer) if not isinstance(producer, Hydrogen) else producer
@@ -39,3 +41,4 @@ class FuelQueryResponse(BaseQueryResponse):
         )
         self.quote = Quote(**quote) if not isinstance(quote, Quote) else quote
         self.company = Quote(**company) if not isinstance(company, Company) else company
+        self.instance = instance

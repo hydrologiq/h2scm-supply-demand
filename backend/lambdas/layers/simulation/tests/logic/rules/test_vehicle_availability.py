@@ -6,25 +6,39 @@ SAMPLE_LOGIC_INPUT = {
     "logistic": [
         {
             "company": {"id": "hydrogen_nrmm:15"},
-            "service": {"id": "hydrogen_nrmm:1", "name": "Service 1"},
+            "service": {
+                "id": "hydrogen_nrmm:1",
+                "name": "Service 1",
+            },
             "vehicle": {
                 "id": "hydrogen_nrmm:123",
                 "name": "Vehicle 1",
                 "availableQuantity": 0,
                 "transportDistance": 123,
             },
-            "quote": {"id": "hydrogen_nrmm:1234", "monetaryValuePerUnit": 80},
+            "quote": {
+                "id": "hydrogen_nrmm:1234",
+                "monetaryValuePerUnit": 80,
+            },
+            "instance": "hydrogen_nrmm:",
         },
         {
             "company": {"id": "hydrogen_nrmm:25"},
-            "service": {"id": "hydrogen_nrmm:2", "name": "Service 2"},
+            "service": {
+                "id": "hydrogen_nrmm:2",
+                "name": "Service 2",
+            },
             "vehicle": {
                 "id": "hydrogen_nrmm:212",
                 "name": "Vehicle 2",
                 "availableQuantity": 2,
                 "transportDistance": 123,
             },
-            "quote": {"id": "hydrogen_nrmm:2134", "monetaryValuePerUnit": 40},
+            "quote": {
+                "id": "hydrogen_nrmm:2134",
+                "monetaryValuePerUnit": 40,
+            },
+            "instance": "hydrogen_nrmm:",
         },
     ],
     "fuel": [],

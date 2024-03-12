@@ -1,0 +1,45 @@
+{
+  "color": {
+    "main": "#333333",
+    "secondary": "#6B7B8E",
+    "highlight": "#8A3324",
+    "headers": "#2A4D69",
+    "subHeaders": "#4B86B4",
+    "getMethod": "#4A90E2",
+    "putMethod": "#6B8E23",
+    "postMethod": "#D87F0A",
+    "patchMethod": "#C2A000",
+    "deleteMethod": "#D0021B",
+    "otherMethods": "#2A4D69"
+  },
+  "font": {
+    "baseSize": 10,
+    "main": {
+      "norm": {
+        "face": "fonts/Montserrat-Regular.ttf"
+      },
+      "bold": {
+        "face": "fonts/Montserrat-Bold.ttf"
+      },
+      "italic": {
+        "face": "fonts/Montserrat-Italic.ttf"
+      }
+    },
+    "mono": {
+      "norm": {
+        "face": "Courier"
+      },
+      "bold": {
+        "face": "Courier-Bold"
+      },
+      "italic": {
+        "face": "Courier-Oblique"
+      }
+    }
+  },
+  "format": {
+    "indentStep": 12,
+    "horizontalMargin": 70,
+    "verticalMargin": 50
+  }
+}

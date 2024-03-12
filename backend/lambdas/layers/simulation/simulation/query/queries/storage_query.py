@@ -13,8 +13,10 @@ from simulation.query.queries.hydrogen_nrmm_optional import (
 
 
 class StorageQuery(BaseQuery):
-    def query(self, config: StorageQueryInput) -> list[StorageQueryResponse]:
-        return super().query(config)
+    def query(
+        self, config: StorageQueryInput, graphs: list[str] = ["default"]
+    ) -> list[StorageQueryResponse]:
+        return super().query(config, graphs)
 
     def _parse_query(self, resp_obj) -> list[StorageQueryResponse]:
         if "results" not in resp_obj:
@@ -25,6 +27,7 @@ class StorageQuery(BaseQuery):
             "service": Rental,
             "quote": Quote,
             "company": Company,
+            "instance": str,
         }
         matching_instances = self._get_matching_instances(
             bindings,
@@ -37,24 +40,28 @@ class StorageQuery(BaseQuery):
         return (
             """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?storageType ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
+select ?instance ?storage ?storageName ?storageAvailableQuantity ?storageCapacity ?storageType ?service ?serviceName ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?quoteUnit ?quoteCurrency ?company
 where {
     VALUES ?storageType { hydrogen_nrmm:TubeTrailer hydrogen_nrmm:ManifoldCylinderPallet }
-    ?storage rdf:type ?storageType;
-             rdfs:label ?storageName ;
-             hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
-             hydrogen_nrmm:capacity ?storageCapacity ;.
-    FILTER(?storageCapacity * ?storageAvailableQuantity >= """
+    GRAPH ?instance {
+        ?storage rdf:type ?storageType;
+                rdfs:label ?storageName ;
+                hydrogen_nrmm:availableQuantity ?storageAvailableQuantity ;
+                hydrogen_nrmm:capacity ?storageCapacity ;.
+        FILTER(?storageCapacity * ?storageAvailableQuantity >= """
             + f"{config.totalFuel}"
             + """)
-    ?service rdf:type hydrogen_nrmm:Rental;
-             rdfs:label ?serviceName ;
-             hydrogen_nrmm:includes ?storage;
-    OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValuePerUnit. }
-    OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
-    OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
-    ?company hydrogen_nrmm:provides ?service;.
+        ?service rdf:type hydrogen_nrmm:Rental;
+                rdfs:label ?serviceName ;
+                hydrogen_nrmm:includes ?storage;
+        OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
+                ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValuePerUnit;
+                        hydrogen_nrmm:unit ?quoteUnit;
+                        hydrogen_nrmm:currency ?quoteCurrency;. }
+        OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
+        OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
+        ?company hydrogen_nrmm:provides ?service;.
+    }
 }
 """
         )

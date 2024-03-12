@@ -36,11 +36,13 @@ class MockAPIGatewayProxyEventV2(APIGatewayProxyEventV2):
         body: str = "",
         http_method: str = "POST",
         pathParams: Dict[str, str] = {},
+        queryStringParams: Dict[str, str] = {},
     ):
         self._data = {
             "body": body,
             "httpMethod": http_method,
             "pathParameters": pathParams,
+            "queryStringParameters": queryStringParams,
             "headers": {"Authorization": f"Bearer {AUTH_TOKEN}"},
         }
 
@@ -67,7 +69,7 @@ def scm_envs():
 def test_handler_logic_output_transform(lambda_context, scm_envs):
     with patch("simulation.run_simulation.run_simulation") as patched:
         user_input = {"location": {"lat": 123, "long": 321}, "fuel": {"amount": 300}}
-        expected_response = LogicOutput([], [], [])
+        expected_response = LogicOutput([], [], [], [])
         patched.return_value = expected_response
 
         from api_run_simulation.handler import lambda_handler
@@ -76,12 +78,17 @@ def test_handler_logic_output_transform(lambda_context, scm_envs):
             MockAPIGatewayProxyEventV2(
                 http_method="POST",
                 pathParams={"repo": SCM_REPO},
+                queryStringParams={"debug": False, "instances": ["default", "abc"]},
                 body=json.dumps(user_input),
             ),
             lambda_context,
         )
         assert response.get("statusCode") == 200
-        assert response.get("body") == expected_response.dumps()
+        expected_resp = json.loads(expected_response.dumps())
+        del expected_resp["logistic"]
+        del expected_resp["fuel"]
+        del expected_resp["storageRental"]
+        assert response.get("body") == json.dumps(expected_resp)
         patched.assert_called_once_with(
             BusinessInput(location=Location(lat=123, long=321), fuel=Fuel(amount=300)),
             QueryConfiguration(
@@ -91,7 +98,29 @@ def test_handler_logic_output_transform(lambda_context, scm_envs):
                 scm_repo=SCM_REPO,
                 scm_access_token=AUTH_TOKEN,
             ),
+            ["default", "abc"],
         )
+
+
+def test_handler_logic_output_transform_debug(lambda_context, scm_envs):
+    with patch("simulation.run_simulation.run_simulation") as patched:
+        user_input = {"location": {"lat": 123, "long": 321}, "fuel": {"amount": 300}}
+        expected_response = LogicOutput([], [], [], [])
+        patched.return_value = expected_response
+
+        from api_run_simulation.handler import lambda_handler
+
+        response = lambda_handler(
+            MockAPIGatewayProxyEventV2(
+                http_method="POST",
+                pathParams={"repo": SCM_REPO},
+                queryStringParams={"debug": True, "instances": ["default", "abc"]},
+                body=json.dumps(user_input),
+            ),
+            lambda_context,
+        )
+        assert response.get("statusCode") == 200
+        assert response.get("body") == expected_response.dumps()
 
 
 def test_handler_no_path_param(lambda_context, scm_envs):

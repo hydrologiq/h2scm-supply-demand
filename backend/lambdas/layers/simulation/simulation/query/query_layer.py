@@ -17,21 +17,23 @@ import simulation.business.outputs as BusinessOutputs
 
 class QueryLayer(SimulationLayer):
     configuration: QueryConfiguration
+    graphs: list[str]
 
-    def __init__(self, config: QueryConfiguration):
+    def __init__(self, config: QueryConfiguration, graphs: list[str] = ["default"]):
         self.configuration = config
+        self.graphs = graphs
 
     def run(self, data: QueryInput) -> QueryOutput:
         storageRental = StorageQuery(self.configuration).query(
-            StorageQueryInput(data.total_fuel())
+            StorageQueryInput(data.total_fuel()), self.graphs
         )
         storage_types = self.__storage_types(storageRental)
         logistics = LogisticQuery(self.configuration).query(
-            LogisticQueryInput(storage_types)
+            LogisticQueryInput(storage_types), self.graphs
         )
 
         fuels = FuelQuery(self.configuration).query(
-            FuelQueryInput(data.total_fuel(), storage_types)
+            FuelQueryInput(data.total_fuel(), storage_types), self.graphs
         )
 
         return QueryOutput(logistics, fuels, storageRental)

@@ -16,10 +16,13 @@ class LogisticResponse:
     serviceName: str
     quote: str
     quoteMonetaryValuePerUnit: float
+    quoteUnit: str
+    quoteCurrency: str
     company: str
     serviceTransportCO2e: Optional[float] = None
     serviceExclusiveDownstreamCompanies: Optional[str] = None
     serviceExclusiveUpstreamCompanies: Optional[str] = None
+    instance: Optional[str] = ""
 
     def query_response(self) -> LogisticQueryResponse:
         service = {"id": to_id(self.service), "name": self.serviceName}
@@ -27,11 +30,11 @@ class LogisticResponse:
             service["transportCO2e"] = self.serviceTransportCO2e
         if self.serviceExclusiveDownstreamCompanies is not None:
             service["exclusiveDownstreamCompanies"] = (
-                self.serviceExclusiveDownstreamCompanies
+                to_id(self.serviceExclusiveDownstreamCompanies)
             )
         if self.serviceExclusiveUpstreamCompanies is not None:
             service["exclusiveUpstreamCompanies"] = (
-                self.serviceExclusiveUpstreamCompanies
+                to_id(self.serviceExclusiveUpstreamCompanies)
             )
         return LogisticQueryResponse(
             vehicle={
@@ -44,8 +47,11 @@ class LogisticResponse:
             quote={
                 "id": to_id(self.quote),
                 "monetaryValuePerUnit": self.quoteMonetaryValuePerUnit,
+                "currency": self.quoteCurrency,
+                "unit": self.quoteUnit
             },
             company={"id": to_id(self.company)},
+            instance=to_id(self.instance)
         )
 
     def response_binding(self) -> object:
@@ -79,9 +85,23 @@ class LogisticResponse:
                 "type": "literal",
                 "value": f"{self.quoteMonetaryValuePerUnit}",
             },
+            "quoteUnit": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": f"{self.quoteUnit}",
+            },
+            "quoteCurrency": {
+                "datatype": "http://www.w3.org/2001/XMLSchema#decimal",
+                "type": "literal",
+                "value": f"{self.quoteCurrency}",
+            },
             "company": {
                 "type": "uri",
                 "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.company}",
+            },
+            "instance": {
+                "type": "uri",
+                "value": f"https://w3id.org/hydrologiq/hydrogen/nrmm{self.instance}",
             },
         }
         if self.serviceTransportCO2e is not None:
@@ -118,22 +138,26 @@ def sparql_query_logistic(
     return (
         """
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-select ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?company
+select ?instance ?vehicle ?vehicleName ?vehicleAvailableQuantity ?vehicleTransportDistance ?service ?serviceName ?serviceTransportCO2e ?serviceExclusiveDownstreamCompanies ?serviceExclusiveUpstreamCompanies ?quote ?quoteMonetaryValuePerUnit ?quoteUnit ?quoteCurrency ?company
 where {
     VALUES ?storageType { """ + f"{' '.join(map(lambda type: f"hydrogen_nrmm:{type}", storage_types))}" + """ }
-    ?vehicle hydrogen_nrmm:carries ?storageType ;
-             rdfs:label ?vehicleName ;
-             hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
-             hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.
-    ?service rdf:type hydrogen_nrmm:LogisticService;
-             rdfs:label ?serviceName ;
-             hydrogen_nrmm:includes ?vehicle;.
-    OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
-    OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
-               ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValuePerUnit. }
-    OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
-    OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
-    ?company hydrogen_nrmm:provides ?service;.
+    GRAPH ?instance {
+        ?vehicle hydrogen_nrmm:carries ?storageType ;
+                rdfs:label ?vehicleName ;
+                hydrogen_nrmm:availableQuantity ?vehicleAvailableQuantity ;
+                hydrogen_nrmm:transportDistance ?vehicleTransportDistance ;.
+        ?service rdf:type hydrogen_nrmm:LogisticService;
+                rdfs:label ?serviceName ;
+                hydrogen_nrmm:includes ?vehicle;.
+        OPTIONAL { ?service hydrogen_nrmm:transportCO2e ?serviceTransportCO2e. }
+        OPTIONAL { ?service hydrogen_nrmm:typicalPricing ?quote;.
+                ?quote hydrogen_nrmm:monetaryValuePerUnit ?quoteMonetaryValuePerUnit;
+                        hydrogen_nrmm:unit ?quoteUnit;
+                        hydrogen_nrmm:currency ?quoteCurrency;. }
+        OPTIONAL { ?service hydrogen_nrmm:exclusiveDownstreamCompanies ?serviceExclusiveDownstreamCompanies;. }
+        OPTIONAL { ?service hydrogen_nrmm:exclusiveUpstreamCompanies ?serviceExclusiveUpstreamCompanies;. }
+        ?company hydrogen_nrmm:provides ?service;.
+    }
 }
 """
     )

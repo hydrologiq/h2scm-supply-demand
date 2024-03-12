@@ -29,7 +29,9 @@ def clean_nones(value):
         return {
             key: clean_nones(val)
             for key, val in value.items()
-            if val is not None and not (isinstance(val, list) and len(val) == 0)
+            if val is not None
+            and not (isinstance(val, list) and len(val) == 0)
+            and not key.startswith("_")
         }
     elif (
         isinstance(value, YAMLRoot)
@@ -45,15 +47,23 @@ class SimulationData:
     def load(self) -> None:
         pass
 
-    def post_clean(self, cleaned) -> dict:
+    def post_clean(self, cleaned, just_matches: bool = False) -> dict:
         return cleaned
 
-    def dumps(self) -> str:
-        return json.dumps(
-            self.post_clean(clean_nones(self.__dict__)), cls=SimulationDataJSONEncoder
-        )
+    def dumps(self, just_matches: bool = False) -> str:
+        obj = self.post_clean(clean_nones(self.__dict__), just_matches)
+        if just_matches:
+
+            for key in list(obj.keys()):
+                if key != "matches":
+                    del obj[key]
+        return json.dumps(obj, cls=SimulationDataJSONEncoder)
 
 
 class BaseQueryResponse:
+
     def dumps(self) -> str:
         return json.dumps(clean_nones(self.__dict__), cls=SimulationDataJSONEncoder)
+
+    def to_object(self) -> object:
+        return json.loads(self.dumps())

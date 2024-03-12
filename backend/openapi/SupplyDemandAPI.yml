@@ -1,9 +1,9 @@
 openapi: 3.0.3
 
 info:
-  title: Testbed API
-  description: API defining the operations available in the Testbed API
-  version: 0.1.0
+  title: H2SCM - Supply and Demand API Documentation
+  description: API defining the endpoints available in the Supply and Demand API
+  version: 1.0.0
 
 components:
   schemas:
@@ -12,6 +12,10 @@ components:
       properties:
         message:
           type: string
+    SimulationResults:
+      $ref: "../../shared/schemas/simulation/SimulationResults.json#/$defs/APIResponse"
+    SimulationInput:
+      $ref: "../../shared/schemas/simulation/SimulationInput.json#/definitions/APIInput"
   securitySchemes:
     CognitoUserPool:
       type: apiKey
@@ -37,6 +41,18 @@ paths:
           description: the name of the repository
           schema:
             type: string
+        - name: debug
+          in: query
+          required: false
+          description: to return or not to return debug output
+          schema:
+            type: boolean
+        - name: instances
+          in: query
+          required: false
+          description: A comma separated list of the instance ID's to use for the simulation (defaults to default)
+          schema:
+            type: string
       x-amazon-apigateway-integration:
         uri: "arn:aws:apigateway:${aws_region}:lambda:path/2015-03-31/functions/${lambda_api_run_simulation_arn}/invocations"
         passthroughBehavior: "when_no_match"
@@ -48,15 +64,28 @@ paths:
         type: "NONE"
       x-amazon-apigateway-api-key-source: "HEADER"
 
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SimulationInput"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Message"
+                $ref: "#/components/schemas/SimulationResults"
     options:
       security: []
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          description: the name of the repository
+          schema:
+            type: string
       responses:
         "200":
           description: Default response

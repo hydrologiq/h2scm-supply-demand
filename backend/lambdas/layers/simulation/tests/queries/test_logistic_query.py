@@ -1,5 +1,3 @@
-import copy
-import json
 from simulation.query.queries import (
     QueryConfiguration,
     LogisticQuery,
@@ -12,50 +10,6 @@ from tests.helpers.logistic import (
     sparql_query_logistic,
 )
 import simulation.business.outputs as BusinessOutputs
-
-JSON_INPUT = json.loads(
-    """
-    {
-        "fuel": [
-            {
-                "type": "TubeTrailer",
-                "amount": 300
-            },
-            {
-                "type": "TubeTrailer",
-                "amount": 185
-            }
-        ],
-        "project": {
-            "location": {
-                "lat": 12.234,
-                "long": 43.221   
-            }
-        }
-    }
-    """
-)
-
-JSON_OUTPUT = json.loads(
-    """
-    {
-      "logistic": [
-        {
-          "company": { "id": "hydrogen_nrmm:15" },
-          "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
-          "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 80 }
-        },
-        {
-          "company": { "id": "hydrogen_nrmm:25" },
-          "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
-          "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:214", "monetaryValuePerUnit": 40 }
-        }
-      ]
-    }
-    """
-)
 
 SCM_API_ID = "abcdef"
 SCM_API_REGION = "eu-west-2"
@@ -92,6 +46,8 @@ LOGISTIC_RESPONSE_1 = LogisticResponse(
     serviceName="Service 1",
     quote="12345",
     quoteMonetaryValuePerUnit=80.0,
+    quoteCurrency="GBP",
+    quoteUnit="trip",
     company="15",
 )
 
@@ -104,6 +60,8 @@ LOGISTIC_RESPONSE_2 = LogisticResponse(
     serviceName="Service 2",
     quote="214",
     quoteMonetaryValuePerUnit=40.0,
+    quoteCurrency="GBP",
+    quoteUnit="trip",
     company="25",
 )
 
@@ -133,8 +91,14 @@ def test_run_logistic_query(requests_mock: Mocker):
 
     assert requests_mock.last_request is not None
     assert len(logistic_output) == 2
-    assert json.loads(logistic_output[0].dumps()) == JSON_OUTPUT["logistic"][0]
-    assert json.loads(logistic_output[1].dumps()) == JSON_OUTPUT["logistic"][1]
+    assert (
+        logistic_output[0].to_object()
+        == LOGISTIC_RESPONSE_1.query_response().to_object()
+    )
+    assert (
+        logistic_output[1].to_object()
+        == LOGISTIC_RESPONSE_2.query_response().to_object()
+    )
 
 
 LOGISTIC_RESPONSE_1_CO2e = LogisticResponse(
@@ -147,6 +111,8 @@ LOGISTIC_RESPONSE_1_CO2e = LogisticResponse(
     serviceTransportCO2e=0.5,
     quote="12345",
     quoteMonetaryValuePerUnit=80.0,
+    quoteCurrency="GBP",
+    quoteUnit="trip",
     company="15",
 )
 
@@ -160,6 +126,8 @@ LOGISTIC_RESPONSE_2_CO2e = LogisticResponse(
     serviceTransportCO2e=1,
     quote="214",
     quoteMonetaryValuePerUnit=40.0,
+    quoteCurrency="GBP",
+    quoteUnit="trip",
     company="25",
 )
 
@@ -191,14 +159,14 @@ def test_run_logistic_query_with_co2e(requests_mock: Mocker):
 
     assert requests_mock.last_request is not None
     assert len(logistic_output) == 2
-
-    expected_logistic_1 = {**JSON_OUTPUT["logistic"][0]}
-    expected_logistic_1["service"]["transportCO2e"] = 0.5
-    assert json.loads(logistic_output[0].dumps()) == expected_logistic_1
-
-    expected_logistic_2 = {**JSON_OUTPUT["logistic"][1]}
-    expected_logistic_2["service"]["transportCO2e"] = 1
-    assert json.loads(logistic_output[1].dumps()) == expected_logistic_2
+    assert (
+        logistic_output[0].to_object()
+        == LOGISTIC_RESPONSE_1_CO2e.query_response().to_object()
+    )
+    assert (
+        logistic_output[1].to_object()
+        == LOGISTIC_RESPONSE_2_CO2e.query_response().to_object()
+    )
 
 
 LOGISTIC_RESPONSE_MCP = LogisticResponse(
@@ -210,22 +178,9 @@ LOGISTIC_RESPONSE_MCP = LogisticResponse(
     serviceName="Service 1",
     quote="12345",
     quoteMonetaryValuePerUnit=80.0,
+    quoteCurrency="GBP",
+    quoteUnit="trip",
     company="15",
-)
-
-JSON_OUTPUT_MCP = json.loads(
-    """
-    {
-      "logistic": [
-        {
-          "company": { "id": "hydrogen_nrmm:15" },
-          "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
-          "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 80 }
-        }
-      ]
-    }
-    """
 )
 
 
@@ -254,7 +209,10 @@ def test_run_logistic_query_with_mcp(requests_mock: Mocker):
 
     assert requests_mock.last_request is not None
     assert len(logistic_output) == 1
-    assert json.loads(logistic_output[0].dumps()) == JSON_OUTPUT_MCP["logistic"][0]
+    assert (
+        logistic_output[0].to_object()
+        == LOGISTIC_RESPONSE_MCP.query_response().to_object()
+    )
 
 
 LOGISTIC_RESPONSE_DEPS = LogisticResponse(
@@ -266,6 +224,8 @@ LOGISTIC_RESPONSE_DEPS = LogisticResponse(
     serviceName="Service 1",
     quote="12345",
     quoteMonetaryValuePerUnit=80.0,
+    quoteCurrency="GBP",
+    quoteUnit="trip",
     company="15",
     serviceExclusiveUpstreamCompanies="5",
     serviceExclusiveDownstreamCompanies="6",
@@ -297,7 +257,7 @@ def test_run_logistic_query_with_deps(requests_mock: Mocker):
 
     assert requests_mock.last_request is not None
     assert len(logistic_output) == 1
-    expected_deps = copy.deepcopy(JSON_OUTPUT_MCP["logistic"][0])
-    expected_deps["service"]["exclusiveUpstreamCompanies"] = ["hydrogen_nrmm:5"]
-    expected_deps["service"]["exclusiveDownstreamCompanies"] = ["hydrogen_nrmm:6"]
-    assert json.loads(logistic_output[0].dumps()) == expected_deps
+    assert (
+        logistic_output[0].to_object()
+        == LOGISTIC_RESPONSE_DEPS.query_response().to_object()
+    )

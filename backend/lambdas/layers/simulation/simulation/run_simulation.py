@@ -7,10 +7,12 @@ from simulation.query import QueryLayer
 
 
 def run_simulation(
-    input: BusinessInput, query_config: QueryConfiguration
+    input: BusinessInput,
+    query_config: QueryConfiguration,
+    graphs: list[str] = ["default"],
 ) -> LogicOutput:
     business_output = BusinessLayer().run(input)
-    query_output = QueryLayer(query_config).run(business_output)
+    query_output = QueryLayer(query_config, graphs).run(business_output)
     return LogicLayer().run(query_output, business_output)
 
 

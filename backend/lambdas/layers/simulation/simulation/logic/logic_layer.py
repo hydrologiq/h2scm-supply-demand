@@ -1,8 +1,16 @@
 import math
 from simulation import SimulationLayer
 from simulation.business import BusinessOutput
+from simulation.business.inputs.location import Location
 from simulation.logic.outputs import Matched
-from simulation.logic.outputs.matched import MatchedStorage
+from simulation.logic.outputs.matched import (
+    Breakdown,
+    BreakdownItem,
+    MatchedInstance,
+    Production,
+    ProductionCapacity,
+    ServiceType,
+)
 from simulation.logic.rules import RuleEngine, Rule
 from simulation.logic.rules.filter import (
     VehicleAvailabilityRule,
@@ -42,65 +50,97 @@ class LogicLayer(SimulationLayer):
                 data, business_data, logistic.vehicle.transportDistance
             )
             for fuel_match, fuel_distance in fuel_matches:
-                fuelUtilisation = round(
-                    (
-                        business_data.total_fuel()
-                        / float(fuel_match.producer.dailyOfftakeCapacity)
-                    )
-                    * 100,
-                    2,
-                )
                 for storage_rental in data.storageRental:
+                    if (
+                        len(fuel_match.producer.storedIn) > 0
+                        and storage_rental.storage.class_name != "Storage"
+                        and storage_rental.storage.class_class_curie
+                        not in fuel_match.producer.storedIn
+                    ):
+
+                        continue
                     if not meets_service_exclusivity(
                         logistic, fuel_match, storage_rental
                     ):
-                        break
-                    price = round(
-                        (float(logistic.quote.monetaryValuePerUnit))
-                        + (
-                            float(fuel_match.quote.monetaryValuePerUnit)
-                            * business_data.total_fuel()
-                        )
-                        + storage_cost(storage_rental, business_data.total_fuel()),
-                        2,
+                        continue
+
+                    cost = calculate_cost_breakdown(
+                        logistic=logistic,
+                        fuel=fuel_match,
+                        storage_rental=storage_rental,
+                        total_fuel=business_data.total_fuel(),
                     )
-                    CO2e = (
-                        round(
-                            (
-                                business_data.total_fuel()
-                                * float(fuel_match.producer.productionCO2e)
-                            )
-                            + fuel_distance * float(logistic.service.transportCO2e),
-                            2,
-                        )
-                        if (
-                            fuel_match.producer.productionCO2e is not None
-                            and logistic.service.transportCO2e is not None
-                        )
-                        else None
+
+                    CO2e = calculate_co2e_breakdown(
+                        logistic=logistic,
+                        fuel=fuel_match,
+                        total_distance=fuel_distance,
+                        total_fuel=business_data.total_fuel(),
                     )
+
                     matches.append(
                         Matched(
-                            logistic.service.id,
-                            fuel_match.service.id,
-                            fuelUtilisation,
-                            price,
-                            fuel_distance,
-                            MatchedStorage(
+                            MatchedInstance(
+                                logistic.service.id,
+                                logistic.service.name,
+                                logistic.has_exclusive_downstream(),
+                                logistic.has_exclusive_upstream(),
+                                logistic.instance,
+                            ),
+                            MatchedInstance(
+                                fuel_match.service.id,
+                                fuel_match.service.name,
+                                fuel_match.has_exclusive_downstream(),
+                                fuel_match.has_exclusive_upstream(),
+                                fuel_match.instance,
+                            ),
+                            MatchedInstance(
                                 storage_rental.service.id,
+                                storage_rental.service.name,
+                                storage_rental.has_exclusive_downstream(),
+                                storage_rental.has_exclusive_upstream(),
+                                storage_rental.instance,
                                 storage_rental.storage.class_name,
                             ),
-                            CO2e,
+                            cost=cost,
+                            production=Production(
+                                capacity=ProductionCapacity(
+                                    weekly=float(
+                                        fuel_match.producer.weeklyProductionCapacity
+                                    ),
+                                    weeklyUsed=round(
+                                        (
+                                            business_data.total_fuel()
+                                            / float(
+                                                fuel_match.producer.weeklyProductionCapacity
+                                            )
+                                        )
+                                        * 100,
+                                        2,
+                                    ),
+                                ),
+                                method=fuel_match.producer.class_name,
+                                # Only return the first source
+                                # TODO(AAS): Support multiple sources
+                                source=(
+                                    str(fuel_match.producer.source[0])
+                                    if (
+                                        fuel_match.producer.source is not None
+                                        and len(fuel_match.producer.source) > 0
+                                    )
+                                    else None
+                                ),
+                                location=Location(
+                                    lat=float(fuel_match.dispenser.lat),
+                                    long=float(fuel_match.dispenser.long),
+                                ),
+                            ),
+                            transportDistance=fuel_distance,
+                            CO2e=CO2e,
                         )
                     )
 
         return matches
-
-
-def storage_cost(storage_rental: StorageQueryResponse, total_fuel: float):
-    return math.ceil(total_fuel / float(storage_rental.storage.capacity)) * float(
-        storage_rental.quote.monetaryValuePerUnit
-    )
 
 
 def meets_service_exclusivity(
@@ -140,7 +180,6 @@ def meets_service_exclusivity(
         and len(logistic.service.exclusiveUpstreamCompanies) > 0
         else valid
     )
-
     return valid
 
 
@@ -163,3 +202,73 @@ def match_fuel(
         if fuel_distance <= transportDistance:
             fuel_matches.append((fuel, fuel_distance))
     return fuel_matches
+
+
+def calculate_cost_breakdown(
+    logistic: LogisticQueryResponse,
+    fuel: FuelQueryResponse,
+    storage_rental: StorageQueryResponse,
+    total_fuel: int,
+) -> Breakdown:
+    breakdown = [
+        BreakdownItem(
+            ServiceType.fuel,
+            fuel.service.id,
+            total_fuel,
+            perUnit=fuel.quote.monetaryValuePerUnit,
+            unit=fuel.quote.unit,
+            value=fuel.quote.currency,
+        ),
+        BreakdownItem(
+            ServiceType.storageRental,
+            storage_rental.service.id,
+            math.ceil(total_fuel / float(storage_rental.storage.capacity)),
+            perUnit=storage_rental.quote.monetaryValuePerUnit,
+            unit=storage_rental.quote.unit,
+            value=storage_rental.quote.currency,
+        ),
+        BreakdownItem(
+            ServiceType.logistic,
+            logistic.service.id,
+            1,
+            perUnit=logistic.quote.monetaryValuePerUnit,
+            unit=logistic.quote.unit,
+            value=logistic.quote.currency,
+        ),
+    ]
+    total = sum(map(lambda item: item.quantity * item.perUnit, breakdown))
+    return Breakdown(total, breakdown)
+
+
+def calculate_co2e_breakdown(
+    logistic: LogisticQueryResponse,
+    fuel: FuelQueryResponse,
+    total_distance: float,
+    total_fuel: int,
+) -> Breakdown | None:
+    if (
+        fuel.producer.productionCO2e is not None
+        and logistic.service.transportCO2e is not None
+    ):
+        breakdown = [
+            BreakdownItem(
+                ServiceType.fuel,
+                fuel.service.id,
+                total_fuel,
+                perUnit=fuel.producer.productionCO2e,
+                unit="kg",
+                value="kg",
+            ),
+            BreakdownItem(
+                ServiceType.logistic,
+                logistic.service.id,
+                total_distance,
+                perUnit=logistic.service.transportCO2e,
+                unit="km",
+                value="kg",
+            ),
+        ]
+        total = sum(map(lambda item: item.quantity * item.perUnit, breakdown))
+        return Breakdown(total, breakdown)
+    else:
+        return None

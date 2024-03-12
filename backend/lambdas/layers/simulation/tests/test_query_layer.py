@@ -36,13 +36,15 @@ JSON_OUTPUT = json.loads(
           "company": { "id": "hydrogen_nrmm:15" },
           "service": { "id": "hydrogen_nrmm:1", "name": "Service 1" },
           "vehicle": { "id": "hydrogen_nrmm:123", "name": "Vehicle 1", "availableQuantity": 1, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 40}
+          "quote": { "id": "hydrogen_nrmm:12345", "monetaryValuePerUnit": 40},
+          "instance": "hydrogen_nrmm:"
         },
         {
           "company": { "id": "hydrogen_nrmm:25" },
           "service": { "id": "hydrogen_nrmm:2", "name": "Service 2" },
           "vehicle": { "id": "hydrogen_nrmm:212", "name": "Vehicle 2", "availableQuantity": 2, "transportDistance": 123 },
-          "quote": { "id": "hydrogen_nrmm:2124", "monetaryValuePerUnit": 40}
+          "quote": { "id": "hydrogen_nrmm:2124", "monetaryValuePerUnit": 40},
+          "instance": "hydrogen_nrmm:"
         }
       ],
       "storageRental": [
@@ -50,7 +52,8 @@ JSON_OUTPUT = json.loads(
          "company": { "id": "hydrogen_nrmm:45" },
           "service": { "id": "hydrogen_nrmm:4", "name": "Service 1" },
           "storage": { "id": "hydrogen_nrmm:423", "name": "Tube Trailer 1", "availableQuantity": 1, "capacity": 600, "type": "hydrogen_nrmm:TubeTrailer" },
-          "quote": { "id": "hydrogen_nrmm:4234", "monetaryValuePerUnit": 40}
+          "quote": { "id": "hydrogen_nrmm:4234", "monetaryValuePerUnit": 40},
+          "instance": "hydrogen_nrmm:"
         }
       ],
       "fuel": [
@@ -59,7 +62,8 @@ JSON_OUTPUT = json.loads(
           "quote": { "id": "hydrogen_nrmm:314", "monetaryValuePerUnit": 40},
           "service": { "id": "hydrogen_nrmm:3", "name": "Fuel Service 1" },
           "dispenser": { "id": "hydrogen_nrmm:31", "name": "Dispensing Site 1", "lat": 123, "long": 43.2 },
-          "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "dailyOfftakeCapacity": 600 }
+          "producer": { "id": "hydrogen_nrmm:312", "name": "Hydrogen Producer 1", "weeklyProductionCapacity": 600 },
+          "instance": "hydrogen_nrmm:"
         }
       ]
     }
@@ -111,10 +115,15 @@ def test_run_query_layer_output():
                 user_output = query_layer.run(query_input)
 
                 logistics_patched.assert_called_once_with(
-                    LogisticQueryInput([BusinessOutputs.Storage.TubeTrailer])
+                    LogisticQueryInput([BusinessOutputs.Storage.TubeTrailer]),
+                    ["default"],
                 )
                 fuel_patched.assert_called_once_with(
-                    FuelQueryInput(485, [BusinessOutputs.Storage.TubeTrailer])
+                    FuelQueryInput(485, [BusinessOutputs.Storage.TubeTrailer]),
+                    ["default"],
                 )
-                storage_patched.assert_called_once_with(StorageQueryInput(485))
+                storage_patched.assert_called_once_with(
+                    StorageQueryInput(485),
+                    ["default"],
+                )
                 assert json.loads(user_output.dumps()) == JSON_OUTPUT

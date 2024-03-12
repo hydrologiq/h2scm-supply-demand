@@ -1,20 +1,28 @@
-import SimulationInput from "@components/input/SimulationInput"
+import SimulationInput, { FormValues } from "@components/input/SimulationInput"
 import { simulation } from "@api/simulation"
 import { useState } from "react"
-import { SimulationResults as SimulationResultsSchema } from "@custom/types/generated/SimulationResults"
+import {
+  SimulationResults as SimulationResultsSchema,
+  Location as SimLocation,
+} from "@custom/types/generated/SimulationResults"
 import SimulationResults from "@components/results/SimulationResults"
-import { useToast } from "@chakra-ui/react"
+import { Divider, useToast } from "@chakra-ui/react"
 import { AxiosError } from "axios"
-
 function SimulationView() {
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<SimulationResultsSchema>({ fuel: [], logistic: [], matches: [] })
-
+  const [location, setLocation] = useState<SimLocation>()
   const toast = useToast()
 
-  const onQuery = (data: Record<string, any>) => {
+  const onQuery = (data: FormValues) => {
     setLoading(true)
-    toast.promise(simulation(data), {
+    if ("location" in data) setLocation(data["location"])
+
+    const instances = [...data.query.instance]
+    let submitData = structuredClone(data) as Record<string, any>
+    delete submitData["query"]
+    console.log(instances)
+    toast.promise(simulation(submitData, instances), {
       success: (data) => {
         setResults(data)
         setLoading(false)
@@ -31,8 +39,8 @@ function SimulationView() {
   return (
     <>
       <SimulationInput queryCallback={onQuery} />
-
-      {!loading && <SimulationResults results={results} />}
+      <Divider my={5} />
+      <SimulationResults loading={loading} results={results} location={location} />
     </>
   )
 }

@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@redocly/cli": "^1.9.1",
+    "apibake": "^0.1.21",
+    "swagger-cli": "^4.0.4"
+  },
+  "scripts": {
+    "bundle": "redocly bundle SupplyDemandAPI.yml -o _build/SupplyDemandAPI.yml --remove-unused-components",
+    "bake": "yarn bundle && apibake _build/SupplyDemandAPI.yml --subtitle 'Supply and Demand API' --title 'H2SCM - Supply and Demand API Documentation' --config apibake-config.json --out H2SCM_Supply_Demand_API_v1.0.0.pdf"
+  }
+}

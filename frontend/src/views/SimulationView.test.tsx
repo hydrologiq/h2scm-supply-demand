@@ -5,13 +5,31 @@ import * as apiEnvs from "@api/envs"
 import * as apiSimulation from "@api/simulation"
 
 import SimulationView from "./SimulationView"
+import * as Amplify from "aws-amplify/auth/cognito"
+vi.mock("aws-amplify/auth/cognito", async () => ({ ...((await vi.importActual("aws-amplify/auth/cognito")) as any) }))
+
+vi.mock("@react-google-maps/api", async () => {
+  return {
+    //@ts-ignore
+    GoogleMap: ({ center }: { center: google.maps.LatLng }) => {
+      return <p>{`lat ${center.lat} long ${center.lng}`}</p>
+    },
+    useJsApiLoader: () => {
+      return { isLoaded: true }
+    },
+    Marker: ({ position }: { position: google.maps.LatLng }) => {
+      return <p>{`lat ${position.lat} long ${position.lng}`}</p>
+    },
+  }
+})
 
 const Latitude = () => screen.getByRole("spinbutton", { name: "Latitude" })
 const Longitude = () => screen.getByRole("spinbutton", { name: "Longitude" })
 const Amount = () => screen.getByRole("spinbutton", { name: "Amount" })
-const Query = () => screen.getByRole("button", { name: "Query testbed" })
+const Query = () => screen.getByRole("button", { name: "Evaluate using testbed" })
 
 const simulationTable = () => screen.getByRole("table", { name: "Simulation results" })
+const loading = async () => await waitFor(() => expect(screen.queryByText("Loading...")).not.toBeInTheDocument())
 
 const rowInTable = (text: string) =>
   within(simulationTable()).getByRole("row", {
@@ -39,40 +57,73 @@ describe("simulation view", () => {
         dispatchEvent: vi.fn(),
       })),
     })
+    window.scrollTo = vi.fn().mockImplementation(() => {})
 
     vi.spyOn(apiEnvs, "getAPISimulationURL").mockReturnValue(simulationUrl)
     vi.spyOn(apiEnvs, "getAPISimulationVersion").mockReturnValue(simulationVersion)
     vi.spyOn(apiEnvs, "getAPISimulationRepo").mockReturnValue(simulationRepo)
     vi.spyOn(apiEnvs, "getAPISimulationAccessToken").mockResolvedValue(simulationAccessToken)
+    vi.spyOn(Amplify, "fetchUserAttributes").mockResolvedValue({ "custom:instances": JSON.stringify([]) })
   })
 
   beforeEach(() => {
     simulationAPIMockFn = vi.fn()
-    simulationAPIMock.mockImplementation(async (data) => {
-      simulationAPIMockFn(data)
+    simulationAPIMock.mockImplementation(async (data, instances) => {
+      simulationAPIMockFn(data, instances)
       return {
-        fuel: [{ service: { id: "123", name: "Fuel Service" } }],
-        logistic: [{ service: { id: "321", name: "Fuel Logistic" } }],
-        matches: [{ fuel: "123", logistic: "321", fuelUtilisation: 66 }],
+        matches: [
+          {
+            fuel: {
+              id: "123",
+              name: "Fuel Service",
+              exclusiveDownstream: false,
+              exclusiveUpstream: false,
+              instance: "hydrogen_nrmm:",
+            },
+            logistic: {
+              id: "321",
+              name: "Fuel Logistic",
+              exclusiveDownstream: false,
+              exclusiveUpstream: false,
+              instance: "hydrogen_nrmm:",
+            },
+            storage: {
+              id: "432",
+              name: "Storage Rental",
+              exclusiveDownstream: false,
+              exclusiveUpstream: false,
+              instance: "hydrogen_nrmm:",
+            },
+            cost: { total: 33, breakdown: [] },
+            production: {
+              capacity: { weekly: 600, weeklyUsed: 66 },
+              method: "SteamMethaneReformingHydrogen",
+              location: { lat: 1, long: 2 },
+            },
+            transportDistance: 10,
+            CO2e: { total: 1, breakdown: [] },
+          },
+        ],
       }
     })
   })
 
-  const renderComponent = () => {
+  const renderComponent = async () => {
     render(<SimulationView />, { wrapper: ChakraProvider })
+    await loading()
   }
 
-  it("shows input form", () => {
-    renderComponent()
+  it("shows input form", async () => {
+    await renderComponent()
 
     expect(Query()).toBeInTheDocument()
-    expect(screen.getByRole("heading", { name: "Project site location", level: 5 })).toBeInTheDocument()
-    expect(screen.getByRole("heading", { name: "Project fuel requirement", level: 5 })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Site location", level: 5 })).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "Hydrogen", level: 5 })).toBeInTheDocument()
   })
 
   it("shows loading when querying", async () => {
     simulationAPIMock.mockImplementation(() => new Promise((r) => setTimeout(r, 200)))
-    renderComponent()
+    await renderComponent()
 
     await userEvent.type(Latitude(), "123")
     await userEvent.type(Longitude(), "321")
@@ -89,20 +140,24 @@ describe("simulation view", () => {
   })
 
   it("calls API when querying", async () => {
-    renderComponent()
+    await renderComponent()
 
-    await userEvent.type(Latitude(), "123")
-    await userEvent.type(Longitude(), "321")
     await userEvent.type(Amount(), "300")
 
     await userEvent.click(Query())
 
     expect(simulationAPIMockFn).toHaveBeenCalledTimes(1)
-    expect(simulationAPIMockFn).toHaveBeenCalledWith({ location: { lat: 123, long: 321 }, fuel: { amount: 300 } })
+    expect(simulationAPIMockFn).toHaveBeenLastCalledWith(
+      {
+        location: { lat: 54.97101, long: -2.45682 },
+        fuel: { amount: 300 },
+      },
+      ["default"]
+    )
   })
 
   it("shows simulation results after query", async () => {
-    renderComponent()
+    await renderComponent()
 
     await userEvent.type(Latitude(), "123")
     await userEvent.type(Longitude(), "321")
@@ -110,10 +165,9 @@ describe("simulation view", () => {
 
     await userEvent.click(Query())
 
-    const row = rowInTable("Fuel Service")
+    const row = rowInTable("Fuel Service > Storage Rental > Fuel Logistic")
     expect(row).toBeInTheDocument()
     const rowWithin = within(row)
-    rowWithin.getByText("Fuel Logistic")
-    rowWithin.getByText("66")
+    rowWithin.getByText("66.00% of 600 kg")
   })
 })

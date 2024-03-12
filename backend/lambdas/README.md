@@ -1,6 +1,6 @@
 # Lambdas
 
-Poetry to manage lambda bundles and dependencies. Python version is `3.12`.
+We use [Poetry](https://python-poetry.org/) to manage lambda bundles and dependencies. Python version is `3.12`.
 
 ## Python setup
 

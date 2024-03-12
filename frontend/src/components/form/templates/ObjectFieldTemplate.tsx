@@ -1,4 +1,4 @@
-import { Grid, GridItem } from "@chakra-ui/react"
+import { Box, Flex, GridItem } from "@chakra-ui/react"
 import {
   canExpand,
   descriptionId,
@@ -10,6 +10,8 @@ import {
   StrictRJSFSchema,
   titleId,
 } from "@rjsf/utils"
+import { Location } from "@components/map/Map"
+import MapPopover from "@components/map/MapPopover"
 
 export default function ObjectFieldTemplate<
   T = any,
@@ -42,10 +44,11 @@ export default function ObjectFieldTemplate<
     ButtonTemplates: { AddButton },
   } = registry.templates
 
-  const columnView = "columns" in uiOptions && uiOptions["columns"] ? "repeat(2, 1fr)" : ""
+  const map = "map" in uiOptions && uiOptions["map"] ? uiOptions["map"] : false
+  const mapTitle = "mapTitle" in uiOptions && uiOptions["mapTitle"] ? uiOptions["mapTitle"].toString() : "Location"
 
   return (
-    <>
+    <Box width={"100%"}>
       {title && (
         <TitleFieldTemplate
           id={titleId<T>(idSchema)}
@@ -65,13 +68,39 @@ export default function ObjectFieldTemplate<
           registry={registry}
         />
       )}
-      <Grid templateColumns={columnView} gap={description ? 2 : 6} mb={4}>
+      <Flex flexWrap={"wrap"} width={"100%"} justifyContent={"space-between"} gap={5}>
         {properties.map((element, index) =>
           element.hidden ? (
             element.content
           ) : (
-            <GridItem key={`${idSchema.$id}-${element.name}-${index}`}>{element.content}</GridItem>
+            <GridItem minWidth={"45%"} key={`${idSchema.$id}-${element.name}-${index}`}>
+              {element.content}
+            </GridItem>
           )
+        )}
+        {map && (
+          <GridItem justifySelf="flex-end">
+            <Flex
+              justifyContent={"space-around"}
+              flexDirection={"column"}
+              paddingTop={"25px"}
+              width={"100%"}
+              height={"100%"}
+            >
+              <MapPopover
+                key={`${
+                  (props.formContext &&
+                    props.formContext.getLastManualUpdate &&
+                    props.formContext.getLastManualUpdate()) ||
+                  "blank"
+                }`}
+                focusMarker={{ title: mapTitle, location: { ...formData } as Location }}
+                locationChange={(location) =>
+                  props.formContext && props.formContext.setLocation && props.formContext.setLocation(location)
+                }
+              />
+            </Flex>
+          </GridItem>
         )}
         {canExpand<T, S, F>(schema, uiSchema, formData) && (
           <GridItem justifySelf="flex-end">
@@ -84,7 +113,7 @@ export default function ObjectFieldTemplate<
             />
           </GridItem>
         )}
-      </Grid>
-    </>
+      </Flex>
+    </Box>
   )
 }

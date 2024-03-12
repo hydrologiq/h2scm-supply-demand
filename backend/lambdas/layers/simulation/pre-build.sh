@@ -16,24 +16,20 @@ set -e
 #
 # USAGE
 #
-# Set all the variables but the personal token inside the script, make sure you chmod +x it.
-# 
-#  GITHUB_PERSONAL_TOKEN - is an environment variable
+# Set all the variables, make sure you chmod +x it.
 #
 # If your version/tag doesn't match, the script will exit with error.
-H2SCM_VERSION="v4.1.0"
+H2SCT_VERSION="v4.2.0"
 
-TOKEN=$GITHUB_PERSONAL_TOKEN
-REPO="hydrologiq/h2scm-ontology"
+REPO="hydrologiq/h2sct-ontology"
 FILE="ontology.zip"
-VERSION=$H2SCM_VERSION
+VERSION=$H2SCT_VERSION
 GITHUB="https://api.github.com"
 
 alias errcho='>&2 echo'
 
 function gh_curl() {
-  curl -H "Authorization: token $TOKEN" \
-       -H "Accept: application/vnd.github.v3.raw" \
+  curl -H "Accept: application/vnd.github.v3.raw" \
        $@
 }
 
@@ -51,10 +47,11 @@ if [ "$asset_id" = "null" ]; then
   exit 1
 fi;
 
-curl -sL --header "Authorization: token $TOKEN" --header 'Accept: application/octet-stream' \
+curl -sL --header 'Accept: application/octet-stream' \
   https://api.github.com/repos/$REPO/releases/assets/$asset_id \
   -o $FILE
 
+rm -rf ontology
 mkdir ontology
 unzip ontology -d ontology
 cp ontology/hydrogen_nrmm_optional.py simulation/query/queries/.

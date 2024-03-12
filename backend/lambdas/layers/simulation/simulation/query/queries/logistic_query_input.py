@@ -4,4 +4,4 @@ import simulation.business.outputs as BusinessOutputs
 
 @dataclass
 class LogisticQueryInput:
-    storageTypes: [BusinessOutputs.Storage]
+    storageTypes: list[BusinessOutputs.Storage]
