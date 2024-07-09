@@ -8,6 +8,7 @@ export interface SimulationBreakdownProps {
   services: Record<string, string>
   caption?: string
   perUnitHeading?: string
+  privateMode?: string
 }
 
 function SimulationBreakdown({
@@ -15,6 +16,7 @@ function SimulationBreakdown({
   services,
   caption = "breakdown",
   perUnitHeading = "UNIT COST",
+  privateMode = "",
 }: SimulationBreakdownProps) {
   return (
     <TableContainer marginTop={2}>
@@ -43,11 +45,15 @@ function SimulationBreakdown({
             breakdown.map((match) => {
               return (
                 <Tr key={toKey(`breakdown-${match.service}-${match.serviceType}`)}>
-                  <Td>{match.service in services ? services[match.service] : "?"}</Td>
+                  <Td className={privateMode}>{match.service in services ? services[match.service] : "?"}</Td>
                   <Td isNumeric>{toFixed(match.quantity)}</Td>
-                  <Td isNumeric>{toFixed(match.perUnit)}</Td>
+                  <Td isNumeric className={privateMode}>
+                    {toFixed(match.perUnit)}
+                  </Td>
                   <Th padding={0}>per {match.unit}</Th>
-                  <Td isNumeric>{toFixed(match.quantity * match.perUnit)}</Td>
+                  <Td isNumeric className={privateMode}>
+                    {toFixed(match.quantity * match.perUnit)}
+                  </Td>
                   <Th paddingLeft={0}>{match.value}</Th>
                 </Tr>
               )

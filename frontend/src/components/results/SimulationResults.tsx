@@ -13,6 +13,7 @@ import {
   GridItem,
   Grid,
   Icon,
+  Checkbox,
 } from "@chakra-ui/react"
 import Popover from "@components/chakra/popover/Popover"
 import {
@@ -29,6 +30,7 @@ import { splitHydrogenMethod } from "@utils/string"
 import MapPopover from "@components/map/MapPopover"
 import { HiOutlineMap } from "react-icons/hi2"
 import { useState } from "react"
+import { CiSettings } from "react-icons/ci"
 
 interface SimulationResultsProps {
   results: SimulationResultsSchema
@@ -57,10 +59,24 @@ const Tag = ({
 )
 
 const RightTag = () => <Tag background={false}>&gt;</Tag>
-const InstanceTag = ({ instance }: { instance: Instance }) => (
+const InstanceTag = ({ instance, privateModeClass = "" }: { instance: Instance; privateModeClass?: string }) => (
   <Tag exclusiveDownstream={instance.exclusiveDownstream} exclusiveUpstream={instance.exclusiveUpstream}>
-    {instance.name} {instance.instance !== "hydrogen_nrmm:" && " 🔒"}
+    <span className={privateModeClass}>{instance.name}</span> {instance.instance !== "hydrogen_nrmm:" && " 🔒"}
   </Tag>
+)
+
+const ConfigureSectionPopover = ({
+  name,
+  changeCallback,
+}: {
+  name: string
+  changeCallback: (state: boolean) => void
+}): JSX.Element => (
+  <Popover icon={<CiSettings />} title={`Configure ${name}`} closeOnBlur={true}>
+    <Box pt={2} px={2}>
+      <Checkbox onChange={(e) => changeCallback(e.target.checked)}>Toggle private mode</Checkbox>
+    </Box>
+  </Popover>
 )
 
 function SimulationResults({ results, location, loading = false }: SimulationResultsProps) {
@@ -82,11 +98,18 @@ function SimulationResults({ results, location, loading = false }: SimulationRes
   if (!loading && results && results.matches) {
     matches = results.matches.sort((a, b) => (a.cost.total > b.cost.total ? 1 : a.cost.total < b.cost.total ? -1 : 0))
   }
+  const [privateMode, setPrivateMode] = useState<boolean>(false)
+  const privateClass = privateMode ? "blur" : ""
+
   return (
     <Box>
       <Box>
         <Heading as={"h2"} size={"lg"}>
           Matching supply options
+          <ConfigureSectionPopover
+            name="matching supply options"
+            changeCallback={(state: boolean) => setPrivateMode(state)}
+          />
         </Heading>
         <Grid mt={5}>
           <GridItem>
@@ -191,11 +214,11 @@ function SimulationResults({ results, location, loading = false }: SimulationRes
                       {match.production.source && ` (${match.production.source})`}
                     </Td>
                     <Td>
-                      <InstanceTag instance={match.fuel} />
+                      <InstanceTag instance={match.fuel} privateModeClass={privateClass} />
                       <RightTag />
-                      <InstanceTag instance={match.storage} />
+                      <InstanceTag instance={match.storage} privateModeClass={privateClass} />
                       <RightTag />
-                      <InstanceTag instance={match.logistic} />
+                      <InstanceTag instance={match.logistic} privateModeClass={privateClass} />
                     </Td>
                     <Td padding={0}>
                       <MapPopover
@@ -204,10 +227,16 @@ function SimulationResults({ results, location, loading = false }: SimulationRes
                         onClose={() => setSelectedRow(-1)}
                         focusMarker={location && { title: "Project site", location }}
                         zoom={5}
-                        markers={[{ location: match.production.location, title: match.fuel.name }]}
+                        markers={[
+                          {
+                            location: privateMode ? { lat: 55, long: -361 } : match.production.location,
+                            title: match.fuel.name,
+                            privateMode: privateClass,
+                          },
+                        ]}
                       />
                     </Td>
-                    <Td isNumeric pr={0}>
+                    <Td isNumeric pr={0} className={privateClass}>
                       {match.CO2e ? toFixed(match.CO2e.total / 1000) : "?"}
                     </Td>
                     <Td padding={0}>
@@ -223,12 +252,13 @@ function SimulationResults({ results, location, loading = false }: SimulationRes
                               services={allServices}
                               caption={breakdownTitle("CO2e")}
                               perUnitHeading="EMISSION PER UNIT"
+                              privateMode={privateClass}
                             />
                           }
                         />
                       )}
                     </Td>
-                    <Td isNumeric pr={0}>
+                    <Td isNumeric pr={0} className={privateClass}>
                       {toFixed(match.cost.total)}
                     </Td>
                     <Td padding={0}>
@@ -243,14 +273,14 @@ function SimulationResults({ results, location, loading = false }: SimulationRes
                             services={allServices}
                             caption={breakdownTitle("Cost")}
                             perUnitHeading="COST PER UNIT"
+                            privateMode={privateClass}
                           />
                         }
                       />
                     </Td>
-                    <Td isNumeric>{`${toFixed(match.production.capacity.weeklyUsed)}% of ${toFixed(
-                      match.production.capacity.weekly,
-                      0
-                    )} kg`}</Td>
+                    <Td isNumeric className={privateClass}>{`${toFixed(
+                      match.production.capacity.weeklyUsed
+                    )}% of ${toFixed(match.production.capacity.weekly, 0)} kg`}</Td>
                   </Tr>
                 )
               })}

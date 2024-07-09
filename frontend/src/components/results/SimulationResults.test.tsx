@@ -22,6 +22,7 @@ vi.mock("@react-google-maps/api", async () => {
       return { isLoaded: true }
     },
     Marker: ({ position }: { position: google.maps.LatLng }) => {
+      console.log(`lat ${position.lat} long ${position.lng}`)
       return <p>{`lat ${position.lat} long ${position.lng}`}</p>
     },
   }
@@ -430,5 +431,70 @@ describe("simulation output", () => {
       expect(screen.getByText("1 - Project site")).toBeInTheDocument()
       expect(screen.getByText("2 - Fuel Service")).toBeInTheDocument()
     })
+  })
+
+  it("toggle on private mode", async () => {
+    const results: SimulationResultsSchemaType = {
+      matches: [
+        {
+          fuel: {
+            id: "123",
+            name: "Fuel Service",
+            exclusiveDownstream: false,
+            exclusiveUpstream: false,
+            instance: "hydrogen_nrmm:",
+          },
+          logistic: {
+            id: "321",
+            name: "Fuel Logistic",
+            exclusiveDownstream: false,
+            exclusiveUpstream: false,
+            instance: "hydrogen_nrmm:",
+          },
+          storage: {
+            id: "432",
+            name: "Storage Rental",
+            exclusiveDownstream: false,
+            exclusiveUpstream: false,
+            instance: "hydrogen_nrmm:",
+          },
+          production: {
+            capacity: { weekly: 600, weeklyUsed: 33 },
+            method: "SteamMethaneReformingHydrogen",
+            location: { lat: 1, long: 2 },
+          },
+          cost: { total: 33, breakdown: [] },
+          transportDistance: 10,
+          CO2e: {
+            total: 3300,
+            breakdown: [{ service: "123", serviceType: "fuel", perUnit: 15, quantity: 5, unit: "kg", value: "GBP" }],
+          },
+        },
+      ],
+    }
+
+    renderComponent(results, { lat: 2, long: 1 })
+
+    const settings = popoverIcon("Configure matching supply options")
+    expect(settings).toBeInTheDocument()
+    await userEvent.click(settings!)
+    await userEvent.click(screen.getByRole("checkbox", { name: "Toggle private mode" }))
+
+    const row = rowInTable("Fuel Service > Storage Rental > Fuel Logistic")
+    expect(row).toBeInTheDocument()
+    const rowWithin = within(row)
+    expect(rowWithin.getByText("33.00")).toHaveClass("blur")
+    expect(rowWithin.getByText("33.00% of 600 kg")).toHaveClass("blur")
+    expect(rowWithin.getByText("3.30")).toHaveClass("blur")
+    expect(rowWithin.getAllByText("Fuel Service").at(0)).toHaveClass("blur")
+    expect(rowWithin.getByText("Storage Rental")).toHaveClass("blur")
+    expect(rowWithin.getByText("Fuel Logistic")).toHaveClass("blur")
+
+    await userEvent.click(popoverIcon("Row 1 CO2e breakdown")!)
+    const emisRowWithin = within(rowInTable("Fuel Service", screen.getByRole("table", { name: "CO2e breakdown" })))
+    expect(emisRowWithin.getByText("Fuel Service")).toHaveClass("blur")
+
+    await userEvent.click(popoverIcon("Row 1 location breakdown")!)
+    expect(screen.getByText("2 - Fuel Service")).toHaveClass("blur")
   })
 })

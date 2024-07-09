@@ -15,5 +15,6 @@
     "${workspaceFolder}/backend/lambdas/layers/simulation"
   ],
   "editor.indentSize": "tabSize",
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "circleci.persistedProjectSelection": ["gh/hydrologiq/h2scm-supply-demand"]
 }

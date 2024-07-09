@@ -12,6 +12,7 @@ const containerStyle = {
 export type LocationMarker = {
   location: Location
   title: string
+  privateMode?: string
 }
 
 export interface Location {
@@ -57,7 +58,7 @@ const Map = ({ focusMarker, locationChange, zoom = 8, markers = [] }: MapProps) 
           <Grid templateColumns={`repeat(2, 1fr)`}>
             {markers.map((marker, index) => (
               <GridItem key={`${marker.location.lat}-${marker.location.long}-${index}`}>
-                <Tag background={"none"}>
+                <Tag background={"none"} className={marker.privateMode ? marker.privateMode : ""}>
                   {index + 1} - {marker.title}
                 </Tag>
               </GridItem>
